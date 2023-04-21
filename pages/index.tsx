@@ -1,116 +1,90 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+//import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { auth, db } from '../firebase/firebase_init';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import Auth from "../src/components/Auth";
+import { useEffect, useState } from 'react';
+import { getDocs, collection, addDoc } from "firebase/firestore";
+import TaskList from '../src/components/TaskList';
+import { coolvetica } from '../src/global';
 
-export default function Home() {
+
+export default function App() {
+  const [taskList, setTaskList] = useState([]);
+
+  //New Task States
+  const [taskName, setTaskName] = useState("");
+  const [taskCompleted, setTaskCompleted] = useState(false);
+
+  const tasksCollectionRef = collection(db,"tasks");
+
+  useEffect(() => {
+    const getTaskList = async function() {
+      try {
+        const data = await getDocs(tasksCollectionRef);
+        const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}));
+        console.log(filteredData);
+        setTaskList(filteredData);
+      } catch (error) {
+          console.error(error);
+      }
+    }
+
+    getTaskList();
+  }, []);
+
+  /*const onSubmitMovie = async () => {
+      try
+      {
+          await addDoc(tasksCollectionRef,{name: taskName, completed: taskCompleted});
+      }
+      catch (error)
+      {
+          console.error(error);
+      }
+  };*/
+
   return (
-    <h1>Hello World!</h1>
-    /*<div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className='login-container'>
+        <h1 className={coolvetica.className}>Bismuth</h1>
+        <h3>Project Task Tracker</h3>
+        <Auth onLogin={null} onStateChange={null}></Auth>
+        <style jsx>{`
+          .login-container {
+              width: 100vw;
+              height: 100vh;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+          }
 
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        footer img {
-          margin-left: 0.5rem;
-        }
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-decoration: none;
-          color: inherit;
-        }
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
-    </div>*/
+          h1 {
+            font-size: min(12rem, calc(30vw - 2rem));
+          }
+        `}</style>
+    </div>
   )
 }
+
+/*
+        <input onChange={e => setTaskName(e.target.value)} value={taskName} placeholder='Task Name...'></input>
+        <input onChange={e => setTaskCompleted(e.target.checked)} checked={taskCompleted} type='checkbox'></input>
+        <label>Completed</label>
+        <button onClick={onSubmitMovie}>Submit Task</button>
+*/
+
+//<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth}></StyledFirebaseAuth>
+/*
+        <TaskList></TaskList>
+
+        <div>
+          {taskList.map((task) => (
+            <div id={task.id}>
+              <h1>{task.name}</h1>
+              <p>{task.completed ? "true" : "false"}</p>
+            </div>
+          ))}
+        </div>
+*/

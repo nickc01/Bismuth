@@ -7,13 +7,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/firebase": "^3.2.1",
+    "firebase": "^9.20.0",
     "next": "latest",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-firebase-hooks": "^5.1.1",
+    "react-firebaseui": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "18.15.12",
-    "@types/react": "18.0.37",
+    "@types/node": "^18.15.12",
+    "@types/react": "^18.0.37",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "typescript": "5.0.4"
