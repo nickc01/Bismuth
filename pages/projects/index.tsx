@@ -18,7 +18,7 @@ export default function ProjectsPage() {
 
     return (
     <div className={styles.project_page_container}>
-        <h1 className={coolvetica.className} style={{padding: "0.5rem 0 0 1rem; font-size: 3rem;"}}>Bismuth</h1>
+        <h1 className={`${coolvetica.className} ${styles.logo}`}>Bismuth</h1>
         <div className={styles.project_selector_flex}>
             <ProjectSelector/>
             <div id={styles.bottom_row}>

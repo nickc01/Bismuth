@@ -39,3 +39,8 @@
 .create_button:hover {
     color: green;
 }
+
+.logo {
+    padding:0.5rem 0 0 1rem; 
+    font-size: 3rem;
+}
