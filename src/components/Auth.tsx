@@ -1,10 +1,12 @@
-import { signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, signInWithCredential, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { auth, googleProvider, onFirebaseInit } from "../../firebase/firebase_init";
 import Image from "next/image";
 
 import loading from "../../public/loading.svg"
 
+
+let message = "Sign in With Google";
 
 enum AuthState {
     Uninitialized,
@@ -39,16 +41,24 @@ export default function Auth({ onLogin, onStateChange }: { onLogin: () => void, 
         });
     });
 
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = () => {
         setAuthState(AuthState.LoggingIn);
-        try {
-            await signInWithPopup(auth, googleProvider);
+        signInWithPopup(auth,googleProvider).then(result => {
             setAuthState(AuthState.LoggedIn);
-        }
-        catch (error) {
+        }).catch(error => {
             console.error(error);
             setAuthState(AuthState.NotLoggedIn);
-        }
+        });
+        //try {
+            //await signInWithPopup(auth, googleProvider);
+            //await signInWithRedirect(auth, googleProvider);
+            
+        //}
+        /*catch (error) {
+            message = error;
+            console.error(error);
+            setAuthState(AuthState.NotLoggedIn);
+        }*/
 
     };
 
@@ -70,12 +80,7 @@ export default function Auth({ onLogin, onStateChange }: { onLogin: () => void, 
     switch (authState) {
         case AuthState.NotLoggedIn:
             contentJSX = <>
-                            <button onClick={signInWithGoogle}>Sign in with google</button>
-                         </>;
-            break;
-        case AuthState.LoggedIn:
-            contentJSX = <>
-                            <button onClick={logOut}>Sign out</button>
+                            <button onClick={signInWithGoogle}>{message}</button>
                          </>;
             break;
         default:

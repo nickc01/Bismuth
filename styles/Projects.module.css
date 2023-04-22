@@ -1,0 +1,41 @@
+.project_selector_flex {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.project_page_container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#bottom_row {
+    display: flex;
+    width: min(40rem,100vw);
+    justify-content:space-evenly;
+}
+
+#bottom_row > button {
+    font-size: 1.5rem;
+}
+
+.logout_button {
+    background-color: red;
+}
+
+.logout_button:hover {
+    color: red;
+}
+
+.create_button {
+    background-color: green;
+}
+
+.create_button:hover {
+    color: green;
+}

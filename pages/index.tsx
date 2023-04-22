@@ -1,17 +1,19 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+//import Head from 'next/head';
+//import styles from '../styles/Home.module.css';
 //import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { auth, db } from '../firebase/firebase_init';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+//import { auth, db } from '../firebase/firebase_init';
+//import { createUserWithEmailAndPassword } from "firebase/auth";
+import { redirect, useRouter } from "next/navigation";
 import Auth from "../src/components/Auth";
-import { useEffect, useState } from 'react';
-import { getDocs, collection, addDoc } from "firebase/firestore";
-import TaskList from '../src/components/TaskList';
+//import { useEffect, useState } from 'react';
+//import { getDocs, collection, addDoc } from "firebase/firestore";
+//import TaskList from '../src/components/TaskList';
 import { coolvetica } from '../src/global';
 
 
-export default function App() {
-  const [taskList, setTaskList] = useState([]);
+export default function LoginPage() {
+  const router = useRouter();
+  /*const [taskList, setTaskList] = useState([]);
 
   //New Task States
   const [taskName, setTaskName] = useState("");
@@ -32,7 +34,7 @@ export default function App() {
     }
 
     getTaskList();
-  }, []);
+  }, []);*/
 
   /*const onSubmitMovie = async () => {
       try
@@ -49,7 +51,7 @@ export default function App() {
     <div className='login-container'>
         <h1 className={coolvetica.className}>Bismuth</h1>
         <h3>Project Task Tracker</h3>
-        <Auth onLogin={null} onStateChange={null}></Auth>
+        <Auth onLogin={() => router.push("/projects")} onStateChange={null}></Auth>
         <style jsx>{`
           .login-container {
               width: 100vw;

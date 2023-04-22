@@ -1,0 +1,49 @@
+.project_selector {
+    background-color: var(--secondary-color);
+    max-width: calc(100% - 2rem);
+    margin: 1rem;
+    display:flex;
+    flex-direction: column;
+    border-radius: 1rem;
+}
+
+.project_selector > h1 {
+    padding: 0.5rem 0.5rem 0rem 1rem;
+}
+
+.project_container {
+    background-color: var(--secondary-color);
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 1rem;
+}
+
+.project {
+    min-width: 15rem;
+    min-height: 15rem;
+    flex-grow: 1;
+    background-color: var(--grey-color);
+    margin: 1rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    transition: linear 0.1s background-color, linear 0.1s transform;
+}
+
+.project > h1, .project > p {
+    padding-bottom: 1rem;
+    color: var(--accent-color);
+    transition: linear 0.1s color;
+}
+
+.project:hover {
+    background-color: var(--accent-color);
+    transform:scale(1.05)
+}
+
+.project:hover > h1, .project:hover > p {
+    padding-bottom: 1rem;
+    color: var(--grey-color);
+    transition: linear 0.1s color;
+}

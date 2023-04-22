@@ -4,6 +4,7 @@
   --secondary-color: #3481d3;
   --button-color: #8634d3;
   --background-color: #3734d3;
+  --grey-color: #333333;
 }
 
 html,
@@ -59,4 +60,12 @@ button {
 button:hover {
   background-color: var(--accent-color);
   color: var(--button-color);
+}
+
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

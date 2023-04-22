@@ -85,7 +85,7 @@ export default function TaskList() {
     return (
     <div>
         {tasks.map(t => {
-            return (<p id={t.id}>{t.name}:{t.completed ? "true" : "false"}</p>);
+            return (<p key={t.id} id={t.id}>{t.name}:{t.completed ? "true" : "false"}</p>);
         })}
     </div>
     );

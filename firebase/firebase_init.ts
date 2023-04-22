@@ -14,6 +14,9 @@ const clientCredentials = {
 const app = initializeApp(clientCredentials);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+googleProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+
 export const db = getFirestore(app);
 export let authInitialized = false;
 export function onFirebaseInit(callback : (user: User) => void) {
@@ -27,6 +30,14 @@ export function onFirebaseInit(callback : (user: User) => void) {
             unsub();
         });
     }
+}
+
+export function waitForFirebaseInit() : Promise<User> {
+    return new Promise((resolve, reject) => {
+        onFirebaseInit(user => {
+            resolve(user);
+        });
+    });
 }
 
 var unsub : Unsubscribe = null;
