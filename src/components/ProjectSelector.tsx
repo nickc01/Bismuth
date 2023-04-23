@@ -1,21 +1,19 @@
-import { collection, collectionGroup, getDocs, onSnapshot, query, where, DocumentChangeType} from "firebase/firestore"
-import { db, onFirebaseInit, waitForFirebaseInit } from "../../firebase/firebase_init"
-import { GetServerSideProps, InferGetServerSidePropsType } from "next/types";
-import { useEffect, useState } from "react";
+import { collection, onSnapshot, query, where} from "firebase/firestore"
+import { db, onFirebaseInit } from "../../firebase/firebase_init"
+import { useCallback, useEffect, useState } from "react";
 
 import styles from "../../styles/ProjectSelector.module.css"
 import { useRouter } from "next/router";
+import LoadingIcon from "./LoadingIcon";
+import { Project } from "../global";
 
-
-export interface Project {
-    id: string;
-    name: string;
-    description: string;
-    owner_id: string;
-    editor_ids: string[];
+export interface ProjectSelectorProps {
+    onProjectSelect?: (project: Project) => void
 }
 
-export default function ProjectSelector({width = "40rem", height = "40rem", onProjectSelect = null}) {
+export default function ProjectSelector({onProjectSelect}: ProjectSelectorProps) {
+
+    let [loaded, setLoaded] = useState(false);
 
     let router = useRouter();
     let [projects, setProjects] = useState([] as Project[]);
@@ -30,29 +28,35 @@ export default function ProjectSelector({width = "40rem", height = "40rem", onPr
 
             let q = query(projectsCollectionRef,where("owner_id","==", user.uid));
             return onSnapshot(q,data => {
+                setLoaded(true);
                 setProjects(data.docs.map(d => {
                     return {
                             id: d.id, 
-                            name: d.get("name"),
-                            description: d.get("description"),
-                            owner_id: d.get("owner_id"),
-                            editor_ids: d.get("editor_ids")
+                            name: d.get("name") ?? "Untitled Project",
+                            description: d.get("description") ?? "No description",
+                            owner_id: d.get("owner_id") ?? null,
+                            editor_ids: d.get("editor_ids") ?? []
                         };
                 }));
             });
         });
-    });
+    },[]);
 
-    function selectProject(projectID : string) {
+    const selectProject = useCallback((projectID: string) => {
         let index = projects.findIndex(p => p.id == projectID);
         if (index >= 0 && onProjectSelect != null) {
             onProjectSelect(projects[index]);
         }
+    },[onProjectSelect, projects]);
+
+    if (!loaded) {
+        return <div className={styles.project_selector} style={{width: "40rem", height: "40rem"}}>
+            <LoadingIcon/>
+        </div>
     }
 
 
-
-    return <div className={styles.project_selector} style={{width: width, height: height}}>
+    return <div className={styles.project_selector} style={{width: "40rem"}}>
         <h1>Projects</h1>
         <div className={styles.project_container}>
             {projects.map(p => {
@@ -64,29 +68,3 @@ export default function ProjectSelector({width = "40rem", height = "40rem", onPr
         </div>
     </div>
 }
-
-/*export const getServerSideProps: GetServerSideProps<{ data: Data }> = async (context) => {
-    
-    //const res = await fetch('https://.../data')
-    await waitForFirebaseInit();
-    let projectsCollectionRef = collection(db,"projects");
-    let docData = await getDocs(query(projectsCollectionRef));
-
-    let retrievedProjects : Project[] = [];
-
-    docData.forEach(doc => {
-        console.log("DOC ID = " + doc.id);
-        console.log("DOC NAME = " + doc.get("name"));
-        retrievedProjects.push({id: doc.id, name: doc.get("name")});
-    });
-
-    let data = {
-        projects: retrievedProjects
-    }
-  
-    return {
-      props: {
-        data,
-      },
-    }
-  }*/

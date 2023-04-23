@@ -1,9 +1,9 @@
 import { GoogleAuthProvider, signInWithCredential, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { auth, googleProvider, onFirebaseInit } from "../../firebase/firebase_init";
-import Image from "next/image";
+import LoadingIcon from "./LoadingIcon";
 
-import loading from "../../public/loading.svg"
+
 
 
 let message = "Sign in With Google";
@@ -16,16 +16,13 @@ enum AuthState {
     LoggingOut
 }
 
+export interface AuthProps {
+    onLogin: () => void
+}
 
-export default function Auth({ onLogin, onStateChange }: { onLogin: () => void, onStateChange: (authState: AuthState) => void }) {
-    const [authState, setAuthStatePre] = useState(AuthState.Uninitialized);
 
-    let setAuthState = useCallback((state: AuthState) => {
-        if (state !== authState && onStateChange != null) {
-            onStateChange(state);
-        }
-        setAuthStatePre(state);
-    }, []);
+export default function Auth({ onLogin }: AuthProps) {
+    const [authState, setAuthState] = useState(AuthState.Uninitialized);
 
     useEffect(() => {
         onFirebaseInit(user => {
@@ -39,9 +36,9 @@ export default function Auth({ onLogin, onStateChange }: { onLogin: () => void, 
                 setAuthState(AuthState.NotLoggedIn);
             }
         });
-    });
+    },[]);
 
-    const signInWithGoogle = () => {
+    const signInWithGoogle = useCallback(() => {
         setAuthState(AuthState.LoggingIn);
         signInWithPopup(auth,googleProvider).then(result => {
             setAuthState(AuthState.LoggedIn);
@@ -49,50 +46,16 @@ export default function Auth({ onLogin, onStateChange }: { onLogin: () => void, 
             console.error(error);
             setAuthState(AuthState.NotLoggedIn);
         });
-        //try {
-            //await signInWithPopup(auth, googleProvider);
-            //await signInWithRedirect(auth, googleProvider);
-            
-        //}
-        /*catch (error) {
-            message = error;
-            console.error(error);
-            setAuthState(AuthState.NotLoggedIn);
-        }*/
-
-    };
-
-    const logOut = async () => {
-        let previous = authState;
-        try {
-            setAuthState(AuthState.LoggingOut);
-            await signOut(auth);
-            setAuthState(AuthState.NotLoggedIn);
-        }
-        catch (error) {
-            console.error(error);
-            setAuthState(previous);
-        }
-    };
+    },[]);
 
     let contentJSX : JSX.Element;
 
     switch (authState) {
         case AuthState.NotLoggedIn:
-            contentJSX = <>
-                            <button onClick={signInWithGoogle}>{message}</button>
-                         </>;
+            contentJSX = <button onClick={signInWithGoogle}>{message}</button>;
             break;
         default:
-            contentJSX = <div className="loading-icon">
-                <Image src={loading} height={100} width={100} alt="Loading Icon"></Image>
-                <style jsx>{`
-                    .loading-icon {
-                        margin: auto;
-                        color: red;
-                    }
-                `}</style>
-            </div>
+            contentJSX = <LoadingIcon></LoadingIcon>
             break;
     }
 

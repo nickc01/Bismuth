@@ -1,0 +1,35 @@
+
+
+.close_button {
+    background-color: var(--secondary-color);
+    border-radius: 1rem;
+    position: relative;
+    transition: linear 0.1s background-color;
+}
+
+.close_button_rect {
+    position: absolute;
+    background-color: var(--grey-color);
+    color: green;
+    width: 0.5rem;
+    height: 3rem;
+    left: calc(50% - 0.25rem);
+    top: calc(50% - 1.5rem);
+    transition: linear 0.1s background-color;
+}
+
+.left {
+    transform: rotate(45deg);
+}
+
+.right {
+    transform: rotate(-45deg);
+}
+
+.close_button:hover {
+    background-color: var(--grey-color);
+}
+
+.close_button:hover > .close_button_rect {
+    background-color: var(--secondary-color);
+}

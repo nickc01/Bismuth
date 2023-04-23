@@ -1,3 +1,4 @@
+import { StrictMode } from "react";
 import "../styles/globals.css"
 
 //import localFont from 'next/font/local'
@@ -5,5 +6,5 @@ import "../styles/globals.css"
 //const coolvetica = localFont({src: "../public/coolvetica.woff2"});
 
 export default function Layout({ Component, pageProps}) {
-    return <Component {...pageProps}/>;
+    return <StrictMode><Component {...pageProps}/></StrictMode>;
 }

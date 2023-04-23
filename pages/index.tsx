@@ -51,7 +51,7 @@ export default function LoginPage() {
     <div className='login-container'>
         <h1 className={coolvetica.className}>Bismuth</h1>
         <h3>Project Task Tracker</h3>
-        <Auth onLogin={() => router.push("/projects")} onStateChange={null}></Auth>
+        <Auth onLogin={() => router.push("/projects")}></Auth>
         <style jsx>{`
           .login-container {
               width: 100vw;
