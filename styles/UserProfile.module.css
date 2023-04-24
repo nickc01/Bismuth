@@ -1,0 +1,10 @@
+
+
+
+.main_icon_area {
+    width: 5rem;
+    height: 5rem;
+    background-color: red;
+    position: absolute;
+    right: 0;
+}

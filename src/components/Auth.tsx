@@ -27,9 +27,7 @@ export default function Auth({ onLogin }: AuthProps) {
     useEffect(() => {
         onFirebaseInit(user => {
             if (user != null) {
-                if (onLogin != null) {
-                    onLogin();
-                }
+                onLogin?.();
                 setAuthState(AuthState.LoggedIn);
             }
             else {
@@ -42,6 +40,7 @@ export default function Auth({ onLogin }: AuthProps) {
         setAuthState(AuthState.LoggingIn);
         signInWithPopup(auth,googleProvider).then(result => {
             setAuthState(AuthState.LoggedIn);
+            onLogin?.();
         }).catch(error => {
             console.error(error);
             setAuthState(AuthState.NotLoggedIn);

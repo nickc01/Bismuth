@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import styles from "../../styles/ProjectSelector.module.css"
 import { useRouter } from "next/router";
 import LoadingIcon from "./LoadingIcon";
-import { Project } from "../global";
+import { Project, readProjectFromData } from "../global";
 
 export interface ProjectSelectorProps {
     onProjectSelect?: (project: Project) => void
@@ -29,15 +29,7 @@ export default function ProjectSelector({onProjectSelect}: ProjectSelectorProps)
             let q = query(projectsCollectionRef,where("owner_id","==", user.uid));
             return onSnapshot(q,data => {
                 setLoaded(true);
-                setProjects(data.docs.map(d => {
-                    return {
-                            id: d.id, 
-                            name: d.get("name") ?? "Untitled Project",
-                            description: d.get("description") ?? "No description",
-                            owner_id: d.get("owner_id") ?? null,
-                            editor_ids: d.get("editor_ids") ?? []
-                        };
-                }));
+                setProjects(data.docs.map(d => readProjectFromData(d)));
             });
         });
     },[]);

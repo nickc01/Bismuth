@@ -16,7 +16,7 @@
 
 #bottom_row {
     display: flex;
-    width: min(40rem,100vw);
+    width: min(40rem,100%);
     justify-content:space-evenly;
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -45,4 +45,8 @@
 .logo {
     padding:0.5rem 0 0 1rem; 
     font-size: 3rem;
+}
+
+.scroll_lock {
+    overflow: hidden;
 }

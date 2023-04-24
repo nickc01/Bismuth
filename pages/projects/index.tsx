@@ -1,6 +1,6 @@
 import { signOut } from "firebase/auth";
 import ProjectSelector from "../../src/components/ProjectSelector";
-import { Project, coolvetica } from "../../src/global";
+import { Project, coolvetica, setLoadedProject } from "../../src/global";
 
 import styles from "../../styles/Projects.module.css"
 import { auth } from "../../firebase/firebase_init";
@@ -30,11 +30,16 @@ export default function ProjectsPage() {
         router.push("/");
     },[]);
 
+    const openProject = useCallback(async () => {
+        setLoadedProject(selectedProject);
+        router.push(`/projects/${selectedProject.id}`);
+    },[selectedProject]);
+
     let windowJSX: JSX.Element;
 
     if (selectedProject != null) {
-        const onClose = () => setSelectedProject(null);
-        windowJSX = <OpenProjectWindow onOpen={onClose} onClose={onClose} project={selectedProject} ></OpenProjectWindow>
+        const onClose = async () => setSelectedProject(null);
+        windowJSX = <OpenProjectWindow onOpen={openProject} onClose={onClose} project={selectedProject} ></OpenProjectWindow>
     }
     else if (creating) {
         const onClose = () => setCreating(false);
@@ -47,9 +52,9 @@ export default function ProjectsPage() {
     return (
     <>
         {windowJSX}
-        <div className={styles.project_page_container}>
+        <div className={`${styles.project_page_container} ${selectedProject != null || creating ? styles.scroll_lock : ""}`}>
             <h1 className={`${coolvetica.className} ${styles.logo}`}>Bismuth</h1>
-            <div className={styles.project_selector_flex}>
+            <div className={`${styles.project_selector_flex}`}>
                 <ProjectSelector onProjectSelect={setSelectedProject} />
                 <div id={styles.bottom_row}>
                     <button tabIndex={-1} className={styles.logout_button} onClick={logout}>Logout</button>

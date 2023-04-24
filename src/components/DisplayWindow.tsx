@@ -28,7 +28,9 @@ export function DisplayWindow({title, onClose, children}: DisplayWindowProps) {
                 <h1 className={`${styles.title}`}>{title}</h1>
                 {onClose != null ? <CloseButton onClose={closeOnClick}/> : <></>}
             </div>
-            {children}
+            <div className={styles.children_container}>
+                {children}
+            </div>
         </div>
     </div>);
 }
