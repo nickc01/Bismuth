@@ -4,7 +4,27 @@
 .main_icon_area {
     width: 5rem;
     height: 5rem;
-    background-color: red;
+    margin: 0.25rem;
+    background-color: var(--background-color);
     position: absolute;
     right: 0;
+    border-radius: 10rem;
+    overflow: hidden;
+    padding: 0.5rem;
+
+    transition-timing-function: cubic-bezier(1, 0, 0, 1.4);
+    transition-property: margin, padding, background-color, width, height;
+    transition-duration: 0.25s;
+}
+
+.main_icon_area > img {
+    border-radius: 10rem;
+}
+
+.main_icon_area:hover {
+    padding: 0.5rem;
+    width: 5rem;
+    height: 5rem;
+    background-color: rgb(255,255,255,1);
+    margin: 0.25rem;
 }

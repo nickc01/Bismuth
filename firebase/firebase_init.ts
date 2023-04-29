@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, NextOrObserver, Unsubscribe, User } from "firebase/auth";
-import { enableIndexedDbPersistence, getFirestore} from "firebase/firestore"
+import { getFirestore} from "firebase/firestore"
 
 const clientCredentials = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

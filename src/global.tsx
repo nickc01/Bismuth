@@ -1,7 +1,7 @@
 import { DocumentData, DocumentSnapshot, doc, getDoc, getDocFromCache, getDocsFromCache } from 'firebase/firestore';
 import localFont from 'next/font/local'
 import { db } from '../firebase/firebase_init';
-import { resourceLimits } from 'worker_threads';
+import documentCache from './documentCache';
 
 export const coolvetica = localFont({src: "../public/coolvetica.woff2"});
 
@@ -11,6 +11,12 @@ export interface Project {
     description: string;
     owner_id: string;
     editor_ids: string[];
+}
+
+export interface UserInfo {
+    id?: string;
+    display_name: string;
+    profile_picture: string;
 }
 
 export function readProjectFromData(doc: DocumentSnapshot<DocumentData>) : Project {
@@ -23,25 +29,51 @@ export function readProjectFromData(doc: DocumentSnapshot<DocumentData>) : Proje
     };
 }
 
-let loadedProject: Project = null;
+export function readUserInfoFromData(doc: DocumentSnapshot<DocumentData>) : UserInfo  {
+    return {
+        id: doc.id,
+        display_name: doc.get("display_name") ?? null,
+        profile_picture: doc.get("profile_picture")?? null
+    }
+}
 
-let projectPromises: ((project: Project) => void)[] = [];
+let userDownloader = new documentCache<UserInfo>(id => getDoc(doc(db,"users",id)).then(readUserInfoFromData),50);
+let projectDownloader = new documentCache<Project>(id => getDoc(doc(db, "projects", id)).then(readProjectFromData),50);
 
 
-export function getProjectDetails(projectID: string): Promise<Project> {
+
+
+export async function getProjectDetails(id: string) {
+    return await projectDownloader.get(id);
+}
+
+export async function getUserDetails(id: string) {
+    return await userDownloader.get(id);
+}
+
+
+
+
+//let loadedProject: Project = null;
+
+//let projectPromiseResolvers: ((project: Project) => void)[] = [];
+
+
+/*export function getProjectDetails(projectID: string): Promise<Project> {
 
     if (loadedProject.id == projectID) {
         return Promise.resolve(loadedProject);
     }
 
-    if (projectPromises.length == 0) {
-        projectPromises.push(null);
+    if (projectPromiseResolvers.length == 0) {
+        projectPromiseResolvers.push(null);
         return getDoc(doc(db,"projects",projectID)).then(doc => {
             loadedProject = readProjectFromData(doc);
-            if (projectPromises.length > 0) {
-                for (let i = 0; i < projectPromises.length; i++) {
-                    projectPromises[i]?.(loadedProject);
+            if (projectPromiseResolvers.length > 0) {
+                for (let i = 0; i < projectPromiseResolvers.length; i++) {
+                    projectPromiseResolvers[i]?.(loadedProject);
                 }
+                projectPromiseResolvers = [];
             }
 
             return loadedProject;
@@ -53,52 +85,55 @@ export function getProjectDetails(projectID: string): Promise<Project> {
                 resolve(loadedProject);
             }
             else {
-                projectPromises.push(resolve);
+                projectPromiseResolvers.push(resolve);
             }
         })
     }
+}*/
 
-    /*try {
-        return readProjectFromData(await getDocFromCache(doc(db, "projects", projectID)));
-    } catch (error) {
-        return readProjectFromData(await getDoc(doc(db, "projects", projectID)));
-    }*/
-    /*return getDocFromCache(doc(db, "projects", projectID)).then(doc => {
-        return readProjectFromData(doc);
-    }).catch(error => {
+//let loadedUsers: UserInfo[] = [];
 
-    });*/
-    /*if (selectedProject.id == projectID) {
-        return Promise.resolve(selectedProject);
-    }*/
+/*interface user_download {
+    promiseResolver: (user: UserInfo) => void,
+    userID: string
+}*/
 
-    /*try {
-        if (projectPromises.length == 0) {
-            return getDoc(doc(db,"projects",projectID)).then(doc => {
-                selectedProject = readProjectFromData(doc);
-                if (projectPromises.length > 0) {
-                    let promises = projectPromises;
-                    projectPromises = [];
-                    for (let i = 0; i < promises.length; i++) {
-                        //TODO - RESOLVE ALL OTHER PROMISES
-                    }
-                }
 
-                return selectedProject;
-            });
-        }
-        else {
 
-        }
-        //let result = await getDoc(doc(db,"projects",projectID));
-        //selectedProject = readProjectFromData(result);
+/*let userPromises = {};
+
+
+export function getUserDetails(userID: string): Promise<UserInfo> {
+
+    if (userID in loadedUsers) {
+        return Promise.resolve(loadedUsers[userID]);
     }
-    catch (error) {
-        console.error(error);
-    }*/
-}
 
-export function setLoadedProject(project: Project) {
-    loadedProject = project;
-}
+    //let promiseCount = userPromises.reduce((count, current) => count + (current.userID == userID ? 1 : 0),0);
+
+    if (promiseCount == 0) {
+        userPromises.push(null);
+        return getDoc(doc(db,"users",userID)).then(doc => {
+            let loadedUser = readUserInfoFromData(doc);
+            loadedUsers[userID] = loadedUser;
+            if (userPromises.length > 0) {
+                for (let i = 0; i < userPromises.length; i++) {
+                    userPromises[i]?.(loadedUser);
+                }
+            }
+
+            return loadedUser;
+        });
+    }
+    else {
+        return new Promise<UserInfo>((resolve, reject) => {
+            if (userID in loadedUsers) {
+                resolve(loadedUsers[userID]);
+            }
+            else {
+                userPromises.push(resolve);
+            }
+        })
+    }
+}*/
 
