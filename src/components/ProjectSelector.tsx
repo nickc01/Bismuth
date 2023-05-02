@@ -3,7 +3,7 @@ import { db, onFirebaseInit } from "../../firebase/firebase_init"
 import { useCallback, useEffect, useState } from "react";
 
 import styles from "../../styles/ProjectSelector.module.css"
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import LoadingIcon from "./LoadingIcon";
 import { Project, readProjectFromData } from "../global";
 

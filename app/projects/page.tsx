@@ -1,10 +1,12 @@
+"use client"
+
 import { signOut } from "firebase/auth";
 import ProjectSelector from "../../src/components/ProjectSelector";
-import { Project, coolvetica, setLoadedProject } from "../../src/global";
+import { Project, coolvetica } from "../../src/global";
 
 import styles from "../../styles/Projects.module.css"
 import { auth } from "../../firebase/firebase_init";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import ProjectCreationWindow from "../../src/components/ProjectCreationWindow";
 import OpenProjectWindow from "../../src/components/OpenProjectWindow";
@@ -31,7 +33,8 @@ export default function ProjectsPage() {
     },[]);
 
     const openProject = useCallback(async () => {
-        setLoadedProject(selectedProject);
+        //TODO TODO TODO
+        //setLoadedProject(selectedProject);
         router.push(`/projects/${selectedProject.id}`);
     },[selectedProject]);
 

@@ -2,29 +2,19 @@
 
 
 .main_icon_area {
-    width: 5rem;
-    height: 5rem;
-    margin: 0.25rem;
+    width: 100%;
+    height: 100%;
     background-color: var(--background-color);
-    position: absolute;
-    right: 0;
-    border-radius: 10rem;
+    border-radius: 100rem;
     overflow: hidden;
     padding: 0.5rem;
-
-    transition-timing-function: cubic-bezier(1, 0, 0, 1.4);
-    transition-property: margin, padding, background-color, width, height;
-    transition-duration: 0.25s;
+    transition: cubic-bezier(1, 0, 0, 1.4) 0.15s background-color;
 }
 
 .main_icon_area > img {
-    border-radius: 10rem;
+    border-radius: 100rem;
 }
 
 .main_icon_area:hover {
-    padding: 0.5rem;
-    width: 5rem;
-    height: 5rem;
     background-color: rgb(255,255,255,1);
-    margin: 0.25rem;
 }

@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, NextOrObserver, Unsubscribe, User } from "firebase/auth";
+import { browserLocalPersistence, getAuth, GoogleAuthProvider, setPersistence, Unsubscribe, User } from "firebase/auth";
 import { getFirestore} from "firebase/firestore"
+import { getStorage } from "firebase/storage";
 
 const clientCredentials = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,7 +16,10 @@ const app = initializeApp(clientCredentials);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
+setPersistence(auth,browserLocalPersistence);
+
 export const db = getFirestore(app);
+
 export let authInitialized = false;
 export function onFirebaseInit(callback : (user: User) => void) {
     if (authInitialized) {
@@ -44,3 +48,5 @@ unsub = auth.onAuthStateChanged(user => {
     authInitialized = true;
     unsub();
 });
+
+export const storage = getStorage(app);

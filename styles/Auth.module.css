@@ -1,0 +1,11 @@
+.auth_container {
+    width: 20rem;
+    height: 10rem;
+    background-color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 1rem;
+    row-gap: 0.5rem;
+    border-radius: 1rem;
+}

@@ -69,3 +69,11 @@ button:hover {
   -ms-user-select: none;
   user-select: none;
 }
+
+.corner_user_profile {
+  top: 0;
+  right: 0;
+  width: 5rem;
+  height: 5rem;
+  position: fixed;
+}

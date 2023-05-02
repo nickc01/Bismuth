@@ -37,19 +37,29 @@ export function readUserInfoFromData(doc: DocumentSnapshot<DocumentData>) : User
     }
 }
 
-let userDownloader = new documentCache<UserInfo>(id => getDoc(doc(db,"users",id)).then(readUserInfoFromData),50);
-let projectDownloader = new documentCache<Project>(id => getDoc(doc(db, "projects", id)).then(readProjectFromData),50);
+//export let userDownloader = new documentCache<UserInfo>(id => getDoc(doc(db,"users",id)).then(readUserInfoFromData),50);
+//export let projectDownloader = new documentCache<Project>(id => getDoc(doc(db, "projects", id)).then(readProjectFromData),50);
 
 
 
 
-export async function getProjectDetails(id: string) {
+
+
+/*export async function getProjectDetails(id: string) {
     return await projectDownloader.get(id);
 }
 
 export async function getUserDetails(id: string) {
     return await userDownloader.get(id);
 }
+
+export async function clearUserCache() {
+    userDownloader.clearCache();
+}*/
+
+/*export function suspensePromise<T>(promise: Promise<T>) : T {
+    if (promise.)
+}*/
 
 
 

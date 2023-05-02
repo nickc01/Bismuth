@@ -8,11 +8,29 @@ type promiseResolvers<T> = {
     [key: string]: ((result: T) => void)[];
 }
 
+type updateHook<T> = (id: string, value: T) => void;
+
+type updateHookEntries<T> = {
+    [key: string]: updateHook<T>;
+}
+
+/*type updateHooks<T> = {
+    [key: string]: ((result: T) => void)[];
+}*/
+
+function guidGenerator() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+
 
 export default class DocCache<T> {
     downloader: (id: string) => Promise<T>;
     cachedItems: cacheEntries<T> = {};
     promises: promiseResolvers<T> = {};
+    cacheUpdateHooks: updateHookEntries<T>;
     maxCacheSize: number;
 
 
@@ -25,6 +43,9 @@ export default class DocCache<T> {
 
 
     get(id: string) : Promise<T> {
+        if (!id) {
+            return Promise.resolve(null);
+        }
         if (id in this.cachedItems) {
             return Promise.resolve(this.cachedItems[id]);
         }
@@ -35,6 +56,11 @@ export default class DocCache<T> {
             return this.downloader(id).then(result => {
 
                 this.cachedItems[id] = result;
+
+                const updateKeys = Object.keys(this.cacheUpdateHooks);
+                for (let i = updateKeys.length - 1; i >= 0; i--) {
+                    this.cacheUpdateHooks[i](id, result);
+                }
 
                 if (this.promises[id].length > 0) {
                     for (let i = this.promises[id].length - 1; i >= 0; i--) {
@@ -73,4 +99,29 @@ export default class DocCache<T> {
     clearCache() {
         this.cachedItems = {};
     }
+
+    updateEntry(id: string, value: T) {
+        if (!id) {
+            return;
+        }
+
+        this.cachedItems[id] = value;
+
+        const updateKeys = Object.keys(this.cacheUpdateHooks);
+        for (let i = updateKeys.length - 1; i >= 0; i--) {
+            this.cacheUpdateHooks[i](id, value);
+        }
+    }
+
+    addCacheUpdateHook(hook: (id: string, value: T) => void) {
+        const guid = guidGenerator();
+
+        this.cacheUpdateHooks[guid] = hook;
+
+        return () => {
+            delete this.cacheUpdateHooks[guid];
+        };
+    }
+
+    
 }

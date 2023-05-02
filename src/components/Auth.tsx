@@ -1,7 +1,11 @@
+"use client"
+
 import { GoogleAuthProvider, signInWithCredential, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { auth, googleProvider, onFirebaseInit } from "../../firebase/firebase_init";
 import LoadingIcon from "./LoadingIcon";
+
+import styles from "../../styles/Auth.module.css"
 
 
 
@@ -59,21 +63,8 @@ export default function Auth({ onLogin }: AuthProps) {
     }
 
     return (
-        <div className="auth-container">
+        <div className={styles.auth_container}>
             {contentJSX}
-            <style jsx>{`
-                .auth-container {
-                    width: 20rem;
-                    height: 10rem;
-                    background-color: var(--secondary-color);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-around;
-                    padding: 1rem;
-                    row-gap: 0.5rem;
-                    border-radius: 1rem;
-                }
-            `}</style>
         </div>
     );
 }

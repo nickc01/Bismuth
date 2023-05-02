@@ -1,39 +1,84 @@
+"use client"
 
-import { Suspense, useEffect, useState } from "react"
+import { MutableRefObject, Suspense, useEffect, useRef, useState } from "react"
 import styles from "../../styles/UserProfile.module.css"
-import { User, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase/firebase_init";
 
 import Image from "next/image"
-import { doc, getDoc } from "firebase/firestore/lite";
-import { UserInfo, getUserDetails } from "../global";
-import LoadingSuspense from "./LoadingSuspense";
-import LoadingIcon from "./LoadingIcon";
+import { UserInfo, readUserInfoFromData } from "../global";
+import React from "react";
+import dynamic from "next/dynamic";
+import UserProfileWindow from "./UserProfileWindow";
+import { doc, onSnapshot } from "firebase/firestore";
+
+
 
 
 export default function UserProfile() {
 
     const [userData, setUserData] = useState(null as UserInfo);
-    const [loading, setLoading] = useState(false);
+    //const [userPromise, setUserPromise] = useState(null as Promise<void>);
+    const [showingWindow, setShowingWindow] = useState(false);
+
+    const snapshot_unsub = useRef(null as () => void);
 
     useEffect(() => {
-        onAuthStateChanged(auth ,newUser => {
-            async function downloadUserInfo(userID: string) {
-                setUserData(await getUserDetails(userID));
+        return onAuthStateChanged(auth, newUser => {
+            if (snapshot_unsub.current) {
+                snapshot_unsub.current();
+                snapshot_unsub.current = null;
             }
 
-            downloadUserInfo(newUser?.uid);
+            if (newUser?.uid) {
+                snapshot_unsub.current = onSnapshot(doc(db, "users",newUser.uid),snapshot => {
+                    setUserData(readUserInfoFromData(snapshot));
+                });
+            }
+            else {
+                setUserData(null);
+            }
         });
+
+        /*async function downloadUserInfo(userID: string) {
+            const newUserData = await userDownloader.get(userID);
+            setUserData(newUserData);
+            setUserPromise(null);
+        }
+        const authUnsub = onAuthStateChanged(auth ,newUser => {
+            setUserPromise(downloadUserInfo(newUser?.uid));
+        });
+
+        const cacheUnsub = userDownloader.addCacheUpdateHook((id: string, value: UserInfo) => {
+
+        });
+
+        return () => {
+            authUnsub();
+            cacheUnsub();
+        }*/
     },[]);
 
-    console.log(userData);
-    if (userData)
-    {
-        return <div className={styles.main_icon_area}>
-        <Image alt="Profile Photo" width={100} height={100} src={userData.profile_picture}></Image>
-        </div>
+    useEffect(() => {
+        return () => {
+            if (snapshot_unsub.current) {
+                snapshot_unsub.current();
+            }
+        }
+    },[]);
+
+    /*if (userPromise) {
+        throw userPromise;
+    }*/
+
+    
+    if (userData == null) {
+        return <></>
     }
     else {
-        return <></>
+        return <div className={styles.main_icon_area}>
+            <Image onClick={() => setShowingWindow(true)} alt="Profile Photo" width={100} height={100} src={userData.profile_picture}></Image>
+            {showingWindow ? <UserProfileWindow onClose={() => setShowingWindow(false)} userID={userData.id}></UserProfileWindow> : <></>}
+        </div>
     }
 }

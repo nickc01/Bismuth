@@ -1,0 +1,10 @@
+.background {
+    width: max-content;
+    height: max-content;
+    background-size: 2rem;
+}
+
+.window_container {
+    width: 100%;
+    height: 100vh;
+}
