@@ -1,0 +1,22 @@
+
+
+
+.node_mover {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.draggable_area {
+    width: 100%;
+    height: 2rem;
+    flex-shrink: 0;
+    background-color: green;
+}
+
+.rest {
+    width: 100%;
+    flex-grow: 1;
+    overflow: auto;
+}

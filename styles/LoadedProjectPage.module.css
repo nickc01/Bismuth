@@ -1,7 +1,6 @@
 .background {
-    width: max-content;
-    height: max-content;
     background-size: 2rem;
+    position: relative;
 }
 
 .window_container {

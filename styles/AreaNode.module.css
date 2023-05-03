@@ -1,0 +1,9 @@
+
+
+
+.area_node {
+    position: absolute;
+    background-color: rgba(0,0,255,0.5);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}

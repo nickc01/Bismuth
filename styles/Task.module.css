@@ -1,9 +1,6 @@
 
 
 .task {
-    position: relative;
-    width: 100px;
-    height: 50px;
     background-color: rgb(255,0,0,0.5);
-    transform:translate(-50%,-50%);
+    width: 100%;
 }
