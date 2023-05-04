@@ -4,6 +4,7 @@ import gridImage from "../../../public/grid.png";
 import { useEffect, useLayoutEffect, useRef, useCallback, useState, useMemo } from "react";
 import Task, { TaskInfo } from "../../../src/components/Task";
 import ExpandableArea from "../../../src/components/ExpandableArea";
+import ZoomControls from "../../../src/components/ZoomControls";
 
 
 /*const BACKGROUND_PADDING = 750;
@@ -64,16 +65,20 @@ function calculateBounds(tasks: TaskInfo[]): Rect {
     };
 }*/
 
+//<ZoomControls onZoom={setZoom} dest_id="task_area_input_grabber" />
 export default function LoadedProjectPage({ params }) {
 
 
     let [tasks, setTasks] = useState(generateStartingTasks(params.projectID));
 
-    console.log("PAGE RENDER");
+    //let [zoom, setZoom] = useState(1);
 
-    return <ExpandableArea>
-        {tasks.map(t => <Task onTaskUpdated={() => setTasks(tasks.slice())} key={t.id} taskInfo={t}></Task>)}
-    </ExpandableArea>
+    return <>
+        <ExpandableArea zoomable={true} id="task_area">
+            {tasks.map(t => <Task onTaskUpdated={() => setTasks(tasks.slice())} key={t.id} taskInfo={t}></Task>)}
+        </ExpandableArea>
+        
+    </>
     /*const movingBackground = useRef(false);
     const bgElement = useRef(null as HTMLElement);
 

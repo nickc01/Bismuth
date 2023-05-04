@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useRef } from "react";
 import { AreaNodeContext } from "./AreaNode";
 
 import styles from "../../styles/NodeMover.module.css";
+import grip_dots from "../../public/grip_dots.png"
 
 
 export interface NodeMoverProps {

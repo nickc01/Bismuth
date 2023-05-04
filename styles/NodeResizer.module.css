@@ -2,12 +2,19 @@
 
 
 .node_resizer {
-    width: 2rem;
-    height: 2rem;
-    background-color: red;
-    position:absolute;
+    width: 4rem;
+    height: 4rem;
+    background-color: var(--secondary-color);
+    position: absolute;
     right: 0;
     bottom: 0;
+    transform: rotate(45deg);
+    margin: -2.25rem;
+    transition: linear 0.05s background-color;
+}
+
+.node_resizer:hover {
+    background-color: white;
 }
 
 .rest {

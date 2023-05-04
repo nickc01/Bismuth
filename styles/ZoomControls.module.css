@@ -1,0 +1,21 @@
+
+
+.zoom_controls {
+    width: 100px;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .zoom_controls > button {
+        background-color: var(--secondary-color);
+        font-size: 1.5rem;
+        margin: 0.25rem;
+    }
+
+        .zoom_controls > button:hover {
+            background-color: white;
+            color: var(--secondary-color);
+        }

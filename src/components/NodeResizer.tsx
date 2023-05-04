@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useRef } from "react";
 import { AreaNodeContext } from "./AreaNode";
 
 import styles from "../../styles/NodeResizer.module.css";
+import { clamp } from "../global";
 
 
 export interface NodeResizerProps {
@@ -12,10 +13,6 @@ export interface NodeResizerProps {
     maxHeight?: number,
     onUpdateSize: (x: number, y: number) => void
 }
-
-const clamp = (num: number, min: number, max: number) => {
-    return Math.min(Math.max(num, min),max);
-};
 
 export default function NodeResizer({ children, onUpdateSize, minWidth = 150, minHeight = 150, maxWidth = 1000, maxHeight = 1000 }: NodeResizerProps) {
     const areaNodeContext = useContext(AreaNodeContext);

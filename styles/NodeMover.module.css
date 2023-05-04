@@ -12,7 +12,12 @@
     width: 100%;
     height: 2rem;
     flex-shrink: 0;
-    background-color: green;
+    background-color: var(--secondary-color);
+    transition: linear 0.05s background-color;
+}
+
+.draggable_area:hover {
+    background-color: white;
 }
 
 .rest {

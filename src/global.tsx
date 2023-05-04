@@ -37,6 +37,10 @@ export function readUserInfoFromData(doc: DocumentSnapshot<DocumentData>) : User
     }
 }
 
+export const clamp = (num: number, min: number, max: number) => {
+    return Math.min(Math.max(num, min), max);
+};
+
 //export let userDownloader = new documentCache<UserInfo>(id => getDoc(doc(db,"users",id)).then(readUserInfoFromData),50);
 //export let projectDownloader = new documentCache<Project>(id => getDoc(doc(db, "projects", id)).then(readProjectFromData),50);
 

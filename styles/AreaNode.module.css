@@ -3,7 +3,9 @@
 
 .area_node {
     position: absolute;
-    background-color: rgba(0,0,255,0.5);
+    background-color: var(--grey-color);
     border-radius: 0.75rem;
+    border-color: white;
+    border-style: solid;
     overflow: hidden;
 }
