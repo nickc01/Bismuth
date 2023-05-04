@@ -6,14 +6,15 @@ import ZoomControls from "./ZoomControls";
 import { clamp } from "../global";
 
 
-const BACKGROUND_PADDING = 750;
+const BACKGROUND_PADDING = 1920 / 2;
 
 export interface ContextNodes {
     [key: string]: NodeEntry
 }
 
 export interface ExpandableAreaContextValues {
-    nodes: ContextNodes
+    nodes: ContextNodes,
+    zoom: number
 }
 
 export const ExpandableAreaContext = createContext(null as ExpandableAreaContextValues);
@@ -127,10 +128,14 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
 
     let contextValue = null as ExpandableAreaContextValues;
     contextValue = useMemo(() => {
+        console.log("Regenerating Context");
         return {
-            nodes: {}
+            nodes: {},
+            zoom: zoom
         };
     }, []);
+
+    contextValue.zoom = zoom;
 
     useEffect(() => {
 
@@ -182,8 +187,31 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
         }
 
         if (prevBounds) {
-            document.documentElement.scrollBy(prevBounds.x - bounds.current.x, prevBounds.y - bounds.current.y);
+            //console.log("Scrolling!!!");
+            let scale = zoom;
+            //console.log("ScrollX Scale = " + scale);
+            //console.log("Scroll Amount = " + ((prevBounds.x * scale) - (bounds.current.x * scale)));
+            //console.log("Unscaled Scroll Amount = " + (prevBounds.x - bounds.current.x));
+            document.documentElement.scrollBy((prevBounds.x * scale) - (bounds.current.x * scale), (prevBounds.y * scale) - (bounds.current.y * scale));
+
+
+            scale = (zoom - 1) / 2;
+
+            //console.log("ScrollWidth Scale = " + scale);
+           // console.log("Scroll Width Amount = " + ((prevBounds.width * scale) - (bounds.current.width * scale)));
+            //console.log("Unscaled Scroll Width Amount = " + (prevBounds.width - bounds.current.width));
+
+            document.documentElement.scrollBy((prevBounds.width * scale) - (bounds.current.width * scale), (prevBounds.height * scale) - (bounds.current.height * scale));
         }
+
+        /*let scrollPercentageX = (document.documentElement.scrollLeft + (document.documentElement.clientWidth / 2)) / document.documentElement.scrollWidth;
+        let scrollPercentageY = (document.documentElement.scrollTop + (document.documentElement.clientHeight / 2)) / document.documentElement.scrollHeight;
+
+        console.log("Scroll Percentage X = " + scrollPercentageX);
+        console.log("Scroll Percentage Y = " + scrollPercentageY);*/
+
+        //zoomElement.current.style.transformOrigin = `${scrollPercentageX * 100}% ${scrollPercentageY * 100}%`;
+        zoomElement.current.style.transform = `scale(${zoom})`;
 
 
     }, [zoomable, zoom, children]);
@@ -212,6 +240,20 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
 
         document.documentElement.scrollTo(centerScrollX / 2, centerScrollY / 2);
 
+        /*const test = () => {
+            let scrollPercentageX = (document.documentElement.scrollLeft + (document.documentElement.clientWidth / 2)) / document.documentElement.scrollWidth;
+            let scrollPercentageY = (document.documentElement.scrollTop + (document.documentElement.clientHeight / 2)) / document.documentElement.scrollHeight;
+
+            console.log("Scroll Percentage X = " + scrollPercentageX);
+            console.log("Scroll Percentage Y = " + scrollPercentageY);
+
+            zoomElement.current.style.transformOrigin = `${scrollPercentageX * 100}% ${scrollPercentageY * 100}%`;
+
+            requestAnimationFrame(test);
+        };
+
+        requestAnimationFrame(test);*/
+
         return () => {
             window.removeEventListener("mouseout", mouseLeaveWindow);
         }
@@ -221,7 +263,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
         <div id={id + "_input_grabber"} ref={inputElement as any} className={styles.input_grabber} />
         <div id={id} ref={bgElement as any} className={styles.contents}>
             <ExpandableAreaContext.Provider value={contextValue}>
-                <div ref={zoomElement as any} className={styles.zoomable_container} style={{ transform: `scale(${zoom})` }}>
+                <div ref={zoomElement as any} className={styles.zoomable_container}>
                     {children}
                 </div>
                 </ExpandableAreaContext.Provider>

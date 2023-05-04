@@ -3,6 +3,7 @@ import { AreaNodeContext } from "./AreaNode";
 
 import styles from "../../styles/NodeMover.module.css";
 import grip_dots from "../../public/grip_dots.png"
+import { ExpandableAreaContext } from "./ExpandableArea";
 
 
 export interface NodeMoverProps {
@@ -12,6 +13,7 @@ export interface NodeMoverProps {
 
 export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps) {
     const areaNodeContext = useContext(AreaNodeContext);
+    const expandAreaContext = useContext(ExpandableAreaContext);
 
     const xMouseDiff = useRef(0);
     const yMouseDiff = useRef(0);
@@ -39,8 +41,15 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         if (!moving.current) {
             return;
         }
-        areaNodeContext.node.current.style.left = `${e.pageX - xMouseDiff.current}px`;
-        areaNodeContext.node.current.style.top = `${e.pageY - yMouseDiff.current}px`;
+
+        let xDiff = e.pageX - oldX.current;
+        let yDiff = e.pageY - oldY.current;
+
+        let newX = oldX.current + (xDiff * (1 / expandAreaContext.zoom));
+        let newY = oldY.current + (yDiff * (1 / expandAreaContext.zoom));
+
+        areaNodeContext.node.current.style.left = `${(newX - xMouseDiff.current)}px`;
+        areaNodeContext.node.current.style.top = `${(newY - yMouseDiff.current)}px`;
     }, [areaNodeContext]);
 
     const onMouseUp = useCallback((e: MouseEvent) => {
@@ -48,7 +57,14 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             moving.current = false;
             document.removeEventListener("mousemove", onMouseMove);
             document.removeEventListener("mouseup", onMouseUp);
-            onUpdatePosition(areaNodeContext.x + (e.pageX - oldX.current), areaNodeContext.y + (e.pageY - oldY.current));
+
+            let xDiff = e.pageX - oldX.current;
+            let yDiff = e.pageY - oldY.current;
+
+            let newX = oldX.current + (xDiff * (1 / expandAreaContext.zoom));
+            let newY = oldY.current + (yDiff * (1 / expandAreaContext.zoom));
+
+            onUpdatePosition(areaNodeContext.x + (newX - oldX.current), areaNodeContext.y + (newY - oldY.current));
         }
     }, [areaNodeContext]);
 

@@ -21,7 +21,9 @@
     <Content Include=".eslintrc.json" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
+    <Content Include="styles\ZoomControls.module.css" />
     <None Include="tsconfig.json" />
+    <Content Include="public\grip_dots.png" />
     <Content Include="README.md" />
     <None Include="next-env.d.ts" />
     <None Include="app\layout.tsx" />
@@ -38,11 +40,12 @@
     <Content Include="styles\CloseButton.module.css" />
     <Content Include="styles\DisplayWindow.module.css" />
     <Content Include="styles\ExpandableArea.module.css" />
-    <Content Include="styles\ExpandableAreaNode.module.css" />
+    <Content Include="styles\AreaNode.module.css" />
     <Content Include="styles\globals.css" />
     <Content Include="styles\HomePage.module.css" />
     <Content Include="styles\LoadedProjectPage.module.css" />
     <Content Include="styles\LoadingIcon.module.css" />
+    <Content Include="styles\NodeResizer.module.css" />
     <Content Include="styles\NodeMover.module.css" />
     <Content Include="styles\OpenProjectWindow.module.css" />
     <Content Include="styles\ProjectCreationWindow.module.css" />
@@ -79,7 +82,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\components\ExpandableArea.tsx" />
     <TypeScriptCompile Include="src\components\AreaNode.tsx" />
+    <TypeScriptCompile Include="src\components\NodeResizer.tsx" />
     <TypeScriptCompile Include="src\components\NodeMover.tsx" />
+    <TypeScriptCompile Include="src\components\ZoomControls.tsx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

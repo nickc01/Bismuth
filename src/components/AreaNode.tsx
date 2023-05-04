@@ -66,7 +66,7 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
         return () => {
             delete mainAreaContext.nodes[id];
         }
-    },[left, top, width, height]);
+    });
 
     return <div ref={elementRef as any} className={styles.area_node} style={{ left: left, top: top, width: width, height: height }}>
         <AreaNodeContext.Provider value={areaNodeContextValue}>
