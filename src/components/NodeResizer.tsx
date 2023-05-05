@@ -3,6 +3,7 @@ import { AreaNodeContext } from "./AreaNode";
 
 import styles from "../../styles/NodeResizer.module.css";
 import { clamp } from "../global";
+import { ExpandableAreaContext } from "./ExpandableArea";
 
 
 export interface NodeResizerProps {
@@ -16,6 +17,7 @@ export interface NodeResizerProps {
 
 export default function NodeResizer({ children, onUpdateSize, minWidth = 150, minHeight = 150, maxWidth = 1000, maxHeight = 1000 }: NodeResizerProps) {
     const areaNodeContext = useContext(AreaNodeContext);
+    const expandAreaContext = useContext(ExpandableAreaContext);
 
     //const xMouseDiff = useRef(0);
     //const yMouseDiff = useRef(0);
@@ -30,29 +32,32 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 150, mi
 
 
     const onMouseDown = useCallback((e: MouseEvent) => {
+        e.stopPropagation();
         moving.current = true;
         oldX.current = e.pageX;
         oldY.current = e.pageY;
         //xMouseDiff.current = e.pageX - areaNodeContext.node.current.offsetLeft;
         //yMouseDiff.current = e.pageY - areaNodeContext.node.current.offsetTop;
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
     }, [areaNodeContext]);
 
     const onMouseMove = useCallback((e: MouseEvent) => {
         if (!moving.current) {
             return;
         }
-        areaNodeContext.node.current.style.width = `${clamp(areaNodeContext.width + e.pageX - oldX.current, minWidth, maxWidth)}px`;
-        areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + e.pageY - oldY.current, minHeight, maxHeight)}px`;
+        e.stopPropagation();
+        areaNodeContext.node.current.style.width = `${clamp(areaNodeContext.width + ((e.pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth)}px`;
+        areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight)}px`;
     }, [areaNodeContext]);
 
     const onMouseUp = useCallback((e: MouseEvent) => {
         if (moving.current) {
+            e.stopPropagation();
             moving.current = false;
-            document.removeEventListener("mousemove", onMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
-            onUpdateSize(clamp(areaNodeContext.width + e.pageX - oldX.current, minWidth, maxWidth), clamp(areaNodeContext.height + e.pageY - oldY.current, minHeight, maxHeight));
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+            onUpdateSize(clamp(areaNodeContext.width + ((e.pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
         }
     }, [areaNodeContext]);
 
@@ -61,8 +66,8 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 150, mi
 
         return () => {
             if (moving.current) {
-                document.removeEventListener("mousemove", onMouseMove);
-                document.removeEventListener("mouseup", onMouseUp);
+                window.removeEventListener("mousemove", onMouseMove);
+                window.removeEventListener("mouseup", onMouseUp);
             }
         }
     },[]);

@@ -28,6 +28,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
 
     const onMouseDown = useCallback((e: MouseEvent) => {
+        e.stopPropagation();
         moving.current = true;
         oldX.current = e.pageX;
         oldY.current = e.pageY;
@@ -42,6 +43,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             return;
         }
 
+        e.stopPropagation();
         let xDiff = e.pageX - oldX.current;
         let yDiff = e.pageY - oldY.current;
 
@@ -54,6 +56,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
     const onMouseUp = useCallback((e: MouseEvent) => {
         if (moving.current) {
+            e.stopPropagation();
             moving.current = false;
             document.removeEventListener("mousemove", onMouseMove);
             document.removeEventListener("mouseup", onMouseUp);

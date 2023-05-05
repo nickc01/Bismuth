@@ -20,7 +20,6 @@ export default function ZoomControls({ onZoom }: ZoomControlsProps) {
 
     const increaseZoom = useCallback((zoom: number) => {
         //zoomAmount.current = clamp(zoom, minZoom, maxZoom);
-        console.log("Zoom Amount = " + zoom);
         //elementRef.current.style.transform = `scale(${zoomAmount.current})`;
         onZoom?.(zoom);
     },[]);

@@ -1,6 +1,7 @@
-import { createContext, MutableRefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from "../../styles/AreaNode.module.css";
 import { ExpandableAreaContext } from "./ExpandableArea";
+import { clamp } from "../global";
 
 export interface AreaNodeProps {
     children?: any,
@@ -43,6 +44,15 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
         throw "A key is required for an Expandable Area Node";
     }
 
+    const onMouseWheel = useCallback((e: WheelEvent) => {
+        e.preventDefault();
+
+        mainAreaContext.setZoom(prev => {
+            return clamp(prev - (e.deltaY / 400), mainAreaContext.zoomMin, mainAreaContext.zoomMax);
+        });
+
+    }, []);
+
     const areaNodeContextValue: AreaNodeContextValues = useMemo(() => {
         return {
             node: elementRef,
@@ -67,6 +77,14 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
             delete mainAreaContext.nodes[id];
         }
     });
+
+    useEffect(() => {
+        elementRef.current.addEventListener("wheel", onMouseWheel);
+
+        /*return () => {
+            elementRef.current.removeEventListener("wheel", onMouseWheel);
+        };*/
+    }, []);
 
     return <div ref={elementRef as any} className={styles.area_node} style={{ left: left, top: top, width: width, height: height }}>
         <AreaNodeContext.Provider value={areaNodeContextValue}>

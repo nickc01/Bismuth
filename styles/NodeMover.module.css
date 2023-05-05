@@ -10,7 +10,7 @@
 
 .draggable_area {
     width: 100%;
-    height: 2rem;
+    height: 3rem;
     flex-shrink: 0;
     background-color: var(--secondary-color);
     transition: linear 0.05s background-color;

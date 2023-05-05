@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, createContext } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, createContext, Dispatch, SetStateAction } from "react";
 import { TaskInfo } from "./Task";
 import styles from "../../styles/ExpandableArea.module.css";
 import { NodeEntry } from "./AreaNode";
@@ -14,7 +14,10 @@ export interface ContextNodes {
 
 export interface ExpandableAreaContextValues {
     nodes: ContextNodes,
-    zoom: number
+    zoom: number,
+    setZoom: Dispatch<SetStateAction<number>>,
+    zoomMin: number,
+    zoomMax: number
 }
 
 export const ExpandableAreaContext = createContext(null as ExpandableAreaContextValues);
@@ -95,15 +98,24 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
         setZoomRaw(zoom);
     },[zoomable, zoomMin, zoomMax]);*/
 
+    let contextValue = null as ExpandableAreaContextValues;
+    contextValue = useMemo(() => {
+        return {
+            nodes: {},
+            zoom: zoom,
+            setZoom: setZoom,
+            zoomMax: zoomMax,
+            zoomMin: zoomMin
+        };
+    }, []);
+
+    contextValue.zoom = zoom;
+    contextValue.zoomMax = zoomMax;
+    contextValue.zoomMin = zoomMin;
+
     const onBackgroundClick = useCallback((e: MouseEvent) => {
         if (e.target === inputElement.current) {
             movingBackground.current = true;
-        }
-    }, []);
-
-    const onBackgroundDrag = useCallback((e: MouseEvent) => {
-        if (movingBackground.current) {
-            document.documentElement.scrollBy(-e.movementX, -e.movementY);
         }
     }, []);
 
@@ -118,7 +130,10 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
     }, []);
 
     const onMouseWheel = useCallback((e: WheelEvent) => {
+        console.log("Zooming!!!2");
         e.preventDefault();
+
+        console.log("Zooming!!!");
 
         setZoom(prev => {
             return clamp(prev - (e.deltaY / 400), zoomMin, zoomMax);
@@ -126,19 +141,13 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
 
     }, []);
 
-    let contextValue = null as ExpandableAreaContextValues;
-    contextValue = useMemo(() => {
-        console.log("Regenerating Context");
-        return {
-            nodes: {},
-            zoom: zoom
-        };
-    }, []);
-
-    contextValue.zoom = zoom;
+    const onBackgroundDrag = useCallback((e: MouseEvent) => {
+        if (movingBackground.current) {
+            document.documentElement.scrollBy(-e.movementX * (1 / contextValue.zoom), -e.movementY * 1 / contextValue.zoom);
+        }
+    },[]);
 
     useEffect(() => {
-
         console.log("EXPANDABLE AREA EFFECT");
 
         /*if (bgElement.current === null) {
@@ -186,22 +195,47 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
             element.node.current.style.top = `${element.y - bounds.current.y + (BACKGROUND_PADDING)}px`;
         }
 
+        let scrollUpdateX = 0;
+        let scrollUpdateY = 0;
+
         if (prevBounds) {
             //console.log("Scrolling!!!");
-            let scale = zoom;
+            //let scale = 2 * zoom;
             //console.log("ScrollX Scale = " + scale);
             //console.log("Scroll Amount = " + ((prevBounds.x * scale) - (bounds.current.x * scale)));
             //console.log("Unscaled Scroll Amount = " + (prevBounds.x - bounds.current.x));
-            document.documentElement.scrollBy((prevBounds.x * scale) - (bounds.current.x * scale), (prevBounds.y * scale) - (bounds.current.y * scale));
+            //document.documentElement.scrollBy((prevBounds.x * scale) - (bounds.current.x * scale), (prevBounds.y * scale) - (bounds.current.y * scale));
+            //document.documentElement.scrollBy(prevBounds.x - bounds.current.x, prevBounds.y - bounds.current.y);
+
+            scrollUpdateX = prevBounds.x - bounds.current.x;
+            scrollUpdateY = prevBounds.y - bounds.current.y;
 
 
-            scale = (zoom - 1) / 2;
+
+            //scale = (zoom - 1);
 
             //console.log("ScrollWidth Scale = " + scale);
-           // console.log("Scroll Width Amount = " + ((prevBounds.width * scale) - (bounds.current.width * scale)));
+            // console.log("Scroll Width Amount = " + ((prevBounds.width * scale) - (bounds.current.width * scale)));
             //console.log("Unscaled Scroll Width Amount = " + (prevBounds.width - bounds.current.width));
 
-            document.documentElement.scrollBy((prevBounds.width * scale) - (bounds.current.width * scale), (prevBounds.height * scale) - (bounds.current.height * scale));
+            //document.documentElement.scrollBy((prevBounds.width * scale) - (bounds.current.width * scale), (prevBounds.height * scale) - (bounds.current.height * scale));
+        }
+
+        if (contextValue.zoom > 1) {
+            //let scrollPercentageX = ((document.documentElement.scrollLeft + (document.documentElement.clientWidth / 2)) / document.documentElement.scrollWidth) - 0.5;
+            //let scrollPercentageY = ((document.documentElement.scrollTop + (document.documentElement.clientHeight / 2)) / document.documentElement.scrollHeight) - 0.5;
+
+            let scale = -1 / (contextValue.zoom + 6);
+
+            //document.documentElement.scrollBy((prevBounds.x - bounds.current.x) * scale, (prevBounds.y - bounds.current.y) * scale);
+            //document.documentElement.scrollBy((prevBounds.width - bounds.current.width) * scale, (prevBounds.height - bounds.current.height) * scale);
+
+            scrollUpdateX += (prevBounds.width - bounds.current.width) * scale;
+            scrollUpdateY += (prevBounds.height - bounds.current.height) * scale;
+        }
+
+        if (scrollUpdateX !== 0 || scrollUpdateY !== 0) {
+            document.documentElement.scrollBy(scrollUpdateX, scrollUpdateY);
         }
 
         /*let scrollPercentageX = (document.documentElement.scrollLeft + (document.documentElement.clientWidth / 2)) / document.documentElement.scrollWidth;
@@ -211,16 +245,30 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
         console.log("Scroll Percentage Y = " + scrollPercentageY);*/
 
         //zoomElement.current.style.transformOrigin = `${scrollPercentageX * 100}% ${scrollPercentageY * 100}%`;
-        zoomElement.current.style.transform = `scale(${zoom})`;
 
+        let scrollPercentageX = (document.documentElement.scrollLeft + (document.documentElement.clientWidth / 2)) / document.documentElement.scrollWidth;
+        let scrollPercentageY = (document.documentElement.scrollTop + (document.documentElement.clientHeight / 2)) / document.documentElement.scrollHeight;
+
+        //console.log("Scroll Percentage X = " + scrollPercentageX);
+        //console.log("Scroll Percentage Y = " + scrollPercentageY);
+
+        zoomElement.current.style.transformOrigin = `${scrollPercentageX * 100}% ${scrollPercentageY * 100}%`;
+
+        zoomElement.current.style.transform = `scale(${contextValue.zoom})`;
+
+        return () => {
+            
+        }
 
     }, [zoomable, zoom, children]);
 
     useEffect(() => {
+        console.log("1");
         if (zoomable) {
+            console.log("2");
             inputElement.current.addEventListener("wheel", onMouseWheel);
         }
-
+        console.log("3");
         return () => {
             if (zoomable) {
                 inputElement.current.removeEventListener("wheel", onMouseWheel);
@@ -240,22 +288,22 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
 
         document.documentElement.scrollTo(centerScrollX / 2, centerScrollY / 2);
 
-        /*const test = () => {
+        const updateLoop = () => {
             let scrollPercentageX = (document.documentElement.scrollLeft + (document.documentElement.clientWidth / 2)) / document.documentElement.scrollWidth;
             let scrollPercentageY = (document.documentElement.scrollTop + (document.documentElement.clientHeight / 2)) / document.documentElement.scrollHeight;
 
-            console.log("Scroll Percentage X = " + scrollPercentageX);
-            console.log("Scroll Percentage Y = " + scrollPercentageY);
-
             zoomElement.current.style.transformOrigin = `${scrollPercentageX * 100}% ${scrollPercentageY * 100}%`;
 
-            requestAnimationFrame(test);
+            requestAnimationFrame(updateLoop);
         };
 
-        requestAnimationFrame(test);*/
+        requestAnimationFrame(updateLoop);
 
         return () => {
             window.removeEventListener("mouseout", mouseLeaveWindow);
+            /*inputElement.current.removeEventListener("mousedown", onBackgroundClick);
+            inputElement.current.removeEventListener("mousemove", onBackgroundDrag);
+            inputElement.current.removeEventListener("mouseup", onBackgroundRelease);*/
         }
     }, []);
 

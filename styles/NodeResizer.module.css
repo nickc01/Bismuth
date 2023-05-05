@@ -2,14 +2,14 @@
 
 
 .node_resizer {
-    width: 4rem;
-    height: 4rem;
+    width: 7rem;
+    height: 7rem;
     background-color: var(--secondary-color);
     position: absolute;
     right: 0;
     bottom: 0;
     transform: rotate(45deg);
-    margin: -2.25rem;
+    margin: -3.5rem;
     transition: linear 0.05s background-color;
 }
 
