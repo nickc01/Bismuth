@@ -556,6 +556,7 @@ export default function LoadedProjectPage({ params }) {
                 }, error => {
                     console.error("Failed snapshot for projects");
                     console.error(error);
+                    router.push("/");
                 });
 
                 const goalUnsub = onSnapshot(query(collectionGroup(db, "goals"), where("owner_id", "==", user.uid), where("project_id", "==", params.projectID)), result => {
