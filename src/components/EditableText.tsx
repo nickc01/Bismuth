@@ -12,7 +12,8 @@ export interface EditableTextProps {
     onTextUpdate?: (str: string) => void,
     textClass?: string,
     multiline?: boolean,
-    editable?: boolean
+    editable?: boolean,
+    sizeLimit?: number
 }
 
 
@@ -22,7 +23,7 @@ function splitByNewLines(input: string, textClass: string): JSX.Element[]  {
 
 
 
-export default function EditableText({ text, onTextUpdate = null, textClass = "", multiline = false, editable = true }: EditableTextProps) {
+export default function EditableText({ text, onTextUpdate = null, textClass = "", multiline = false, editable = true, sizeLimit = Infinity }: EditableTextProps) {
     const [editing, setEditing] = useState(false);
 
     const [internalText, setInternalText] = useState(text);
@@ -31,12 +32,22 @@ export default function EditableText({ text, onTextUpdate = null, textClass = ""
 
 
     const onTextChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setInternalText(e.target.value);
-    }, []);
+        if (e.target.value.length >= sizeLimit) {
+            e.target.value = internalText;
+        }
+        else {
+            setInternalText(e.target.value);
+        }
+    }, [sizeLimit, internalText]);
 
     const onTextChangeMultiline = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-        setInternalText(e.target.value);
-    }, []);
+        if (e.target.value.length >= sizeLimit) {
+            e.target.value = internalText;
+        }
+        else {
+            setInternalText(e.target.value);
+        }
+    }, [sizeLimit, internalText]);
 
     const onUnFocus = useCallback((e: FocusEvent) => {
         if (internalText !== text) {

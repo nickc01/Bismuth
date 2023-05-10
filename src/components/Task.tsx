@@ -16,6 +16,7 @@ export interface GoalInfo {
 	checked: boolean,
 	timestamp: Timestamp,
 	project_id: string,
+	owner_id: string,
 	goal_id: string
 }
 
@@ -121,9 +122,9 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 		</div>
 		<NodeMover onUpdatePosition={onUpdatePosition}>
 			<NodeResizer onUpdateSize={onUpdateSize}>
-				<div className={`${styles.task} ${showWires && styles.disable_text_highlighting}` }>
-					<EditableText key="name_text" textClass={styles.title_text} text={taskInfo.name} onTextUpdate={onNameChanged} />
-					<EditableText key="desc_test" multiline={true} text={taskInfo.description} onTextUpdate={onDescChanged} />
+				<div className={`${styles.task} ${showWires && styles.disable_text_highlighting}`}>
+					<EditableText sizeLimit={100} key="name_text" textClass={styles.title_text} text={taskInfo.name} onTextUpdate={onNameChanged} />
+					<EditableText sizeLimit={1000} key="desc_test" multiline={true} text={taskInfo.description} onTextUpdate={onDescChanged} />
 					<br />
 					{dependency && <div className={styles.dependency_block}>
 						This task requires "{dependency.name}" to be completed first

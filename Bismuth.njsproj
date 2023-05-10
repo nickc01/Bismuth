@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3ca42b42-2657-402c-be35-3428824f7882}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>next-env.d.ts</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -89,6 +89,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app\loading.tsx" />
     <TypeScriptCompile Include="src\components\ConfirmationBox.tsx" />
+    <TypeScriptCompile Include="src\components\ConnectedWire.tsx" />
     <TypeScriptCompile Include="src\components\EditableText.tsx" />
     <TypeScriptCompile Include="src\components\ExpandableArea.tsx" />
     <TypeScriptCompile Include="src\components\AreaNode.tsx" />
@@ -98,6 +99,7 @@
     <TypeScriptCompile Include="src\components\WireLine.tsx" />
     <TypeScriptCompile Include="src\components\WireTerminal.tsx" />
     <TypeScriptCompile Include="src\components\ZoomControls.tsx" />
+    <TypeScriptCompile Include="src\WireConnectionContext.tsx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

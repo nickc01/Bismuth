@@ -6,14 +6,14 @@ import Task, { GoalInfo, TaskInfo } from "../../../src/components/Task";
 import ExpandableArea from "../../../src/components/ExpandableArea";
 import ZoomControls from "../../../src/components/ZoomControls";
 import LoadingIcon from "../../../src/components/LoadingIcon";
-import { QueryDocumentSnapshot, Timestamp, addDoc, arrayRemove, arrayUnion, collection, collectionGroup, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db, onFirebaseInit } from "../../../firebase/firebase_init";
+import { QueryDocumentSnapshot, Timestamp, addDoc, arrayRemove, arrayUnion, collection, collectionGroup, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { auth, db, onFirebaseInit } from "../../../firebase/firebase_init";
 import { Server } from "net";
 import { useRouter } from "next/navigation";
 import WireConnectionContext, { WireConnectionContextData } from "../../../src/WireConnectionContext";
 
 
-const ENABLE_FIREBASE = false;
+const ENABLE_FIREBASE = true;
 
 let counter = 100;
 
@@ -103,6 +103,7 @@ function generateDemoGoals(projectID: string): GoalInfo[] {
             timestamp: Timestamp.fromMillis(Date.now() - 3000),
             task_id: "ID_1",
             project_id: projectID,
+            owner_id: auth.currentUser.uid,
             goal_id: "GOAL_1"
         },
         {
@@ -111,6 +112,7 @@ function generateDemoGoals(projectID: string): GoalInfo[] {
             timestamp: Timestamp.fromMillis(Date.now() - 2000),
             task_id: "ID_1",
             project_id: projectID,
+            owner_id: auth.currentUser.uid,
             goal_id: "GOAL_2"
         },
         {
@@ -119,6 +121,7 @@ function generateDemoGoals(projectID: string): GoalInfo[] {
             timestamp: Timestamp.fromMillis(Date.now() - 1000),
             task_id: "ID_1",
             project_id: projectID,
+            owner_id: auth.currentUser.uid,
             goal_id: "GOAL_3"
         },
         {
@@ -127,6 +130,7 @@ function generateDemoGoals(projectID: string): GoalInfo[] {
             timestamp: Timestamp.fromMillis(Date.now() - 2000),
             task_id: "ID_2",
             project_id: projectID,
+            owner_id: auth.currentUser.uid,
             goal_id: "GOAL_4"
         },
         {
@@ -135,6 +139,7 @@ function generateDemoGoals(projectID: string): GoalInfo[] {
             timestamp: Timestamp.fromMillis(Date.now() - 3000),
             task_id: "ID_2",
             project_id: projectID,
+            owner_id: auth.currentUser.uid,
             goal_id: "GOAL_5"
         }
     ];
@@ -202,7 +207,8 @@ export function getGoalFromDoc(doc: QueryDocumentSnapshot): GoalInfo {
         task_id: doc.get("task_id") ?? null,
         timestamp: doc.get("timestamp") ?? 0,
         goal_id: doc.id,
-        project_id: doc.get("project_id") ?? null
+        project_id: doc.get("project_id") ?? null,
+        owner_id: doc.get("owner_id") ?? null
     }
 }
 
@@ -429,7 +435,8 @@ export default function LoadedProjectPage({ params }) {
                 goal_id: crypto.randomUUID(),
                 project_id: task.project_id,
                 task_id: task.task_id,
-                timestamp: Timestamp.fromMillis(Date.now())
+                timestamp: Timestamp.fromMillis(Date.now()),
+                owner_id: auth.currentUser.uid
             }));
             return;
         }
@@ -438,7 +445,8 @@ export default function LoadedProjectPage({ params }) {
             checked: checked,
             project_id: task.project_id,
             task_id: task.task_id,
-            timestamp: serverTimestamp()
+            timestamp: serverTimestamp(),
+            owner_id: auth.currentUser.uid
         }).catch(error => {
             console.error(error);
         });
@@ -540,28 +548,34 @@ export default function LoadedProjectPage({ params }) {
             else {
                 setLoaded(true);
             }
-        });
 
-        if (ENABLE_FIREBASE) {
+            if (ENABLE_FIREBASE) {
 
-            const taskUnsub = onSnapshot(collection(db, "projects", params.projectID, "project_tasks"), result => {
-                setTasks(result.docs.map(d => getTaskFromDoc(params.projectID, d)));
-            });
+                const taskUnsub = onSnapshot(collection(db, "projects", params.projectID, "project_tasks"), result => {
+                    setTasks(result.docs.map(d => getTaskFromDoc(params.projectID, d)));
+                }, error => {
+                    console.error("Failed snapshot for projects");
+                    console.error(error);
+                });
 
-            const goalUnsub = onSnapshot(collectionGroup(db, "goals"), result => {
-                setGoals(result.docs.map(d => getGoalFromDoc(d)));
-            });
+                const goalUnsub = onSnapshot(query(collectionGroup(db, "goals"), where("owner_id", "==", user.uid), where("project_id", "==", params.projectID)), result => {
+                    setGoals(result.docs.map(d => getGoalFromDoc(d)));
+                }, error => {
+                    console.error("Failed snapshot for goals");
+                    console.error(error);
+                });
 
-            return () => {
-                taskUnsub();
-                goalUnsub();
+                return () => {
+                    taskUnsub();
+                    goalUnsub();
+                }
             }
-        }
-        else {
+            else {
 
-            setTasks(generateDemoTasks(params.projectID));
-            setGoals(generateDemoGoals(params.projectID));
-        }
+                setTasks(generateDemoTasks(params.projectID));
+                setGoals(generateDemoGoals(params.projectID));
+            }
+        });
     }, []);
 
     const taskGoals = useMemo(() => {

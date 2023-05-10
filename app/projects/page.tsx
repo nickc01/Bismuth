@@ -5,9 +5,9 @@ import ProjectSelector from "../../src/components/ProjectSelector";
 import { Project, coolvetica } from "../../src/global";
 
 import styles from "../../styles/Projects.module.css"
-import { auth, db } from "../../firebase/firebase_init";
+import { auth, db, onFirebaseInit } from "../../firebase/firebase_init";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ProjectCreationWindow from "../../src/components/ProjectCreationWindow";
 import OpenProjectWindow from "../../src/components/OpenProjectWindow";
 import { deleteDoc, doc } from "firebase/firestore";
@@ -23,10 +23,8 @@ export default function ProjectsPage() {
     let router = useRouter();
 
     const startCreatingProject = useCallback(() => {
-        if (!creating) {
-            setCreating(true);
-        }
-    },[creating]);
+        setCreating(true);
+    },[]);
 
     const logout = useCallback(async () => {
         await signOut(auth);
@@ -40,7 +38,6 @@ export default function ProjectsPage() {
     }, [selectedProject]);
 
     const onDeleteProject = useCallback(async () => {
-        console.log("Deleting!");
         try {
             if (selectedProject) {
                 setSelectedProject(null);
@@ -65,6 +62,14 @@ export default function ProjectsPage() {
     else {
         windowJSX = <></>
     }
+
+    useEffect(() => {
+        onFirebaseInit(user => {
+            if (user === null || user.uid === null) {
+                router.push("/");
+            }
+        });
+    },[]);
 
     return (
     <>

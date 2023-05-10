@@ -14,14 +14,11 @@ export interface ProjectSelectorProps {
 export default function ProjectSelector({onProjectSelect}: ProjectSelectorProps) {
 
     let [loaded, setLoaded] = useState(false);
-
-    let router = useRouter();
     let [projects, setProjects] = useState([] as Project[]);
 
     useEffect(() => {
         onFirebaseInit(user => {
             if (user === null || user.uid === null) {
-                router.push("/");
                 return;
             }
             let projectsCollectionRef = collection(db,"projects");
