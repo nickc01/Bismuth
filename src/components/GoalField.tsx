@@ -43,7 +43,7 @@ export default function GoalField({ goalInfo, onNameChange = null, onCompletionC
             <div className={styles.goal_field}>
             <input type="checkbox" checked={goalInfo.checked} onChange={onCheckboxUpdate}></input>
             <div className={styles.text_container}>
-                <EditableText text={goalInfo.name} onTextUpdate={onNameUpdate} multiline={false} />
+                <EditableText sizeLimit={100} text={goalInfo.name} onTextUpdate={onNameUpdate} multiline={false} />
             </div>
             <div className={styles.delete_goal_button} onClick={onStartDelete}>
                 <div className={styles.x_line}/>
