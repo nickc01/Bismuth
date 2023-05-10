@@ -21,6 +21,13 @@
     <Content Include=".eslintrc.json" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
+    <Content Include="public\pencil.svg" />
+    <Content Include="styles\app.loading.module.css" />
+    <Content Include="styles\ConfirmationBox.module.css" />
+    <Content Include="styles\EditableText.module.css" />
+    <Content Include="styles\GoalField.module.css" />
+    <Content Include="styles\WireLine.module.css" />
+    <Content Include="styles\WireTerminal.module.css" />
     <Content Include="styles\ZoomControls.module.css" />
     <None Include="tsconfig.json" />
     <Content Include="public\grip_dots.png" />
@@ -80,10 +87,16 @@
     <Folder Include="styles" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="app\loading.tsx" />
+    <TypeScriptCompile Include="src\components\ConfirmationBox.tsx" />
+    <TypeScriptCompile Include="src\components\EditableText.tsx" />
     <TypeScriptCompile Include="src\components\ExpandableArea.tsx" />
     <TypeScriptCompile Include="src\components\AreaNode.tsx" />
+    <TypeScriptCompile Include="src\components\GoalField.tsx" />
     <TypeScriptCompile Include="src\components\NodeResizer.tsx" />
     <TypeScriptCompile Include="src\components\NodeMover.tsx" />
+    <TypeScriptCompile Include="src\components\WireLine.tsx" />
+    <TypeScriptCompile Include="src\components\WireTerminal.tsx" />
     <TypeScriptCompile Include="src\components\ZoomControls.tsx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

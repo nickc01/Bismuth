@@ -69,7 +69,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
             onUpdatePosition(areaNodeContext.x + (newX - oldX.current), areaNodeContext.y + (newY - oldY.current));
         }
-    }, [areaNodeContext]);
+    }, [areaNodeContext, onUpdatePosition]);
 
     useEffect(() => {
         return () => {

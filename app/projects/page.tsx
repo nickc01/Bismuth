@@ -5,11 +5,12 @@ import ProjectSelector from "../../src/components/ProjectSelector";
 import { Project, coolvetica } from "../../src/global";
 
 import styles from "../../styles/Projects.module.css"
-import { auth } from "../../firebase/firebase_init";
+import { auth, db } from "../../firebase/firebase_init";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import ProjectCreationWindow from "../../src/components/ProjectCreationWindow";
 import OpenProjectWindow from "../../src/components/OpenProjectWindow";
+import { deleteDoc, doc } from "firebase/firestore";
 
 
 
@@ -36,13 +37,26 @@ export default function ProjectsPage() {
         //TODO TODO TODO
         //setLoadedProject(selectedProject);
         router.push(`/projects/${selectedProject.id}`);
-    },[selectedProject]);
+    }, [selectedProject]);
+
+    const onDeleteProject = useCallback(async () => {
+        console.log("Deleting!");
+        try {
+            if (selectedProject) {
+                setSelectedProject(null);
+                await deleteDoc(doc(db, "projects", selectedProject.id));
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }, [selectedProject]);
 
     let windowJSX: JSX.Element;
 
     if (selectedProject != null) {
         const onClose = async () => setSelectedProject(null);
-        windowJSX = <OpenProjectWindow onOpen={openProject} onClose={onClose} project={selectedProject} ></OpenProjectWindow>
+        windowJSX = <OpenProjectWindow onOpen={openProject} onCancel={onClose} project={selectedProject} onDelete={onDeleteProject} ></OpenProjectWindow>
     }
     else if (creating) {
         const onClose = () => setCreating(false);

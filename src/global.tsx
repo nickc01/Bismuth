@@ -41,6 +41,33 @@ export const clamp = (num: number, min: number, max: number) => {
     return Math.min(Math.max(num, min), max);
 };
 
+export interface OffsetResult {
+    offsetLeft: number,
+    offsetTop: number
+}
+
+export function getOffsetRelativeTo(sourceElement: HTMLElement, relativeParent: HTMLElement): OffsetResult {
+
+    let offsetLeft = 0;
+    let offsetTop = 0;
+
+    while (true) {
+
+        offsetLeft += sourceElement.offsetLeft;
+        offsetTop += sourceElement.offsetTop;
+
+        sourceElement = sourceElement.parentElement;
+        if (!sourceElement || sourceElement === relativeParent) {
+            break;
+        }
+    }
+
+    return {
+        offsetLeft: offsetLeft,
+        offsetTop: offsetTop
+    }
+}
+
 //export let userDownloader = new documentCache<UserInfo>(id => getDoc(doc(db,"users",id)).then(readUserInfoFromData),50);
 //export let projectDownloader = new documentCache<Project>(id => getDoc(doc(db, "projects", id)).then(readProjectFromData),50);
 

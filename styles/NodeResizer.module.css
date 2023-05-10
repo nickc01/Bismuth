@@ -10,12 +10,14 @@
     bottom: 0;
     transform: rotate(45deg);
     margin: -3.5rem;
-    transition: linear 0.05s background-color;
+    transition: linear 0.05s background-color, linear 0.05s opacity;
+    opacity: 0.5;
 }
 
-.node_resizer:hover {
-    background-color: white;
-}
+    .node_resizer:hover {
+        background-color: white;
+        opacity: 1;
+    }
 
 .rest {
     width: 100%;

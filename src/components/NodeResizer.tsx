@@ -15,7 +15,7 @@ export interface NodeResizerProps {
     onUpdateSize: (x: number, y: number) => void
 }
 
-export default function NodeResizer({ children, onUpdateSize, minWidth = 150, minHeight = 150, maxWidth = 1000, maxHeight = 1000 }: NodeResizerProps) {
+export default function NodeResizer({ children, onUpdateSize, minWidth = 180, minHeight = 200, maxWidth = 1000, maxHeight = 1000 }: NodeResizerProps) {
     const areaNodeContext = useContext(AreaNodeContext);
     const expandAreaContext = useContext(ExpandableAreaContext);
 
@@ -51,6 +51,17 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 150, mi
         areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight)}px`;
     }, [areaNodeContext]);
 
+    /*const onMouseWheel = useCallback((e: WheelEvent) => {
+        let element = (e.target as HTMLDivElement);
+        e.stopPropagation();
+        if (element.scrollHeight <= element.parentElement.offsetHeight) {
+            
+        }
+
+        console.log("Element Height = " + element.scrollHeight);
+        console.log("Scroll Height = " + element.parentElement.offsetHeight);
+    }, []);*/
+
     const onMouseUp = useCallback((e: MouseEvent) => {
         if (moving.current) {
             e.stopPropagation();
@@ -62,7 +73,8 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 150, mi
     }, [areaNodeContext]);
 
     useEffect(() => {
-        
+
+
 
         return () => {
             if (moving.current) {

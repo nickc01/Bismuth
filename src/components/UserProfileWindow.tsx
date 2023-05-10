@@ -72,7 +72,6 @@ export default function UserProfileWindow({userID, onClose}: UserProfileWindowPr
             <div className={styles.image_container}>
                 {imageJSX}
             </div>
-            <h1>User ID: {userData?.id ?? "null id"}</h1>
             <input onChange={onFileUpload} id="upload_input" hidden style={{visibility: "hidden"}} type="file" accept="image/png"/>
             <button onClick={() => document.getElementById("upload_input").click()}>Upload Profile Photo</button>
         </div>;

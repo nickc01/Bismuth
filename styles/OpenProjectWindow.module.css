@@ -9,7 +9,22 @@
     height: 100%;
 }
 
-.open_button {
+.bottom_button {
     font-size: 2rem;
+    flex-grow: 1;
     border-radius: initial;
+}
+
+.delete_button {
+    background-color: red;
+}
+
+.delete_button:hover {
+    background-color: white;
+    color: red;
+}
+
+.bottom_buttons_area {
+    display: flex;
+    width: 100%;
 }

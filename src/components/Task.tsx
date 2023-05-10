@@ -1,99 +1,148 @@
-import { useRef, useCallback, useState, useContext, useEffect } from "react";
+import { useRef, useCallback, useState, useContext, useEffect, MutableRefObject, useMemo } from "react";
 import styles from "../../styles/Task.module.css"
 import { ExpandableAreaContext, Rect } from "./ExpandableArea";
 import AreaNode from "./AreaNode";
 import NodeMover from "./NodeMover";
 import NodeResizer from "./NodeResizer";
+import EditableText from "./EditableText";
+import GoalField from "./GoalField";
+import ConfirmationBox from "./ConfirmationBox";
+import { FieldValue, Timestamp } from "firebase/firestore";
+import WireTerminal from "./WireTerminal";
+
+export interface GoalInfo {
+	task_id: string,
+	name: string,
+	checked: boolean,
+	timestamp: Timestamp,
+	project_id: string,
+	goal_id: string
+}
 
 export interface TaskInfo extends Rect {
-    name: string,
-    description: string,
-    project_id: string,
-    id: string
+	name: string,
+	description: string,
+	project_id: string,
+	task_id: string,
+	dependsOn: string[]
 }
 
 export interface TaskProps {
-    taskInfo: TaskInfo,
-    onTaskUpdated: () => void
+	taskInfo: TaskInfo,
+	goals: GoalInfo[],
+	showWires?: boolean,
+	onTaskMove?: (x: number, y: number, task: TaskInfo) => void
+	onTaskResize?: (width: number, height: number, task: TaskInfo) => void,
+	onNameUpdate?: (name: string, task: TaskInfo) => void,
+	onDescUpdate?: (desc: string, task: TaskInfo) => void,
+	onGoalNameUpdate?: (name: string, goal: GoalInfo) => void,
+	onGoalCheckUpdate?: (checked: boolean, goal: GoalInfo) => void,
+	onTaskDelete?: (task: TaskInfo) => void
+	onCreateGoal?: (name: string, checked: boolean, task: TaskInfo) => void,
+	onDeleteGoal?: (goal: GoalInfo) => void,
+	addTaskDependency?: (source: TaskInfo, dependency: TaskInfo) => void,
+	removeTaskDependencies?: (source: TaskInfo, dependencies: string[]) => void,
+	dependentTasks: TaskInfo[],
+	dependenciesCompleted: boolean[]
 }
 
 
-export default function Task({ taskInfo, onTaskUpdated }: TaskProps) {
+export default function Task({ showWires = true, taskInfo, goals, onTaskMove, onTaskResize, onNameUpdate, onDescUpdate, onGoalNameUpdate, onGoalCheckUpdate, onTaskDelete, onCreateGoal, onDeleteGoal, addTaskDependency, removeTaskDependencies, dependentTasks, dependenciesCompleted }: TaskProps) {
 
-    //const result = useContext(ExpandableAreaContext);
-    //console.log("Result = ");
-    //console.log(result);
+	const [deleting, setDeleting] = useState(false);
 
-    //const [xDiff, setXDiff] = useState(0);
-    //const [yDiff, setYDiff] = useState(0);
-    //const taskDiv = useRef(null as HTMLElement);
-    //const movingTask = useRef(false);
+	const onUpdatePosition = useCallback((x: number, y: number) => {
+		taskInfo.x = x;
+		taskInfo.y = y;
+		onTaskMove?.(x, y, taskInfo);
+	}, [taskInfo, onTaskMove]);
+
+	const onUpdateSize = useCallback((width: number, height: number) => {
+		taskInfo.width = width;
+		taskInfo.height = height;
+		onTaskResize?.(width, height, taskInfo);
+	}, [taskInfo, onTaskResize]);
+
+	const onNameChanged = useCallback((name: string) => {
+		taskInfo.name = name;
+		onNameUpdate?.(name, taskInfo);
+	}, [taskInfo, onNameUpdate]);
+
+	const onDescChanged = useCallback((desc: string) => {
+		taskInfo.description = desc;
+		onDescUpdate?.(desc, taskInfo);
+	}, [taskInfo, onDescUpdate]);
+
+	const onXPressed = useCallback(() => {
+		setDeleting(true);
+	},[]);
+
+	const onConfirmDelete = useCallback((confirmed: boolean) => {
+		if (confirmed) {
+			onTaskDelete?.(taskInfo);
+		}
+		setDeleting(false);
+	}, [taskInfo, onTaskDelete]);
 
 
-    /*const onTaskClick = useCallback((e: MouseEvent) => {
-        if (e.target === taskDiv.current) {
-            setXDiff(0);
-            setYDiff(0);
-            movingTask.current = true;
-        }
-    }, []);
 
-    const onTaskDrag = useCallback((e: MouseEvent) => {
-        if (movingTask.current) {
-            //document.documentElement.scrollBy(-e.movementX, -e.movementY);
-            console.log("XDiff = " + xDiff);
-            console.log("YDiff = " + yDiff);
-            setXDiff(xDiff + e.movementX);
-            setYDiff(yDiff + e.movementY);
-        }
-    }, []);
+	const dependency = useMemo(() => {
+		for (let i = 0; i < dependentTasks.length; i++) {
+			if (!dependenciesCompleted[i]) {
+				return dependentTasks[i];
+			}
+			//return dependentTasks[i];
+		}
+		return null;
+	}, [dependentTasks]);
 
-    const onTaskRelease = useCallback((e: MouseEvent) => {
-        movingTask.current = false;
-        onDrag?.(xDiff, yDiff);
-    }, []);*/
-    //console.log("TaskInfo = ");
-    //console.log(taskInfo);
+	const onGoalCheck = useCallback((checked: boolean, goal: GoalInfo) => {
+		if (!dependency) {
+			onGoalCheckUpdate?.(checked, goal);
+			return true;
+		}
+		return false;
+	}, [dependency, onGoalCheckUpdate]);
 
-    const onUpdatePosition = useCallback((x: number, y: number) => {
-        taskInfo.x = x;
-        taskInfo.y = y;
-        onTaskUpdated?.();
-    }, [taskInfo]);
+	/*const onGoalNameChange = useCallback((name: string, goal: GoalInfo) => {
+		goal.goal_name = name;
+		onGoalNameUpdate?.(name, taskInfo, goal);
+	}, [taskInfo, onGoalNameUpdate]);
 
-    const onUpdateSize = useCallback((width: number, height: number) => {
-        taskInfo.width = width;
-        taskInfo.height = height;
-        onTaskUpdated?.();
-    }, [taskInfo]);
+	const onGoalCheckChange = useCallback((checked: boolean, goal: GoalInfo) => {
+		goal.goal_completed = checked;
+		onGoalCheckUpdate?.(checked, taskInfo, goal);
+	}, [taskInfo, onGoalCheckUpdate]);*/
 
-    /*return <AreaNode id={taskInfo.id} left={taskInfo.x} top={taskInfo.y} width={taskInfo.width} height={taskInfo.height}>
-        <NodeResizer onUpdateSize={onUpdateSize}>
-            <div className={styles.task}>
-                <h1>{taskInfo.name}</h1>
-                <p>{taskInfo.description}</p>
-            </div>
-        </NodeResizer>
-    </AreaNode>*/
-
-    return <AreaNode id={taskInfo.id} left={taskInfo.x} top={taskInfo.y} width={taskInfo.width} height={taskInfo.height}>
-        <NodeMover onUpdatePosition={onUpdatePosition}>
-            <NodeResizer onUpdateSize={onUpdateSize}>
-                <div className={styles.task}>
-                    <h1>{taskInfo.name}</h1>
-                    <p>{taskInfo.description}</p>
-                </div>
-            </NodeResizer>
-        </NodeMover>
-    </AreaNode>
-
-    /*
-    <div className={styles.task}>
-            
-    </div>
-    */
-
-    /*return <div ref={taskDiv as any} onMouseDown={onTaskClick as any} onMouseMove={onTaskDrag as any} onMouseUp={onTaskRelease as any} className={styles.task} style={{ width: `${taskInfo.width}px`, height: `${taskInfo.height}px`, left: `${taskInfo.x - xOffset + xDiff}px`, top: `${taskInfo.y - yOffset + yDiff}px` }}>
-        
-    </div>*/
+	return <AreaNode key={taskInfo.task_id} id={taskInfo.task_id} left={taskInfo.x} top={taskInfo.y} width={taskInfo.width} height={taskInfo.height}>
+		<div className={styles.delete_button} onClick={onXPressed}>
+			<div className={styles.x_line} />
+			<div className={styles.x_line} />
+		</div>
+		<NodeMover onUpdatePosition={onUpdatePosition}>
+			<NodeResizer onUpdateSize={onUpdateSize}>
+				<div className={`${styles.task} ${showWires && styles.disable_text_highlighting}` }>
+					<EditableText key="name_text" textClass={styles.title_text} text={taskInfo.name} onTextUpdate={onNameChanged} />
+					<EditableText key="desc_test" multiline={true} text={taskInfo.description} onTextUpdate={onDescChanged} />
+					<br />
+					{dependency && <div className={styles.dependency_block}>
+						This task requires "{dependency.name}" to be completed first
+					</div>}
+					<h3>Goals</h3>
+					{goals.map((g, i) => <GoalField onDelete={onDeleteGoal} onNameChange={onGoalNameUpdate} onCompletionChange={onGoalCheck} key={i} goalInfo={g} />)}
+					<button onClick={() => onCreateGoal?.("Untitled Goal", false, taskInfo)}>Add Goal</button>
+					{deleting && <ConfirmationBox onConfirm={onConfirmDelete} bodyText="Are you sure you want to delete this task?"></ConfirmationBox>}
+				</div>
+			</NodeResizer>
+		</NodeMover>
+		{showWires && <div className={styles.input_blocker} />}
+		{showWires && <>
+			<div className={`${styles.wire} ${styles.top_left_wire}`}>
+				<WireTerminal taskInfo={taskInfo} isInput={true} addTaskDependency={addTaskDependency} removeTaskDependencies={removeTaskDependencies} />
+			</div>
+			<div className={`${styles.wire} ${styles.bottom_right_wire}`}>
+				<WireTerminal taskInfo={taskInfo} isInput={false} addTaskDependency={addTaskDependency} removeTaskDependencies={removeTaskDependencies} />
+			</div>
+		</>}
+	</AreaNode>
 }

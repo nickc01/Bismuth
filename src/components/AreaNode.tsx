@@ -44,14 +44,17 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
         throw "A key is required for an Expandable Area Node";
     }
 
-    const onMouseWheel = useCallback((e: WheelEvent) => {
-        e.preventDefault();
+    //const onMouseWheel = useCallback((e: WheelEvent) => {
+        //e.preventDefault();
+        //console.log("ZOOM IN ELEMENT");
+        //e.stopPropagation();
+        /*e.preventDefault();
 
         mainAreaContext.setZoom(prev => {
             return clamp(prev - (e.deltaY / 400), mainAreaContext.zoomMin, mainAreaContext.zoomMax);
-        });
+        });*/
 
-    }, []);
+    //}, []);
 
     const areaNodeContextValue: AreaNodeContextValues = useMemo(() => {
         return {
@@ -79,7 +82,10 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
     });
 
     useEffect(() => {
-        elementRef.current.addEventListener("wheel", onMouseWheel);
+        //elementRef.current.addEventListener("wheel", onMouseWheel);
+        /*elementRef.current.addEventListener("scroll", e => {
+            console.log("Scrolling!!!!!");
+        });*/
 
         /*return () => {
             elementRef.current.removeEventListener("wheel", onMouseWheel);

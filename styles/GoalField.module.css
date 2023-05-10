@@ -1,0 +1,53 @@
+
+
+.goal_field {
+    width: 100%;
+    display: flex;
+}
+
+.goal_field > input {
+    flex-shrink: 0;
+}
+
+.text_container {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.delete_goal_button {
+    border-radius: 0.25rem;
+    color: red;
+    width: 1.7rem;
+    height: 1.7rem;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+    transition: linear 0.05s background-color;
+}
+
+.x_line {
+    width: 15%;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%) rotate(45deg);
+    transition: linear 0.05s background-color;
+}
+
+.x_line_right {
+    transform: translate(-50%,-50%) rotate(-45deg);
+}
+
+.goal_field:hover > .delete_goal_button > .x_line {
+    background-color: white;
+}
+
+.goal_field:hover > .delete_goal_button:hover {
+    background-color: white;
+}
+
+.goal_field:hover > .delete_goal_button:hover > .x_line {
+    background-color: red;
+}
+
