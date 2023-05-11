@@ -6,7 +6,7 @@ export interface LoadingIconProps {
     size?: number
 }
 
-export default function LoadingIcon({size = 100}: LoadingIconProps) {
+export default function LoadingIcon({ size = 100 }: LoadingIconProps) {
     return <div className={styles.loading_icon}>
     <Image src={loading} height={size} width={size} alt="Loading Icon"/>
 </div>

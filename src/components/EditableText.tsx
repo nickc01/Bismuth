@@ -16,10 +16,13 @@ export interface EditableTextProps {
     sizeLimit?: number
 }
 
+let testCounter = 0;
 
 function splitByNewLines(input: string, textClass: string): JSX.Element[]  {
-    return input.split(/\r?\n/).map((s) => <><p className={textClass}>{s}</p><br /></>);
+    return input.split(/\r?\n/).map((s, i) => <p key={i} className={textClass}>{s}</p>);
 }
+
+//return input.split(/\r?\n/).map((s) => <><p className={textClass}>{s}</p><br /></>);
 
 
 

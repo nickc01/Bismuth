@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3ca42b42-2657-402c-be35-3428824f7882}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>next-env.d.ts</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -26,6 +26,7 @@
     <Content Include="styles\ConfirmationBox.module.css" />
     <Content Include="styles\EditableText.module.css" />
     <Content Include="styles\GoalField.module.css" />
+    <Content Include="styles\GuideArea.module.css" />
     <Content Include="styles\WireLine.module.css" />
     <Content Include="styles\WireTerminal.module.css" />
     <Content Include="styles\ZoomControls.module.css" />
@@ -94,6 +95,7 @@
     <TypeScriptCompile Include="src\components\ExpandableArea.tsx" />
     <TypeScriptCompile Include="src\components\AreaNode.tsx" />
     <TypeScriptCompile Include="src\components\GoalField.tsx" />
+    <TypeScriptCompile Include="src\components\GuideArea.tsx" />
     <TypeScriptCompile Include="src\components\NodeResizer.tsx" />
     <TypeScriptCompile Include="src\components\NodeMover.tsx" />
     <TypeScriptCompile Include="src\components\WireLine.tsx" />

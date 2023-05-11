@@ -7,6 +7,12 @@
 
 .title_text {
     font-size: 2rem;
+    min-height: 2rem;
+}
+
+.description_text {
+    min-height: 2rem;
+    width: 100%;
 }
 
 .delete_button {

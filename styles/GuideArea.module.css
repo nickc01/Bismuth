@@ -1,0 +1,59 @@
+.guide_area_closed {
+    background-color: var(--secondary-color);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    margin: 0.5rem;
+    padding: 1rem;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 0.5rem;
+    color: white;
+    transition: linear 0.05s color, linear 0.1s background-color;
+}
+
+    .guide_area_closed:hover {
+        color: var(--secondary-color);
+        background-color: white;
+    }
+
+.guide_area {
+    position: fixed;
+    left: 0;
+    bottom: 5rem;
+    width: min(20rem,35vw);
+    height: min(20rem, 35vw);
+    background-color: var(--secondary-color);
+    margin: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+}
+
+    .guide_area > p {
+        color: black;
+        background-color: white;
+        flex-grow: 1;
+        text-align: center;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        padding: 0.25rem;
+    }
+
+.button_container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.image_container {
+    background-color: black;
+    border-radius: 0.5rem;
+    width: 100%;
+    height: 50%;
+}

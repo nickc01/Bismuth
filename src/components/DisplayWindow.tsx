@@ -4,7 +4,7 @@ import { ReactNode, useCallback, useRef } from "react";
 
 
 export interface DisplayWindowProps {
-    title: string,
+    title: string | JSX.Element,
     onClose?: () => void,
     children?: ReactNode
 }

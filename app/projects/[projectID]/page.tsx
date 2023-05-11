@@ -6,11 +6,12 @@ import Task, { GoalInfo, TaskInfo } from "../../../src/components/Task";
 import ExpandableArea from "../../../src/components/ExpandableArea";
 import ZoomControls from "../../../src/components/ZoomControls";
 import LoadingIcon from "../../../src/components/LoadingIcon";
-import { QueryDocumentSnapshot, Timestamp, addDoc, arrayRemove, arrayUnion, collection, collectionGroup, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { FieldValue, QueryDocumentSnapshot, Timestamp, addDoc, arrayRemove, arrayUnion, collection, collectionGroup, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { auth, db, onFirebaseInit } from "../../../firebase/firebase_init";
 import { Server } from "net";
 import { useRouter } from "next/navigation";
 import WireConnectionContext, { WireConnectionContextData } from "../../../src/WireConnectionContext";
+import GuideArea from "../../../src/components/GuideArea";
 
 
 const ENABLE_FIREBASE = true;
@@ -186,17 +187,17 @@ function generateDemoTasks(projectID: string): TaskInfo[] {
     ];
 }
 
-export function getTaskFromDoc(projectID: string, doc: QueryDocumentSnapshot) : TaskInfo {
+export function getTaskFromDoc(projectID: string, doc: QueryDocumentSnapshot): TaskInfo {
     return {
         name: doc.get("task_name") ?? "Untitled Task",
-        description: doc.get("task_desc") ?? "",
+        description: doc.get("description") ?? "No Description",
         task_id: doc.id,
         width: doc.get("width") ?? 300,
         height: doc.get("height") ?? 600,
         x: doc.get("x") ?? 0,
         y: doc.get("y") ?? 0,
         project_id: projectID,
-        dependsOn: doc.get("depends_on") ?? []
+        dependsOn: doc.get("dependsOn") ?? []
     };
 }
 
@@ -335,7 +336,7 @@ export default function LoadedProjectPage({ params }) {
             return;
         }
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
-            task_desc: desc
+            description: desc
         }).catch(error => {
             console.error(error);
         });
@@ -461,7 +462,7 @@ export default function LoadedProjectPage({ params }) {
         setWireMode(prev => !prev);
     }, []);
 
-    const createTask = useCallback((name: string = "Untitled Task", description: string = "Insert Description Here", project_id: string = params.projectID, x: number = 0, y: number = 0, width: number = 400, height: number = 600, dependsOn: string[] = []) => {
+    const createTask = useCallback((name: string = null, description: string = null, project_id: string = params.projectID, x: number = 0, y: number = 0, width: number = 400, height: number = 600, dependsOn: string[] = []) => {
         if (!ENABLE_FIREBASE) {
             /*tasks.current.push({
                 name: name,
@@ -476,8 +477,8 @@ export default function LoadedProjectPage({ params }) {
             });
             setTasks(tasks.current);*/
             setTasks(tasks => AddToArray(tasks, {
-                name: name,
-                description: description,
+                name: name ?? "Untitled Task",
+                description: description ?? "Insert Description Here",
                 project_id: project_id,
                 x: x,
                 y: y,
@@ -489,13 +490,14 @@ export default function LoadedProjectPage({ params }) {
             return;
         }
         addDoc(collection(db, "projects", project_id, "project_tasks"), {
-            name: name,
-            description: description,
+            name: name ?? "Untitled Task 123",
+            description: description ?? "Insert Description Here",
             project_id: project_id,
             x: x,
             y: y,
             width: width,
-            height: height
+            height: height,
+            dependsOn: []
         }).catch(error => {
             console.error(error);
         });
@@ -531,7 +533,7 @@ export default function LoadedProjectPage({ params }) {
         }
 
         updateDoc(doc(db, "projects", source.project_id, "project_tasks", source.task_id), {
-            dependsOn: arrayRemove(dependencies)
+            dependsOn: arrayRemove(...dependencies)
         }).catch(error => {
             console.error(error);
         });
@@ -669,5 +671,6 @@ export default function LoadedProjectPage({ params }) {
             {wireMode && <button onClick={changeWireMode}>Disable Wire Mode</button>}
             <button onClick={exitButton}>Exit</button>
         </div>
+        <GuideArea/>
     </>
 }

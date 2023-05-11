@@ -1,6 +1,6 @@
 import { UserInfo, readUserInfoFromData } from "../global";
 import { DisplayWindow } from "./DisplayWindow"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import LoadingIcon from "./LoadingIcon";
 import Image from "next/image";
 import styles from "../../styles/UserProfileWindow.module.css";
@@ -9,21 +9,59 @@ import { db, storage } from "../../firebase/firebase_init";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { buffer } from "stream/consumers";
 import { ResizeOptions } from "image-js";
+import EditableText from "./EditableText";
+import { User } from "firebase/auth";
+import { encodeJpg } from "image-in-browser";
 
 export interface UserProfileWindowProps {
-	userID: string,
+	user: User,
+	userInfo: UserInfo,
 	onClose: () => void
 }
 
 async function ConvertImage(file: File) {
 	const bufferPromise = file.arrayBuffer();
+	//console.log("File = ");
+	//console.log(file);
+
+	const imageConverter = await import("image-in-browser");
+
+	//const test = await import("fs");
+
+	//const result = test.readFileSync("test.png");
+
+	let fileBuffer = Buffer.from(await bufferPromise);
+
+	let loadedImage = imageConverter.decodeNamedImage({
+		data: fileBuffer,
+		name: file.type
+	});
+
+
+	if (loadedImage.width > 800 || loadedImage.height > 800) {
+		loadedImage = imageConverter.Transform.copyResize({
+			width: loadedImage.width >= loadedImage.height ? 800 : undefined,
+			height: loadedImage.height > loadedImage.width ? 800 : undefined,
+			image: loadedImage
+		})
+	}
+
+	return encodeJpg({
+		image: loadedImage
+	});
+
 	/*if (file.type === "image/jpeg" || file.type === "image/png") {
 		return new Uint8Array(await bufferPromise);
 	}*/
-	const Converter = await import("image-js");
+	/*const Converter = await import("image-in-browser");
 
-	let image = await Converter.Image.load(await bufferPromise);
+	const fs = await import("fs");
 
+	const test = fs.readFileSync("test.png");
+
+	//let image = await Converter..load(await bufferPromise);
+
+	Converter.decodeImage()
 	let resizeOptions: ResizeOptions = {
 		preserveAspectRatio: true
 	}
@@ -37,35 +75,36 @@ async function ConvertImage(file: File) {
 
 	image = image.resize(resizeOptions);
 
-	return image.toBuffer({format: "jpeg"});
+	return image.toBuffer({format: "jpeg"});*/
+	//return null;
 }
 
 
-export default function UserProfileWindow({userID, onClose}: UserProfileWindowProps) {
-	const [userData, setUserData] = useState(null as UserInfo);
+export default function UserProfileWindow({onClose, user, userInfo}: UserProfileWindowProps) {
 	const [uploading, setUploading] = useState(false);
-	useEffect(() => {
-		return onSnapshot(doc(db,"users",userID),doc => {
+	/*useEffect(() => {
+		return onSnapshot(doc(db, "users", user.uid), doc => {
 			setUserData(readUserInfoFromData(doc));
 			if (uploading) {
 				setUploading(false);
 			}
 		});
-	},[]);
+	},[]);*/
 
 	let contentsJSX: JSX.Element = null;
 
-	async function onFileUpload(e: ChangeEvent<HTMLInputElement>) {
+	const onFileUpload = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
 		const metadata = {
 			contentType: "image/jpeg"
 		}
 		setUploading(true);
 
-		const fileRef = ref(storage,"Profiles/" + userID);
+		const fileRef = ref(storage, "Profiles/" + user.uid);
 
-		uploadBytes(fileRef,await ConvertImage(e.target.files[0]),metadata).then(snapshot => getDownloadURL(fileRef)).then(url => {
-			return updateDoc(doc(db, "users", userID), {
-				profile_picture: url
+		uploadBytes(fileRef, await ConvertImage(e.target.files[0]), metadata).then(_ => getDownloadURL(fileRef)).then(url => {
+			return setDoc(doc(db, "users", user.uid), {
+				profile_picture: url,
+				display_name: userInfo?.display_name ?? user.displayName
 			}).catch(error => {
 				console.error("Failed to update user document");
 				console.error(error);
@@ -76,18 +115,30 @@ export default function UserProfileWindow({userID, onClose}: UserProfileWindowPr
 		}).finally(() => {
 			setUploading(false);
 		});
-	}
+	}, [user, userInfo]);
+
+	const onDisplayNameUpdate = useCallback((str: string) => {
+		setDoc(doc(db, "users", user.uid), {
+			profile_picture: null,
+			display_name: str
+		}).catch(error => {
+			console.error("Failed to update user document");
+			console.error(error);
+		});
+	},[user, userInfo]);
 
 	let imageJSX: JSX.Element;
 
-	if (uploading || userData == null) {
-		imageJSX = <LoadingIcon/>;
+	if (uploading || userInfo == null) {
+		imageJSX = <div style={{ width: 200, height: 200 }}>
+			<LoadingIcon />;
+		</div>
 	}
 	else {
-		imageJSX = <Image alt="User Profile Photo" width={200} height={200} src={userData.profile_picture}/>;
+		imageJSX = <Image alt="User Profile Photo" width={200} height={200} src={userInfo.profile_picture ?? user.photoURL} />;
 	}
 
-	if (userData) {
+	if (userInfo) {
 		contentsJSX = <div className={styles.user_content}>
 			<div className={styles.image_container}>
 				{imageJSX}
@@ -99,7 +150,7 @@ export default function UserProfileWindow({userID, onClose}: UserProfileWindowPr
 	else {
 	   contentsJSX = <LoadingIcon/>
 	}
-	return <DisplayWindow onClose={onClose} title={userData?.display_name ?? ""}>
+	return <DisplayWindow onClose={onClose} title={<EditableText textClass={styles.title_field} onTextUpdate={onDisplayNameUpdate} text={userInfo?.display_name ?? user.displayName} />}>
 		{contentsJSX}
 	</DisplayWindow>
 }

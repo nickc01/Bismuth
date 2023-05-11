@@ -218,8 +218,8 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
     const outputs = useMemo(() => {
         if (initialized) {
-            console.log("INITIAL TASK = ");
-            console.log(taskInfo);
+            //console.log("INITIAL TASK = ");
+            //console.log(taskInfo);
             return generateConnections(taskInfo, wireConnectionContext.terminalList);
         }
         return null;
@@ -296,11 +296,11 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
         if (snappedTerminal.current) {
             if (snappedTerminal.current.isInput) {
-                console.log(snappedTerminal.current.taskInfo);
+                //console.log(snappedTerminal.current.taskInfo);
                 addTaskDependency(snappedTerminal.current.taskInfo, taskInfo);
             }
             else {
-                console.log(taskInfo);
+                //console.log(taskInfo);
                 addTaskDependency(taskInfo, snappedTerminal.current.taskInfo);
             }
         }

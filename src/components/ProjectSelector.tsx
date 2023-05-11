@@ -8,41 +8,24 @@ import LoadingIcon from "./LoadingIcon";
 import { Project, readProjectFromData } from "../global";
 
 export interface ProjectSelectorProps {
-    onProjectSelect?: (project: Project) => void
+    onProjectSelect?: (projectID: string) => void,
+    projects: Project[]
 }
 
-export default function ProjectSelector({onProjectSelect}: ProjectSelectorProps) {
-
-    let [loaded, setLoaded] = useState(false);
-    let [projects, setProjects] = useState([] as Project[]);
-
-    useEffect(() => {
-        onFirebaseInit(user => {
-            if (user === null || user.uid === null) {
-                return;
-            }
-            let projectsCollectionRef = collection(db,"projects");
-
-            let q = query(projectsCollectionRef,where("owner_id","==", user.uid));
-            return onSnapshot(q,data => {
-                setLoaded(true);
-                setProjects(data.docs.map(d => readProjectFromData(d)));
-            });
-        });
-    },[]);
+export default function ProjectSelector({ onProjectSelect, projects }: ProjectSelectorProps) {
 
     const selectProject = useCallback((projectID: string) => {
         let index = projects.findIndex(p => p.id == projectID);
         if (index >= 0 && onProjectSelect != null) {
-            onProjectSelect(projects[index]);
+            onProjectSelect(projects[index].id);
         }
     },[onProjectSelect, projects]);
 
-    if (!loaded) {
+    /*if (!loaded) {
         return <div className={styles.project_selector} style={{width: "40rem", height: "40rem"}}>
             <LoadingIcon/>
         </div>
-    }
+    }*/
 
 
     return <div className={styles.project_selector} style={{width: "40rem"}}>
