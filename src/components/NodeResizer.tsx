@@ -62,7 +62,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         if (!moving.current) {
             return;
         }
-        e.stopPropagation();
+        //e.stopPropagation();
         areaNodeContext.node.current.style.width = `${clamp(areaNodeContext.width + ((e.targetTouches[0].pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth)}px`;
         areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + ((e.targetTouches[0].pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight)}px`;
     }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth]);
@@ -70,7 +70,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
     let onTouchUp = null;
     onTouchUp = useCallback((e: TouchEvent) => {
         if (moving.current) {
-            e.stopPropagation();
+            //e.stopPropagation();
             moving.current = false;
             //window.removeEventListener("touchmove", onTouchMove);
             //window.removeEventListener("touchend", onTouchUp);
@@ -80,7 +80,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
     }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth, onTouchMove, onUpdateSize]);
 
     const onTouchDown = useCallback((e: TouchEvent) => {
-        e.stopPropagation();
+        //e.stopPropagation();
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
@@ -100,6 +100,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
                 window.removeEventListener("mouseup", onMouseUp);
                 //window.removeEventListener("touchmove", onTouchMove);
                 //window.removeEventListener("touchend", onTouchUp);
+                EndLockScrollbars(scrollLockID.current);
             }
         }
     }, [onMouseMove, onMouseUp]);
