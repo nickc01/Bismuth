@@ -71,8 +71,10 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         document.addEventListener("mouseup", onMouseUp);
     }, [areaNodeContext, onMouseMove, onMouseUp]);
 
-    const mobile_disableScrolling = useCallback((e: Event) => {
+    const mobile_disableScrolling = useCallback((e: UIEvent) => {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         console.log("SCROLL");
     },[]);
 
@@ -99,7 +101,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             moving.current = false;
             document.removeEventListener("touchmove", onTouchMove);
             document.removeEventListener("touchend", onTouchUp);
-            document.removeEventListener("scroll", mobile_disableScrolling);
+            window.removeEventListener("scroll", mobile_disableScrolling);
 
             let xDiff = e.targetTouches[0].pageX - oldX.current;
             let yDiff = e.targetTouches[0].pageY - oldY.current;
@@ -120,17 +122,18 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         yMouseDiff.current = e.targetTouches[0].pageY - areaNodeContext.node.current.offsetTop;
         document.addEventListener("touchmove", onTouchMove);
         document.addEventListener("touchend", onTouchUp);
-        document.addEventListener("scroll", mobile_disableScrolling);
+        window.addEventListener("scroll", mobile_disableScrolling);
     }, [areaNodeContext, onTouchMove, onTouchUp]);
 
     useEffect(() => {
+        window.addEventListener("scroll", mobile_disableScrolling);
         return () => {
             if (moving.current) {
                 document.removeEventListener("mousemove", onMouseMove);
                 document.removeEventListener("mouseup", onMouseUp);
                 document.removeEventListener("touchmove", onTouchMove);
                 document.removeEventListener("touchend", onTouchUp);
-                document.removeEventListener("scroll", mobile_disableScrolling);
+                window.removeEventListener("scroll", mobile_disableScrolling);
             }
         }
     }, [onMouseMove, onMouseUp]);
