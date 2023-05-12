@@ -105,7 +105,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
     }, [onMouseMove, onMouseUp]);
 
     return <>
-        <div className={styles.node_resizer} onMouseDown={onMouseDown as any} onTouchStart={onTouchDown as any} onTouchMove={onTouchMove as any} onTouchEnd={onTouchUp} />
+        <div className={styles.node_resizer} onMouseDown={onMouseDown as any} onTouchStart={onTouchDown as any} onTouchMove={onTouchMove as any} onTouchEnd={onTouchUp} onTouchCancel={onTouchUp} />
         <div className={styles.rest}>
             {children}
         </div>
