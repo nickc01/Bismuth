@@ -71,6 +71,10 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         document.addEventListener("mouseup", onMouseUp);
     }, [areaNodeContext, onMouseMove, onMouseUp]);
 
+    const mobile_disableScrolling = useCallback((e: Event) => {
+        e.preventDefault();
+    },[]);
+
     const onTouchMove = useCallback((e: TouchEvent) => {
         if (!moving.current) {
             return;
@@ -94,6 +98,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             moving.current = false;
             document.removeEventListener("touchmove", onTouchMove);
             document.removeEventListener("touchend", onTouchUp);
+            window.removeEventListener("scroll", mobile_disableScrolling);
 
             let xDiff = e.targetTouches[0].pageX - oldX.current;
             let yDiff = e.targetTouches[0].pageY - oldY.current;
@@ -114,6 +119,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         yMouseDiff.current = e.targetTouches[0].pageY - areaNodeContext.node.current.offsetTop;
         document.addEventListener("touchmove", onTouchMove);
         document.addEventListener("touchend", onTouchUp);
+        window.addEventListener("scroll", mobile_disableScrolling);
     }, [areaNodeContext, onTouchMove, onTouchUp]);
 
     useEffect(() => {
@@ -123,6 +129,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
                 document.removeEventListener("mouseup", onMouseUp);
                 document.removeEventListener("touchmove", onTouchMove);
                 document.removeEventListener("touchend", onTouchUp);
+                window.removeEventListener("scroll", mobile_disableScrolling);
             }
         }
     }, [onMouseMove, onMouseUp]);
