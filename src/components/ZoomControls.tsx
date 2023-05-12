@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import styles from "../../styles/ZoomControls.module.css";
+import { isMobile } from "mobile-device-detect";
 //import { clamp } from "../global";
 
 
@@ -22,7 +23,7 @@ export default function ZoomControls({ onZoom }: ZoomControlsProps) {
         //zoomAmount.current = clamp(zoom, minZoom, maxZoom);
         //elementRef.current.style.transform = `scale(${zoomAmount.current})`;
         onZoom?.(zoom);
-    },[onZoom]);
+    }, [onZoom]);
 
     /*useEffect(() => {
 
@@ -43,7 +44,7 @@ export default function ZoomControls({ onZoom }: ZoomControlsProps) {
 
 
     return <div className={styles.zoom_controls}>
-        <button onClick={() => increaseZoom(0.25)}>+</button>
-        <button onClick={() => increaseZoom(-0.25)}>-</button>
+        <button onClick={() => increaseZoom(0.25)} style={{ display: isMobile ? "none" : "block" }}>+</button>
+        <button onClick={() => increaseZoom(-0.25)} style={{ display: isMobile ? "none" : "block" }}>-</button>
     </div>
 }

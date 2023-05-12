@@ -48,7 +48,7 @@ export default function OpenProjectWindow({ project, onCancel, onOpen, onDelete,
         }
     }, [onDelete]);
 
-    return <DisplayWindow onClose={onCancel} title={<EditableText textClass={styles.title_text} sizeLimit={128} onTextUpdate={onTitleTextChanged} text={project.name}></EditableText>}>
+    return <DisplayWindow zIndex={3000} onClose={onCancel} title={<EditableText textClass={styles.title_text} sizeLimit={128} onTextUpdate={onTitleTextChanged} text={project.name}></EditableText>}>
         {!loading && <div className={styles.window_flex}>
             <EditableText multiline={true} textClass={styles.description} onTextUpdate={onDescriptionTextChanged} text={project.description}></EditableText>
             <div className={styles.remaining_space}></div>

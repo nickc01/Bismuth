@@ -6,10 +6,11 @@ import { ReactNode, useCallback, useRef } from "react";
 export interface DisplayWindowProps {
     title: string | JSX.Element,
     onClose?: () => void,
-    children?: ReactNode
+    children?: ReactNode,
+    zIndex?: number
 }
 
-export function DisplayWindow({title, onClose, children}: DisplayWindowProps) {
+export function DisplayWindow({ title, onClose, children, zIndex }: DisplayWindowProps) {
     const backgroundRef = useRef();
 
     const closeBackgroundClick = useCallback(e => {
@@ -22,7 +23,7 @@ export function DisplayWindow({title, onClose, children}: DisplayWindowProps) {
         onClose?.();
     },[onClose]);
 
-    return (<div ref={backgroundRef} className={styles.creation_window} onClick={closeBackgroundClick}>
+    return (<div ref={backgroundRef} className={styles.creation_window} onClick={closeBackgroundClick} style={{ zIndex: zIndex }}>
         <div className={styles.inner_window}>
             <div className={styles.header}>
                 <h1 className={`${styles.title}`}>{title}</h1>

@@ -29,6 +29,7 @@
     border-radius: 1rem;
     padding: 1rem;
     transition: linear 0.1s background-color, linear 0.1s transform;
+    overflow-x: hidden;
 }
 
 .project > h1, .project > p {

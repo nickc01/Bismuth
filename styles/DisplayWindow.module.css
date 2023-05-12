@@ -35,6 +35,7 @@
     font-size: 2.5rem;
     margin-left: 1rem;
     flex-grow: 1;
+    max-width: calc(100% - 5rem);
 }
 
 .children_container {

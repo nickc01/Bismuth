@@ -64,7 +64,7 @@ export default function ProjectCreationWindow({onCreate, onCancel}: ProjectCreat
         </DisplayWindow>
     }
     else {
-        contentJSX = <DisplayWindow onClose={closeWindow} title={"Create New Project"}>
+        contentJSX = <DisplayWindow zIndex={3000} onClose={closeWindow} title={"Create New Project"}>
             <form onSubmit={e => {return onSubmitProjectInfo(e)}} className={styles.project_form}>
                     <label>Name</label>
                     <input ref={nameRef as any} id="p_name" name="p_name" placeholder="Name..." required/>

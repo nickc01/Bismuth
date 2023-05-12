@@ -71,17 +71,64 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         document.addEventListener("mouseup", onMouseUp);
     }, [areaNodeContext, onMouseMove, onMouseUp]);
 
+    const onTouchMove = useCallback((e: TouchEvent) => {
+        if (!moving.current) {
+            return;
+        }
+
+        e.stopPropagation();
+        let xDiff = e.targetTouches[0].pageX - oldX.current;
+        let yDiff = e.targetTouches[0].pageY - oldY.current;
+
+        let newX = oldX.current + (xDiff * (1 / expandAreaContext.zoom));
+        let newY = oldY.current + (yDiff * (1 / expandAreaContext.zoom));
+
+        areaNodeContext.node.current.style.left = `${(newX - xMouseDiff.current)}px`;
+        areaNodeContext.node.current.style.top = `${(newY - yMouseDiff.current)}px`;
+    }, [areaNodeContext, expandAreaContext.zoom]);
+
+    let onTouchUp = null;
+    onTouchUp = useCallback((e: TouchEvent) => {
+        if (moving.current) {
+            e.stopPropagation();
+            moving.current = false;
+            document.removeEventListener("touchmove", onTouchMove);
+            document.removeEventListener("touchend", onTouchUp);
+
+            let xDiff = e.targetTouches[0].pageX - oldX.current;
+            let yDiff = e.targetTouches[0].pageY - oldY.current;
+
+            let newX = oldX.current + (xDiff * (1 / expandAreaContext.zoom));
+            let newY = oldY.current + (yDiff * (1 / expandAreaContext.zoom));
+
+            onUpdatePosition(areaNodeContext.x + (newX - oldX.current), areaNodeContext.y + (newY - oldY.current));
+        }
+    }, [areaNodeContext, onUpdatePosition, onTouchMove, expandAreaContext.zoom, onTouchMove]);
+
+    const onTouchDown = useCallback((e: TouchEvent) => {
+        e.stopPropagation();
+        moving.current = true;
+        oldX.current = e.targetTouches[0].pageX;
+        oldY.current = e.targetTouches[0].pageY;
+        xMouseDiff.current = e.targetTouches[0].pageX - areaNodeContext.node.current.offsetLeft;
+        yMouseDiff.current = e.targetTouches[0].pageY - areaNodeContext.node.current.offsetTop;
+        document.addEventListener("touchmove", onTouchMove);
+        document.addEventListener("touchend", onTouchUp);
+    }, [areaNodeContext, onTouchMove, onTouchUp]);
+
     useEffect(() => {
         return () => {
             if (moving.current) {
                 document.removeEventListener("mousemove", onMouseMove);
                 document.removeEventListener("mouseup", onMouseUp);
+                document.removeEventListener("touchmove", onTouchMove);
+                document.removeEventListener("touchend", onTouchUp);
             }
         }
     }, [onMouseMove, onMouseUp]);
 
     return <div className={styles.node_mover}>
-        <div className={styles.draggable_area} onMouseDown={onMouseDown as any}>
+        <div className={styles.draggable_area} onMouseDown={onMouseDown as any} onTouchStart={onTouchDown as any}>
             
         </div>
         <div className={styles.rest}>
