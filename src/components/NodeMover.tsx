@@ -87,8 +87,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             return;
         }
 
-        e.stopPropagation();
-        e.preventDefault();
+        //e.stopPropagation();
+        //e.preventDefault();
         let xDiff = e.targetTouches[0].pageX - oldX.current;
         let yDiff = e.targetTouches[0].pageY - oldY.current;
 
@@ -102,8 +102,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     let onTouchUp = null;
     onTouchUp = useCallback((e: TouchEvent) => {
         if (moving.current) {
-            e.stopPropagation();
-            e.preventDefault();
+            //e.stopPropagation();
+            //e.preventDefault();
             moving.current = false;
             //document.removeEventListener("touchmove", onTouchMove);
             //document.removeEventListener("touchend", onTouchUp);
@@ -121,8 +121,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     }, [areaNodeContext, onUpdatePosition, onTouchMove, expandAreaContext.zoom, onTouchMove]);
 
     const onTouchDown = useCallback((e: TouchEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
+        //e.stopPropagation();
+        //e.preventDefault();
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
