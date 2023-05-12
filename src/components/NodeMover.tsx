@@ -89,6 +89,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             return;
         }
 
+        e.preventDefault();
         //e.stopPropagation();
         //e.preventDefault();
         let xDiff = e.targetTouches[0].pageX - oldX.current;
@@ -109,6 +110,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         if (moving.current) {
             //e.stopPropagation();
             //e.preventDefault();
+            e.preventDefault();
             moving.current = false;
             //document.removeEventListener("touchmove", onTouchMove);
             //document.removeEventListener("touchend", onTouchUp);
@@ -133,11 +135,15 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         oldY.current = e.targetTouches[0].pageY;
         xMouseDiff.current = e.targetTouches[0].pageX - areaNodeContext.node.current.offsetLeft;
         yMouseDiff.current = e.targetTouches[0].pageY - areaNodeContext.node.current.offsetTop;
+
+        lastTouchX.current = e.targetTouches[0].pageX;
+        lastTouchY.current = e.targetTouches[0].pageY;
         //document.addEventListener("touchmove", onTouchMove);
         //document.addEventListener("touchend", onTouchUp);
         //oldScrollX.current = window.scrollX;
         //oldScrollY.current = window.scrollY;
         //window.addEventListener("scroll", mobile_disableScrolling);
+        e.preventDefault();
         scrollLockID.current = BeginLockScrollbars();
     }, [areaNodeContext, onTouchMove, onTouchUp]);
 

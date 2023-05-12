@@ -65,6 +65,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
             return;
         }
         //e.stopPropagation();
+        e.preventDefault();
 
         lastTouchX.current = e.targetTouches[0].pageX;
         lastTouchY.current = e.targetTouches[0].pageY;
@@ -77,6 +78,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
     onTouchUp = useCallback((e: TouchEvent) => {
         if (moving.current) {
             //e.stopPropagation();
+            e.preventDefault();
             moving.current = false;
             EndLockScrollbars(scrollLockID.current);
             //window.removeEventListener("touchmove", onTouchMove);
@@ -90,6 +92,9 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
+        lastTouchX.current = e.targetTouches[0].pageX;
+        lastTouchY.current = e.targetTouches[0].pageY;
+        e.preventDefault();
         //window.addEventListener("touchmove", onTouchMove);
         //window.addEventListener("touchend", onTouchUp);
 
