@@ -6,11 +6,7 @@ import { auth, googleProvider, onFirebaseInit } from "../../firebase/firebase_in
 import LoadingIcon from "./LoadingIcon";
 
 import styles from "../../styles/Auth.module.css"
-
-
-
-
-let message = "Sign in With Google";
+import { useError } from "./ErrorBoxDisplay";
 
 enum AuthState {
     Uninitialized,
@@ -28,6 +24,8 @@ export interface AuthProps {
 export default function Auth({ onLogin }: AuthProps) {
     const [authState, setAuthState] = useState(AuthState.Uninitialized);
 
+    const errorDisplay = useError();
+
     useEffect(() => {
         onFirebaseInit(user => {
             if (user != null) {
@@ -38,7 +36,7 @@ export default function Auth({ onLogin }: AuthProps) {
                 setAuthState(AuthState.NotLoggedIn);
             }
         });
-    },[]);
+    }, [onLogin]);
 
     const signInWithGoogle = useCallback(() => {
         setAuthState(AuthState.LoggingIn);
@@ -46,19 +44,20 @@ export default function Auth({ onLogin }: AuthProps) {
             setAuthState(AuthState.LoggedIn);
             onLogin?.();
         }).catch(error => {
+            errorDisplay.displayError("Couldn't login", error);
             console.error(error);
             setAuthState(AuthState.NotLoggedIn);
         });
-    },[]);
+    }, [onLogin, errorDisplay]);
 
     let contentJSX : JSX.Element;
 
     switch (authState) {
         case AuthState.NotLoggedIn:
-            contentJSX = <button onClick={signInWithGoogle}>{message}</button>;
+            contentJSX = <button onClick={signInWithGoogle}>Sign in With Google</button>;
             break;
         default:
-            contentJSX = <LoadingIcon></LoadingIcon>
+            contentJSX = <LoadingIcon/>
             break;
     }
 

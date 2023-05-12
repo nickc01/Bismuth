@@ -1,8 +1,6 @@
 
 
 .close_button {
-    background-color: var(--secondary-color);
-    border-radius: 1rem;
     position: relative;
     transition: linear 0.1s background-color;
 }
@@ -11,19 +9,19 @@
     position: absolute;
     background-color: var(--grey-color);
     color: green;
-    width: 0.5rem;
-    height: 3rem;
-    left: calc(50% - 0.25rem);
-    top: calc(50% - 1.5rem);
+    width: 12.5%;
+    height: 75%;
+    left: 50%;
+    top: 50%;
     transition: linear 0.1s background-color;
 }
 
 .left {
-    transform: rotate(45deg);
+    transform: translate(-50%,-50%) rotate(45deg);
 }
 
 .right {
-    transform: rotate(-45deg);
+    transform: translate(-50%,-50%) rotate(-45deg);
 }
 
 .close_button:hover {
@@ -31,5 +29,5 @@
 }
 
 .close_button:hover > .close_button_rect {
-    background-color: var(--secondary-color);
+    background-color: white;
 }

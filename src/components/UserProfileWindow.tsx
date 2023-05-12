@@ -8,10 +8,10 @@ import { doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase_init";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { buffer } from "stream/consumers";
-import { ResizeOptions } from "image-js";
 import EditableText from "./EditableText";
 import { User } from "firebase/auth";
-import { encodeJpg } from "image-in-browser";
+
+export const DefaultProfileImage = "https://firebasestorage.googleapis.com/v0/b/bismuth-d26ef.appspot.com/o/Content%2FDefault%20Profile%20Icon.png?alt=media&token=8fe9f35f-8ba7-4064-9264-364afc93fe98";
 
 export interface UserProfileWindowProps {
 	user: User,
@@ -46,7 +46,7 @@ async function ConvertImage(file: File) {
 		})
 	}
 
-	return encodeJpg({
+	return imageConverter.encodeJpg({
 		image: loadedImage
 	});
 
@@ -119,7 +119,7 @@ export default function UserProfileWindow({onClose, user, userInfo}: UserProfile
 
 	const onDisplayNameUpdate = useCallback((str: string) => {
 		setDoc(doc(db, "users", user.uid), {
-			profile_picture: null,
+			profile_picture: userInfo?.profile_picture ?? DefaultProfileImage,
 			display_name: str
 		}).catch(error => {
 			console.error("Failed to update user document");
@@ -135,7 +135,7 @@ export default function UserProfileWindow({onClose, user, userInfo}: UserProfile
 		</div>
 	}
 	else {
-		imageJSX = <Image alt="User Profile Photo" width={200} height={200} src={userInfo.profile_picture ?? user.photoURL} />;
+		imageJSX = <Image alt="User Profile Photo" width={200} height={200} src={userInfo.profile_picture ?? DefaultProfileImage} />;
 	}
 
 	if (userInfo) {

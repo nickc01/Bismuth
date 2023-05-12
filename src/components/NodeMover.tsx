@@ -26,18 +26,6 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         throw "A NodeMover needs to be inside of an AreaNode component";
     }
 
-
-    const onMouseDown = useCallback((e: MouseEvent) => {
-        e.stopPropagation();
-        moving.current = true;
-        oldX.current = e.pageX;
-        oldY.current = e.pageY;
-        xMouseDiff.current = e.pageX - areaNodeContext.node.current.offsetLeft;
-        yMouseDiff.current = e.pageY - areaNodeContext.node.current.offsetTop;
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-    }, [areaNodeContext]);
-
     const onMouseMove = useCallback((e: MouseEvent) => {
         if (!moving.current) {
             return;
@@ -52,9 +40,10 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
         areaNodeContext.node.current.style.left = `${(newX - xMouseDiff.current)}px`;
         areaNodeContext.node.current.style.top = `${(newY - yMouseDiff.current)}px`;
-    }, [areaNodeContext]);
+    }, [areaNodeContext, expandAreaContext.zoom]);
 
-    const onMouseUp = useCallback((e: MouseEvent) => {
+    let onMouseUp = null;
+    onMouseUp = useCallback((e: MouseEvent) => {
         if (moving.current) {
             e.stopPropagation();
             moving.current = false;
@@ -69,7 +58,18 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
             onUpdatePosition(areaNodeContext.x + (newX - oldX.current), areaNodeContext.y + (newY - oldY.current));
         }
-    }, [areaNodeContext, onUpdatePosition]);
+    }, [areaNodeContext, onUpdatePosition, onMouseMove, expandAreaContext.zoom, onMouseMove]);
+
+    const onMouseDown = useCallback((e: MouseEvent) => {
+        e.stopPropagation();
+        moving.current = true;
+        oldX.current = e.pageX;
+        oldY.current = e.pageY;
+        xMouseDiff.current = e.pageX - areaNodeContext.node.current.offsetLeft;
+        yMouseDiff.current = e.pageY - areaNodeContext.node.current.offsetTop;
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+    }, [areaNodeContext, onMouseMove, onMouseUp]);
 
     useEffect(() => {
         return () => {
@@ -78,7 +78,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
                 document.removeEventListener("mouseup", onMouseUp);
             }
         }
-    },[]);
+    }, [onMouseMove, onMouseUp]);
 
     return <div className={styles.node_mover}>
         <div className={styles.draggable_area} onMouseDown={onMouseDown as any}>

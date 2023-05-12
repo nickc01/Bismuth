@@ -1,7 +1,6 @@
-import { DocumentData, DocumentSnapshot, doc, getDoc, getDocFromCache, getDocsFromCache } from 'firebase/firestore';
+import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot } from 'firebase/firestore';
 import localFont from 'next/font/local'
-import { db } from '../firebase/firebase_init';
-import documentCache from './documentCache';
+import { GoalInfo, TaskInfo } from './components/Task';
 
 export const coolvetica = localFont({src: "../public/coolvetica.woff2"});
 
@@ -37,6 +36,32 @@ export function readUserInfoFromData(doc: DocumentSnapshot<DocumentData>) : User
     }
 }
 
+export function getTaskFromDoc(projectID: string, doc: QueryDocumentSnapshot): TaskInfo {
+    return {
+        name: doc.get("task_name") ?? "Untitled Task",
+        description: doc.get("description") ?? "No Description",
+        task_id: doc.id,
+        width: doc.get("width") ?? 300,
+        height: doc.get("height") ?? 600,
+        x: doc.get("x") ?? 0,
+        y: doc.get("y") ?? 0,
+        project_id: projectID,
+        dependsOn: doc.get("dependsOn") ?? []
+    };
+}
+
+export function getGoalFromDoc(doc: QueryDocumentSnapshot): GoalInfo {
+    return {
+        name: doc.get("name") ?? "Untitled Goal",
+        checked: doc.get("checked") ?? false,
+        task_id: doc.get("task_id") ?? null,
+        timestamp: doc.get("timestamp") ?? 0,
+        goal_id: doc.id,
+        project_id: doc.get("project_id") ?? null,
+        owner_id: doc.get("owner_id") ?? null
+    }
+}
+
 export const clamp = (num: number, min: number, max: number) => {
     return Math.min(Math.max(num, min), max);
 };
@@ -67,114 +92,3 @@ export function getOffsetRelativeTo(sourceElement: HTMLElement, relativeParent: 
         offsetTop: offsetTop
     }
 }
-
-//export let userDownloader = new documentCache<UserInfo>(id => getDoc(doc(db,"users",id)).then(readUserInfoFromData),50);
-//export let projectDownloader = new documentCache<Project>(id => getDoc(doc(db, "projects", id)).then(readProjectFromData),50);
-
-
-
-
-
-
-/*export async function getProjectDetails(id: string) {
-    return await projectDownloader.get(id);
-}
-
-export async function getUserDetails(id: string) {
-    return await userDownloader.get(id);
-}
-
-export async function clearUserCache() {
-    userDownloader.clearCache();
-}*/
-
-/*export function suspensePromise<T>(promise: Promise<T>) : T {
-    if (promise.)
-}*/
-
-
-
-
-//let loadedProject: Project = null;
-
-//let projectPromiseResolvers: ((project: Project) => void)[] = [];
-
-
-/*export function getProjectDetails(projectID: string): Promise<Project> {
-
-    if (loadedProject.id == projectID) {
-        return Promise.resolve(loadedProject);
-    }
-
-    if (projectPromiseResolvers.length == 0) {
-        projectPromiseResolvers.push(null);
-        return getDoc(doc(db,"projects",projectID)).then(doc => {
-            loadedProject = readProjectFromData(doc);
-            if (projectPromiseResolvers.length > 0) {
-                for (let i = 0; i < projectPromiseResolvers.length; i++) {
-                    projectPromiseResolvers[i]?.(loadedProject);
-                }
-                projectPromiseResolvers = [];
-            }
-
-            return loadedProject;
-        });
-    }
-    else {
-        return new Promise<Project>((resolve, reject) => {
-            if (loadedProject.id == projectID) {
-                resolve(loadedProject);
-            }
-            else {
-                projectPromiseResolvers.push(resolve);
-            }
-        })
-    }
-}*/
-
-//let loadedUsers: UserInfo[] = [];
-
-/*interface user_download {
-    promiseResolver: (user: UserInfo) => void,
-    userID: string
-}*/
-
-
-
-/*let userPromises = {};
-
-
-export function getUserDetails(userID: string): Promise<UserInfo> {
-
-    if (userID in loadedUsers) {
-        return Promise.resolve(loadedUsers[userID]);
-    }
-
-    //let promiseCount = userPromises.reduce((count, current) => count + (current.userID == userID ? 1 : 0),0);
-
-    if (promiseCount == 0) {
-        userPromises.push(null);
-        return getDoc(doc(db,"users",userID)).then(doc => {
-            let loadedUser = readUserInfoFromData(doc);
-            loadedUsers[userID] = loadedUser;
-            if (userPromises.length > 0) {
-                for (let i = 0; i < userPromises.length; i++) {
-                    userPromises[i]?.(loadedUser);
-                }
-            }
-
-            return loadedUser;
-        });
-    }
-    else {
-        return new Promise<UserInfo>((resolve, reject) => {
-            if (userID in loadedUsers) {
-                resolve(loadedUsers[userID]);
-            }
-            else {
-                userPromises.push(resolve);
-            }
-        })
-    }
-}*/
-

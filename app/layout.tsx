@@ -3,6 +3,7 @@ import "../styles/globals.css"
 import { StrictMode } from "react";
 import LoadingSuspense from "../src/components/LoadingSuspense";
 import UserProfile from "../src/components/UserProfile";
+import ErrorBoxDisplay from "../src/components/ErrorBoxDisplay";
 
 //const UserProfile = React.lazy(() => import("../src/components/UserProfile"));
 
@@ -15,8 +16,10 @@ export default function RootLayout({children} : {children: React.ReactNode}) {
                 <LoadingSuspense>
                     <UserProfile/>
                 </LoadingSuspense>
-              </div>
-                {children}
+                    </div>
+                <ErrorBoxDisplay>
+                    {children}
+                </ErrorBoxDisplay>
             </StrictMode>
         </body>
       </html>

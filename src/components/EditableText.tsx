@@ -60,7 +60,7 @@ export default function EditableText({ text, onTextUpdate = null, textClass = ""
 
         setEditing(false);
 
-    }, [internalText, onTextUpdate]);
+    }, [internalText, onTextUpdate, text]);
 
     const onEnterPressed = useCallback((e: KeyboardEvent) => {
         if (e.code == "Enter") {

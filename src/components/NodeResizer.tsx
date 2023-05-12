@@ -30,6 +30,25 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         throw "A NodeResizer needs to be inside of an AreaNode component";
     }
 
+    const onMouseMove = useCallback((e: MouseEvent) => {
+        if (!moving.current) {
+            return;
+        }
+        e.stopPropagation();
+        areaNodeContext.node.current.style.width = `${clamp(areaNodeContext.width + ((e.pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth)}px`;
+        areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight)}px`;
+    }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth]);
+
+    let onMouseUp = null;
+    onMouseUp = useCallback((e: MouseEvent) => {
+        if (moving.current) {
+            e.stopPropagation();
+            moving.current = false;
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+            onUpdateSize(clamp(areaNodeContext.width + ((e.pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
+        }
+    }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth, onMouseMove, onUpdateSize]);
 
     const onMouseDown = useCallback((e: MouseEvent) => {
         e.stopPropagation();
@@ -40,37 +59,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         //yMouseDiff.current = e.pageY - areaNodeContext.node.current.offsetTop;
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
-    }, [areaNodeContext]);
-
-    const onMouseMove = useCallback((e: MouseEvent) => {
-        if (!moving.current) {
-            return;
-        }
-        e.stopPropagation();
-        areaNodeContext.node.current.style.width = `${clamp(areaNodeContext.width + ((e.pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth)}px`;
-        areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight)}px`;
-    }, [areaNodeContext]);
-
-    /*const onMouseWheel = useCallback((e: WheelEvent) => {
-        let element = (e.target as HTMLDivElement);
-        e.stopPropagation();
-        if (element.scrollHeight <= element.parentElement.offsetHeight) {
-            
-        }
-
-        console.log("Element Height = " + element.scrollHeight);
-        console.log("Scroll Height = " + element.parentElement.offsetHeight);
-    }, []);*/
-
-    const onMouseUp = useCallback((e: MouseEvent) => {
-        if (moving.current) {
-            e.stopPropagation();
-            moving.current = false;
-            window.removeEventListener("mousemove", onMouseMove);
-            window.removeEventListener("mouseup", onMouseUp);
-            onUpdateSize(clamp(areaNodeContext.width + ((e.pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((e.pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
-        }
-    }, [areaNodeContext]);
+    }, [onMouseMove, onMouseUp]);
 
     useEffect(() => {
 
@@ -82,7 +71,7 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
                 window.removeEventListener("mouseup", onMouseUp);
             }
         }
-    },[]);
+    }, [onMouseMove, onMouseUp]);
 
     return <>
         <div className={styles.node_resizer} onMouseDown={onMouseDown as any} />

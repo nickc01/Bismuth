@@ -95,7 +95,7 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 			//return dependentTasks[i];
 		}
 		return null;
-	}, [dependentTasks]);
+	}, [dependentTasks, dependenciesCompleted]);
 
 	const onGoalCheck = useCallback((checked: boolean, goal: GoalInfo) => {
 		if (!dependency) {
@@ -115,6 +115,12 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 		onGoalCheckUpdate?.(checked, taskInfo, goal);
 	}, [taskInfo, onGoalCheckUpdate]);*/
 
+	let dependencyText = null;
+
+	if (dependency) {
+		dependencyText = `This task requires ${dependency.name} to be completed first`;
+	}
+
 	return <AreaNode key={taskInfo.task_id} id={taskInfo.task_id} left={taskInfo.x} top={taskInfo.y} width={taskInfo.width} height={taskInfo.height}>
 		<div className={styles.delete_button} onClick={onXPressed}>
 			<div className={styles.x_line} />
@@ -127,7 +133,7 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 					<EditableText sizeLimit={1000} key="desc_test" textClass={styles.description_text} multiline={true} text={taskInfo.description} onTextUpdate={onDescChanged} />
 					<br />
 					{dependency && <div className={styles.dependency_block}>
-						This task requires "{dependency.name}" to be completed first
+						{dependencyText}
 					</div>}
 					<h3>Goals</h3>
 					{goals.map((g, i) => <GoalField onDelete={onDeleteGoal} onNameChange={onGoalNameUpdate} onCompletionChange={onGoalCheck} key={i} goalInfo={g} />)}

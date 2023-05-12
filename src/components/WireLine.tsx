@@ -33,6 +33,7 @@ export default function WireLine({ startX, startY, endX, endY, startColor = "rgb
     //const distance_adjust =
 
     //const offset = "1rem";
+    //console.log("offset = " + offset);
 
     const distance = getDistance(startX, startY, endX, endY);
     const angle = angleToPoint(startX, startY, endX, endY);

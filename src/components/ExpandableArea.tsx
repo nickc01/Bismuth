@@ -124,7 +124,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
                 }
             }
         };
-    }, []);
+    }, [zoom, zoomMax, zoomMin]);
 
     contextValue.zoom = zoom;
     contextValue.zoomMax = zoomMax;
@@ -191,7 +191,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
             return clamp(prev - (e.deltaY / 400), zoomMin, zoomMax);
         });
 
-    }, []);
+    }, [zoomMin, zoomMax]);
 
     const onScroll = useCallback(() => {
 
@@ -203,7 +203,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
         else {
             updateTransformOrigin();
         }
-    },[]);
+    }, [updateTransformOrigin]);
 
     const onBackgroundDrag = useCallback((e: MouseEvent) => {
         if (!actionsEnabled.current) {
@@ -377,7 +377,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
             
         }
 
-    }, [zoomable, zoom, children]);
+    }, [zoomable, zoom, children, contextValue.nodes, contextValue.zoom, updateTransformOrigin]);
 
     useEffect(() => {
         //console.log("1");
@@ -391,7 +391,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
                 inputElement.current.removeEventListener("wheel", onMouseWheel);
             }
         };
-    }, [zoomable]);
+    }, [zoomable, onMouseWheel]);
 
     useEffect(() => {
         inputElement.current.addEventListener("mousedown", onBackgroundClick);
@@ -429,7 +429,7 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
                 inputElement.current.removeEventListener("mouseup", onBackgroundRelease);
             }
         }
-    }, [onBackgroundClick, onBackgroundDrag, onBackgroundRelease, onScroll, mouseLeaveWindow]);
+    }, [onBackgroundClick, onBackgroundDrag, onBackgroundRelease, onScroll, mouseLeaveWindow, contextValue]);
 
     return <>
         <div id={id + "_input_grabber"} ref={inputElement as any} className={styles.input_grabber} />

@@ -1,0 +1,38 @@
+.error_display_container {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    width: 25rem;
+    height: 15rem;
+    z-index: 10000;
+}
+
+
+.error_display {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 1rem;
+    border-style: solid;
+    border-color: red;
+}
+
+.close_button_container {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.error_display > h1 {
+    width: 88%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.error_display > p {
+    padding-top: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}

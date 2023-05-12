@@ -1,7 +1,6 @@
 import { createContext, MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from "../../styles/AreaNode.module.css";
 import { ExpandableAreaContext } from "./ExpandableArea";
-import { clamp } from "../global";
 
 export interface AreaNodeProps {
     children?: any,
@@ -44,18 +43,6 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
         throw "A key is required for an Expandable Area Node";
     }
 
-    //const onMouseWheel = useCallback((e: WheelEvent) => {
-        //e.preventDefault();
-        //console.log("ZOOM IN ELEMENT");
-        //e.stopPropagation();
-        /*e.preventDefault();
-
-        mainAreaContext.setZoom(prev => {
-            return clamp(prev - (e.deltaY / 400), mainAreaContext.zoomMin, mainAreaContext.zoomMax);
-        });*/
-
-    //}, []);
-
     const areaNodeContextValue: AreaNodeContextValues = useMemo(() => {
         return {
             node: elementRef,
@@ -79,18 +66,7 @@ export default function AreaNode({ children, left, top, width, height, id }: Are
         return () => {
             delete mainAreaContext.nodes[id];
         }
-    });
-
-    useEffect(() => {
-        //elementRef.current.addEventListener("wheel", onMouseWheel);
-        /*elementRef.current.addEventListener("scroll", e => {
-            console.log("Scrolling!!!!!");
-        });*/
-
-        /*return () => {
-            elementRef.current.removeEventListener("wheel", onMouseWheel);
-        };*/
-    }, []);
+    }, [mainAreaContext, left, top, width, height, id]);
 
     return <div ref={elementRef as any} className={styles.area_node} style={{ left: left, top: top, width: width, height: height }}>
         <AreaNodeContext.Provider value={areaNodeContextValue}>

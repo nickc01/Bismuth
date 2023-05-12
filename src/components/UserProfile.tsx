@@ -9,7 +9,7 @@ import Image from "next/image"
 import { UserInfo, readUserInfoFromData } from "../global";
 import React from "react";
 import dynamic from "next/dynamic";
-import UserProfileWindow from "./UserProfileWindow";
+import UserProfileWindow, { DefaultProfileImage } from "./UserProfileWindow";
 import { doc, onSnapshot } from "firebase/firestore";
 
 
@@ -59,7 +59,7 @@ export default function UserProfile() {
     }
     else {
         return <div className={styles.main_icon_area}>
-            <Image onClick={() => setShowingWindow(true)} alt="Profile Photo" width={100} height={100} src={userData.profile_picture ?? user.photoURL}></Image>
+            <Image onClick={() => setShowingWindow(true)} alt="Profile Photo" width={100} height={100} src={userData.profile_picture ?? DefaultProfileImage}></Image>
             {showingWindow ? <UserProfileWindow onClose={() => setShowingWindow(false)} user={user} userInfo={userData}></UserProfileWindow> : <></>}
         </div>
     }

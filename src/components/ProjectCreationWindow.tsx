@@ -42,7 +42,7 @@ export default function ProjectCreationWindow({onCreate, onCancel}: ProjectCreat
             console.error(error);
             setCreating(false);
         })
-    },[]);
+    },[creating, onCreate]);
 
     const closeWindow = useCallback(() => {
         onCancel?.();
@@ -54,7 +54,7 @@ export default function ProjectCreationWindow({onCreate, onCancel}: ProjectCreat
         const desc = descRef.current.value;
         createProject(name, desc);
         return false;
-    },[]);
+    }, [createProject]);
 
     let contentJSX;
 

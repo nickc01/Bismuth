@@ -158,7 +158,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         //console.log("Added = " + wireConnectionContext.addLoadedTerminal(result));
         //console.log("ADDED TERMINAL");
         return result;
-    }, [taskInfo, isInput, wireConnectionContext]);
+    }, [taskInfo, isInput]);
 
 
     const generateConnections = useCallback((taskInfo: TaskInfo, terminalList: TerminalInfo[]) => {
@@ -308,14 +308,14 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         wireConnectionContext.stopSnappingBehavior();
 
         mainAreaContext.enableActions(true);
-    }, [wireConnectionContext, taskInfo.dependsOn, addTaskDependency]);
+    }, [wireConnectionContext, addTaskDependency, mainAreaContext, onMouseDrag, onMouseEnd, taskInfo]);
 
     const onMouseStart = useCallback((e: MouseEvent) => {
         //console.log("MOUSE TASK START");
         //console.log(taskInfo);
         e.preventDefault();
 
-        const target = e.target as HTMLDivElement;
+        //const target = e.target as HTMLDivElement;
 
         mainAreaContext.enableActions(false);
 
@@ -329,7 +329,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         //let startX = parent.offsetLeft + (e.target as HTMLDivElement).parentElement.parentElement.offsetLeft;
         //let startY = parent.offsetTop + (e.target as HTMLDivElement).parentElement.parentElement.offsetTop;
 
-        const { offsetLeft, offsetTop } = getOffsetRelativeTo(target, mainAreaContext.ref.current);
+        const { offsetLeft, offsetTop } = getOffsetRelativeTo(wireRef.current, mainAreaContext.ref.current);
 
         let startX = offsetLeft;
         let startY = offsetTop;
@@ -356,7 +356,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
         snappedTerminal.current = null;
         wireConnectionContext.startSnappingBehavior(wireRef, onSnap, onUnSnap);
-    }, [mainAreaContext, wireConnectionContext, onMouseDrag, onMouseEnd]);
+    }, [mainAreaContext, wireConnectionContext, onMouseDrag, onMouseEnd, onSnap, onUnSnap]);
 
     const onMouseOverSelf = useCallback((e: MouseEvent) => {
         e.preventDefault();
@@ -365,7 +365,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
             return;
         }
 
-        const { offsetLeft, offsetTop } = getOffsetRelativeTo((e.target as HTMLElement).getElementsByClassName(styles.terminal_color)[0] as HTMLElement, mainAreaContext.ref.current);
+        const { offsetLeft, offsetTop } = getOffsetRelativeTo(wireRef.current, mainAreaContext.ref.current);
 
         if (snapTarget.current) {
             wireConnectionContext.removeSnapTarget(snapTarget.current);
@@ -422,7 +422,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
             mainAreaContext.enableActions(true);
         }
-    }, [mainAreaContext, wireConnectionContext]);
+    }, [mainAreaContext, wireConnectionContext, onMouseDrag, onMouseEnd]);
 
     //const outputWireOffset = 42 //REM = 64
     //const outputWireOffset = 22; //REM = 32
@@ -434,7 +434,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
     //const outputWireOffset = "0.8rem"; //16rem 12.8px
     //const outputWireOffset = "0.7rem"; //32rem 22.4px
     //const outputWireOffset = "0.65rem"; //64rem 42.8px
-    const outputWireOffset = "3px";
+    const outputWireOffset = "0.2rem";
 
     const outputJSX = useMemo(() => {
         return outputs && outputs.map((o, i) => {
@@ -444,7 +444,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
             return <WireLine offset={outputWireOffset} wireID={o.taskInfo.task_id} onClick={removeTaskDependency} key={i.toString()} startX={startOffsets.offsetLeft + outputWireOffsetOLD} startY={startOffsets.offsetTop + outputWireOffsetOLD} endX={endOffsets.offsetLeft + outputWireOffsetOLD} endY={endOffsets.offsetTop + outputWireOffsetOLD} startColor={isInput ? wireConnectionContext.inputColor : wireConnectionContext.outputColor} endColor={isInput ? wireConnectionContext.outputColor : wireConnectionContext.inputColor} />
         });
-    }, [outputs, wireConnectionContext, isInput, removeTaskDependency]);
+    }, [outputs, wireConnectionContext, isInput, removeTaskDependency, mainAreaContext.ref]);
 
     //const offset = 16; //REM = 64
     //const offset = 9; //REM = 32
@@ -462,7 +462,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
 
 
-    const offset = "-3px + 1.5rem";
+    const offset = "1.6rem";
 
 
 
@@ -473,8 +473,8 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
     */
 
     return <>
-        <div ref={wireRef} className={styles.terminal} onMouseOver={onMouseOverSelf as any} onMouseLeave={onMouseLeaveSelf as any}>
-            <div className={styles.terminal_color} onMouseDown={onMouseStart as any} style={{ backgroundColor: isInput ? wireConnectionContext.inputColor : wireConnectionContext.outputColor }}></div>
+        <div ref={wireRef} className={styles.terminal} onMouseDown={onMouseStart as any} onMouseOver={onMouseOverSelf as any} onMouseLeave={onMouseLeaveSelf as any}>
+            <div className={styles.terminal_color} style={{ backgroundColor: isInput ? wireConnectionContext.inputColor : wireConnectionContext.outputColor }}></div>
             <div ref={originRef} className={styles.origin}>
             </div>
         </div>

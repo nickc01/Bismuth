@@ -12,6 +12,7 @@ import { Server } from "net";
 import { useRouter } from "next/navigation";
 import WireConnectionContext, { WireConnectionContextData } from "../../../src/WireConnectionContext";
 import GuideArea from "../../../src/components/GuideArea";
+import { getGoalFromDoc, getTaskFromDoc } from "../../../src/global";
 
 
 const ENABLE_FIREBASE = true;
@@ -187,32 +188,6 @@ function generateDemoTasks(projectID: string): TaskInfo[] {
     ];
 }
 
-export function getTaskFromDoc(projectID: string, doc: QueryDocumentSnapshot): TaskInfo {
-    return {
-        name: doc.get("task_name") ?? "Untitled Task",
-        description: doc.get("description") ?? "No Description",
-        task_id: doc.id,
-        width: doc.get("width") ?? 300,
-        height: doc.get("height") ?? 600,
-        x: doc.get("x") ?? 0,
-        y: doc.get("y") ?? 0,
-        project_id: projectID,
-        dependsOn: doc.get("dependsOn") ?? []
-    };
-}
-
-export function getGoalFromDoc(doc: QueryDocumentSnapshot): GoalInfo {
-    return {
-        name: doc.get("name") ?? "Untitled Goal",
-        checked: doc.get("checked") ?? false,
-        task_id: doc.get("task_id") ?? null,
-        timestamp: doc.get("timestamp") ?? 0,
-        goal_id: doc.id,
-        project_id: doc.get("project_id") ?? null,
-        owner_id: doc.get("owner_id") ?? null
-    }
-}
-
 export default function LoadedProjectPage({ params }) {
     //let [loading, setLoading] = useState(true);
     //let [tasks, setTasksRaw] = useState(null as TaskInfo[]);
@@ -250,8 +225,8 @@ export default function LoadedProjectPage({ params }) {
     //console.log("Goals = ");
     //console.log(goals);
 
-    let taskDeps: DependencyList = [];
-    let goalDeps: DependencyList = [];
+    //let taskDeps: DependencyList = [];
+    //let goalDeps: DependencyList = [];
 
     /*if (!ENABLE_FIREBASE) {
         taskDeps = [];
@@ -285,7 +260,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
     const resizeTask = useCallback((width: number, height: number, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -306,7 +281,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
     const updateTaskName = useCallback((name: string, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -324,7 +299,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
     const updateTaskDesc = useCallback((desc: string, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -340,7 +315,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
     const updateGoalName = useCallback((name: string, goal: GoalInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -359,7 +334,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, goalDeps);
+    }, []);
 
     const updateGoalChecked = useCallback((checked: boolean, goal: GoalInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -377,7 +352,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, goalDeps);
+    }, []);
 
     const deleteTask = useCallback((task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -398,7 +373,7 @@ export default function LoadedProjectPage({ params }) {
         deleteDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id)).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
     const deleteGoal = useCallback((goal: GoalInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -416,7 +391,7 @@ export default function LoadedProjectPage({ params }) {
         deleteDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id)).catch(error => {
             console.error(error);
         });
-    }, goalDeps);
+    }, []);
 
     const createGoal = useCallback((name: string, checked: boolean, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -456,7 +431,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });*/
-    }, goalDeps);
+    }, []);
 
     const changeWireMode = useCallback(() => {
         setWireMode(prev => !prev);
@@ -501,7 +476,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, [tasks]);
+    }, [params.projectID]);
 
     const addTaskDependency = useCallback((source: TaskInfo, dependency: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
@@ -519,7 +494,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
 
     const removeTaskDependencies = useCallback((source: TaskInfo, dependencies: string[]) => {
@@ -537,7 +512,7 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-    }, taskDeps);
+    }, []);
 
     //let [tasks, setTasks] = useState(generateStartingTasks(params.projectID));
 
@@ -579,7 +554,7 @@ export default function LoadedProjectPage({ params }) {
                 setGoals(generateDemoGoals(params.projectID));
             }
         });
-    }, []);
+    }, [params.projectID, router]);
 
     const taskGoals = useMemo(() => {
         if (!tasks || !goals) {
@@ -647,7 +622,22 @@ export default function LoadedProjectPage({ params }) {
             removeTaskDependencies={removeTaskDependencies}
             key={t.task_id}
             taskInfo={t} ></Task>)
-    }, [tasks, wireMode, goals, updateGoalName, updateGoalChecked, moveTask, deleteTask, resizeTask, createGoal, updateTaskDesc, updateTaskName, deleteGoal, addTaskDependency]);
+    }, [tasks,
+        wireMode,
+        updateGoalName,
+        updateGoalChecked,
+        moveTask,
+        deleteTask,
+        resizeTask,
+        createGoal,
+        updateTaskDesc,
+        updateTaskName,
+        deleteGoal,
+        addTaskDependency,
+        dependenciesAsTasks,
+        dependenciesCompleted,
+        removeTaskDependencies,
+        taskGoals]);
 
     const exitButton = useCallback(() => {
         router.push("/projects");

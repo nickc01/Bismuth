@@ -32,11 +32,11 @@ export default function ProjectsPage() {
     const logout = useCallback(async () => {
         await signOut(auth);
         router.push("/");
-    },[]);
+    },[router]);
 
     const openProject = useCallback(async () => {
         router.push(`/projects/${selectedProjectID}`);
-    }, [selectedProjectID]);
+    }, [router, selectedProjectID]);
 
     const onDeleteProject = useCallback(async () => {
         try {
@@ -95,7 +95,7 @@ export default function ProjectsPage() {
                 setProjects(data.docs.map(d => readProjectFromData(d)));
             });
         });
-    }, []);
+    }, [router]);
 
     if (!loaded) {
         return <div style={{ width: "100%", height: "95vh" }}>

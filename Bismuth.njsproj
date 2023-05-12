@@ -21,10 +21,26 @@
     <Content Include=".eslintrc.json" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
+    <Content Include="public\coolvetica.woff2" />
+    <Content Include="public\guide\1 Create Task.png" />
+    <Content Include="public\guide\10 Enable Zoom Controls.png" />
+    <Content Include="public\guide\11 Disable Wire Mode.png" />
+    <Content Include="public\guide\11 - Setting Up Wires.m4v" />
+    <Content Include="public\guide\12 - Exit Button.png" />
+    <Content Include="public\guide\2 - Task Created.png" />
+    <Content Include="public\guide\3 - Edit Text.png" />
+    <Content Include="public\guide\4 - Moving Tasks.png" />
+    <Content Include="public\guide\5 - Resizing Tasks.png" />
+    <Content Include="public\guide\6 - Closing Tasks.png" />
+    <Content Include="public\guide\7 - Adding Goals.png" />
+    <Content Include="public\guide\8 - Editing Goals.png" />
+    <Content Include="public\guide\9 - Closing Goals.png" />
+    <Content Include="public\guide\Basic Controls Zoom.png" />
     <Content Include="public\pencil.svg" />
     <Content Include="styles\app.loading.module.css" />
     <Content Include="styles\ConfirmationBox.module.css" />
     <Content Include="styles\EditableText.module.css" />
+    <Content Include="styles\ErrorBoxDisplay.module.css" />
     <Content Include="styles\GoalField.module.css" />
     <Content Include="styles\GuideArea.module.css" />
     <Content Include="styles\WireLine.module.css" />
@@ -42,7 +58,6 @@
     <Content Include="public\grid.svg" />
     <Content Include="public\loading.svg" />
     <Content Include="public\vercel.svg" />
-    <None Include="src\documentCache.tsx" />
     <None Include="src\global.tsx" />
     <Content Include="styles\Auth.module.css" />
     <Content Include="styles\CloseButton.module.css" />
@@ -83,6 +98,7 @@
     <Folder Include="Bismuth" />
     <Folder Include="firebase" />
     <Folder Include="public" />
+    <Folder Include="public\guide\" />
     <Folder Include="src" />
     <Folder Include="src\components" />
     <Folder Include="styles" />
@@ -90,8 +106,8 @@
   <ItemGroup>
     <TypeScriptCompile Include="app\loading.tsx" />
     <TypeScriptCompile Include="src\components\ConfirmationBox.tsx" />
-    <TypeScriptCompile Include="src\components\ConnectedWire.tsx" />
     <TypeScriptCompile Include="src\components\EditableText.tsx" />
+    <TypeScriptCompile Include="src\components\ErrorBoxDisplay.tsx" />
     <TypeScriptCompile Include="src\components\ExpandableArea.tsx" />
     <TypeScriptCompile Include="src\components\AreaNode.tsx" />
     <TypeScriptCompile Include="src\components\GoalField.tsx" />

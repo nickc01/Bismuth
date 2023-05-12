@@ -22,7 +22,7 @@ export default function ZoomControls({ onZoom }: ZoomControlsProps) {
         //zoomAmount.current = clamp(zoom, minZoom, maxZoom);
         //elementRef.current.style.transform = `scale(${zoomAmount.current})`;
         onZoom?.(zoom);
-    },[]);
+    },[onZoom]);
 
     /*useEffect(() => {
 

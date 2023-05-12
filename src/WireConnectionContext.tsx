@@ -1,4 +1,4 @@
-import { Context, Dispatch, MutableRefObject, SetStateAction, createContext } from "react";
+import { Context, MutableRefObject, createContext } from "react";
 import { TaskInfo } from "./components/Task";
 
 
@@ -95,15 +95,6 @@ export class WireConnectionContextData {
         }
         return false;
     }
-
-    /*removeLoadedTerminal(terminal: TerminalInfo) {
-        const index = this.terminalList.findIndex(t => t.ref == terminal.ref);
-        if (index > -1) {
-            this.terminalList.splice(index, 1);
-            return true;
-        }
-        return false;
-    }*/
 
     removeLoadedTerminal(ref: MutableRefObject<HTMLDivElement>) {
         const index = this.terminalList.findIndex(t => t.ref == ref);
