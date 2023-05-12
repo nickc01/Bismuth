@@ -63,7 +63,7 @@ export default function ErrorBoxDisplay({ children }: ErrorBoxDisplayProps) {
         <ErrorContext.Provider value={errorContextValue}>
             {children}
         </ErrorContext.Provider>
-        <div className={styles.error_display_container}>
+        <div className={styles.error_display_container} style={{ display: displayedInfo ? "block" : "none" }}>
             {displayedInfo && <div className={styles.error_display}>
                 <div className={styles.close_button_container}>
                     <CloseButton width="3rem" height="3rem" borderRadius="0.5rem" backgroundColor={displayedInfo.color} onClose={() => setDisplayedInfo(null)} />

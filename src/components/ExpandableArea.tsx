@@ -402,11 +402,6 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
 
         window.addEventListener("mouseout", mouseLeaveWindow);
 
-        let centerScrollX = document.documentElement.scrollWidth - document.documentElement.clientWidth;
-        let centerScrollY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        //console.log("SCROLL A = " + (centerScrollX / 2) + ", " + (centerScrollY / 2));
-        document.documentElement.scrollTo(centerScrollX / 2, centerScrollY / 2);
-
         contextValue.enableActions(actionsEnabled.current);
 
         /*const updateLoop = () => {
@@ -430,6 +425,12 @@ export default function ExpandableArea({ children, id, zoomable = true, zoomMin 
             }
         }
     }, [onBackgroundClick, onBackgroundDrag, onBackgroundRelease, onScroll, mouseLeaveWindow, contextValue]);
+
+    useEffect(() => {
+        let centerScrollX = document.documentElement.scrollWidth - document.documentElement.clientWidth;
+        let centerScrollY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        document.documentElement.scrollTo(centerScrollX / 2, centerScrollY / 2);
+    },[]);
 
     return <>
         <div id={id + "_input_grabber"} ref={inputElement as any} className={styles.input_grabber} />
