@@ -149,7 +149,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     }, [onMouseMove, onMouseUp]);
 
     return <div className={styles.node_mover}>
-        <div className={styles.draggable_area} onMouseDown={onMouseDown as any} onTouchStart={onTouchDown as any}>
+        <div className={styles.draggable_area} onMouseDown={onMouseDown as any} onTouchStart={onTouchDown as any} onTouchMove={onTouchMove as any} onTouchEnd={onTouchUp}>
             
         </div>
         <div className={styles.rest}>
