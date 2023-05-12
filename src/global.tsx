@@ -66,6 +66,49 @@ export const clamp = (num: number, min: number, max: number) => {
     return Math.min(Math.max(num, min), max);
 };
 
+let scrollLocks = {};
+
+
+export function BeginLockScrollbars() {
+    const id = crypto.randomUUID();
+
+    const oldX = window.scrollX;
+    const oldY = window.scrollY;
+
+    let lockOBJ = {
+        locked: true,
+        onScroll: () => {
+            window.scrollTo(oldX, oldY);
+        }
+    };
+
+    scrollLocks[id] = lockOBJ;
+
+    let update: () => void = null;
+
+    update = () => {
+        window.scrollTo(oldX, oldY);
+        if (lockOBJ.locked) {
+            requestAnimationFrame(update);
+        }
+    };
+
+    requestAnimationFrame(update);
+
+    window.addEventListener("scroll", lockOBJ.onScroll);
+
+    return id;
+}
+
+export function EndLockScrollbars(id: string) {
+    if (id in scrollLocks) {
+        const lockOBJ = scrollLocks[id];
+        lockOBJ.locked = false;
+        window.removeEventListener("scroll", lockOBJ.onScroll);
+        delete scrollLocks[id];
+    }
+}
+
 export interface OffsetResult {
     offsetLeft: number,
     offsetTop: number
