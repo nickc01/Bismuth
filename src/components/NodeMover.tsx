@@ -19,6 +19,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     const yMouseDiff = useRef(0);
     const oldX = useRef(0);
     const oldY = useRef(0);
+    const oldScrollX = useRef(0);
+    const oldScrollY = useRef(0);
 
     const moving = useRef(false);
 
@@ -75,7 +77,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        console.log("SCROLL");
+        window.scrollTo(oldScrollX.current, oldScrollY.current);
     },[]);
 
     const onTouchMove = useCallback((e: TouchEvent) => {
@@ -122,11 +124,12 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         yMouseDiff.current = e.targetTouches[0].pageY - areaNodeContext.node.current.offsetTop;
         document.addEventListener("touchmove", onTouchMove);
         document.addEventListener("touchend", onTouchUp);
+        oldScrollX.current = window.scrollX;
+        oldScrollY.current = window.scrollY;
         window.addEventListener("scroll", mobile_disableScrolling);
     }, [areaNodeContext, onTouchMove, onTouchUp]);
 
     useEffect(() => {
-        window.addEventListener("scroll", mobile_disableScrolling);
         return () => {
             if (moving.current) {
                 document.removeEventListener("mousemove", onMouseMove);
