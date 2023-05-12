@@ -96,7 +96,7 @@ export function BeginLockScrollbars() {
     requestAnimationFrame(update);
 
     window.addEventListener("scroll", lockOBJ.onScroll);
-    document.documentElement.style.overflow = "hidden";
+    //document.documentElement.style.overflow = "hidden";
 
     return id;
 }
@@ -106,7 +106,7 @@ export function EndLockScrollbars(id: string) {
         const lockOBJ = scrollLocks[id];
         lockOBJ.locked = false;
         window.removeEventListener("scroll", lockOBJ.onScroll);
-        document.documentElement.style.overflow = "auto";
+        //document.documentElement.style.overflow = "auto";
         delete scrollLocks[id];
     }
 }
