@@ -1,7 +1,7 @@
 
 
 .zoom_controls {
-    width: 100px;
+    width: 13vw;
     position: fixed;
     right: 0;
     bottom: 0;
@@ -11,8 +11,9 @@
 
     .zoom_controls > button {
         background-color: var(--secondary-color);
-        font-size: 1.5rem;
+        font-size: min(4vw, 4vh);
         margin: 0.25rem;
+        height: 8vh;
     }
 
         .zoom_controls > button:hover {

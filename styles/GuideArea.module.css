@@ -3,8 +3,9 @@
     position: fixed;
     left: 0;
     bottom: 0;
-    margin: 0.5rem;
-    padding: 1rem;
+    margin-left: 0.5vw;
+    margin-bottom: 0.5vw;
+    padding: min(2vw, 2vh);
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -13,6 +14,8 @@
     border-radius: 0.5rem;
     color: white;
     transition: linear 0.05s color, linear 0.1s background-color;
+    font-size: min(2vw, 2vh);
+    width: 12vw;
 }
 
     .guide_area_closed:hover {
@@ -23,15 +26,15 @@
 .guide_area {
     position: fixed;
     left: 0;
-    bottom: 5rem;
-    width: min(20rem,35vw);
-    min-height: auto;
+    bottom: 11vh;
+    width: min(50vw,38vh);
     background-color: var(--secondary-color);
-    margin: 0.5rem;
-    padding: 1rem;
+    margin-left: 1vw;
+    margin-bottom: 1vh;
+    padding: min(1.5vw, 1.5vh);
     display: flex;
     flex-direction: column;
-    border-radius: 0.5rem;
+    border-radius: min(1vw, 1vh);
 }
 
     .guide_area > p {
@@ -41,8 +44,9 @@
         text-align: center;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
+        border-radius: min(1vw, 1vh);
+        padding: min(1.5vw, 1.5vh);
+        font-size: min(4vw, 2vh);
     }
 
 .button_container {
@@ -51,16 +55,21 @@
     justify-content: space-evenly;
 }
 
+    .button_container > button {
+        font-size: min(4vw, 2vh);
+        padding: min(1.15vw, 1.15vh);
+    }
+
 .image_container {
     background-color: black;
-    border-radius: 0.5rem;
+    border-radius: min(1vw, 1vh);
     width: 100%;
     display: flex;
 }
 
-.image_container > img {
-    border-radius: 0.5rem;
-}
+    .image_container > img {
+        border-radius: min(1vw, 1vh);
+    }
 
 .image_container > video {
     width: 100%;
