@@ -21,6 +21,8 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
 
     const oldX = useRef(0);
     const oldY = useRef(0);
+    const lastTouchX = useRef(0);
+    const lastTouchY = useRef(0);
     const scrollLockID = useRef(null as string);
 
     const moving = useRef(false);
@@ -63,6 +65,10 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
             return;
         }
         //e.stopPropagation();
+
+        lastTouchX.current = e.targetTouches[0].pageX;
+        lastTouchY.current = e.targetTouches[0].pageY;
+
         areaNodeContext.node.current.style.width = `${clamp(areaNodeContext.width + ((e.targetTouches[0].pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth)}px`;
         areaNodeContext.node.current.style.height = `${clamp(areaNodeContext.height + ((e.targetTouches[0].pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight)}px`;
     }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth]);
@@ -72,10 +78,10 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         if (moving.current) {
             //e.stopPropagation();
             moving.current = false;
+            EndLockScrollbars(scrollLockID.current);
             //window.removeEventListener("touchmove", onTouchMove);
             //window.removeEventListener("touchend", onTouchUp);
-            onUpdateSize(clamp(areaNodeContext.width + ((e.targetTouches[0].pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((e.targetTouches[0].pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
-            EndLockScrollbars(scrollLockID.current);
+            onUpdateSize(clamp(areaNodeContext.width + ((lastTouchX.current - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((lastTouchY.current - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
         }
     }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth, onTouchMove, onUpdateSize]);
 

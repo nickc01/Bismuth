@@ -21,6 +21,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     const oldX = useRef(0);
     const oldY = useRef(0);
     const scrollLockID = useRef(null as string);
+    const lastTouchX = useRef(0);
+    const lastTouchY = useRef(0);
     //const oldScrollX = useRef(0);
     //const oldScrollY = useRef(0);
 
@@ -95,6 +97,9 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         let newX = oldX.current + (xDiff * (1 / expandAreaContext.zoom));
         let newY = oldY.current + (yDiff * (1 / expandAreaContext.zoom));
 
+        lastTouchX.current = e.targetTouches[0].pageX;
+        lastTouchY.current = e.targetTouches[0].pageY;
+
         areaNodeContext.node.current.style.left = `${(newX - xMouseDiff.current)}px`;
         areaNodeContext.node.current.style.top = `${(newY - yMouseDiff.current)}px`;
     }, [areaNodeContext, expandAreaContext.zoom]);
@@ -110,8 +115,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             //window.removeEventListener("scroll", mobile_disableScrolling);
             EndLockScrollbars(scrollLockID.current);
 
-            let xDiff = e.targetTouches[0].pageX - oldX.current;
-            let yDiff = e.targetTouches[0].pageY - oldY.current;
+            let xDiff = lastTouchX.current - oldX.current;
+            let yDiff = lastTouchY.current - oldY.current;
 
             let newX = oldX.current + (xDiff * (1 / expandAreaContext.zoom));
             let newY = oldY.current + (yDiff * (1 / expandAreaContext.zoom));
