@@ -88,6 +88,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         }
 
         e.stopPropagation();
+        e.preventDefault();
         let xDiff = e.targetTouches[0].pageX - oldX.current;
         let yDiff = e.targetTouches[0].pageY - oldY.current;
 
@@ -102,11 +103,12 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     onTouchUp = useCallback((e: TouchEvent) => {
         if (moving.current) {
             e.stopPropagation();
+            e.preventDefault();
             moving.current = false;
             document.removeEventListener("touchmove", onTouchMove);
             document.removeEventListener("touchend", onTouchUp);
             //window.removeEventListener("scroll", mobile_disableScrolling);
-            EndLockScrollbars(scrollLockID.current);
+            //EndLockScrollbars(scrollLockID.current);
 
             let xDiff = e.targetTouches[0].pageX - oldX.current;
             let yDiff = e.targetTouches[0].pageY - oldY.current;
@@ -120,6 +122,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
     const onTouchDown = useCallback((e: TouchEvent) => {
         e.stopPropagation();
+        e.preventDefault();
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
@@ -130,7 +133,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         //oldScrollX.current = window.scrollX;
         //oldScrollY.current = window.scrollY;
         //window.addEventListener("scroll", mobile_disableScrolling);
-        scrollLockID.current = BeginLockScrollbars();
+        //scrollLockID.current = BeginLockScrollbars();
     }, [areaNodeContext, onTouchMove, onTouchUp]);
 
     useEffect(() => {
@@ -140,7 +143,7 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
                 document.removeEventListener("mouseup", onMouseUp);
                 document.removeEventListener("touchmove", onTouchMove);
                 document.removeEventListener("touchend", onTouchUp);
-                EndLockScrollbars(scrollLockID.current);
+                //EndLockScrollbars(scrollLockID.current);
             }
         }
     }, [onMouseMove, onMouseUp]);
