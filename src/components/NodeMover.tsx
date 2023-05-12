@@ -105,8 +105,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             e.stopPropagation();
             e.preventDefault();
             moving.current = false;
-            document.removeEventListener("touchmove", onTouchMove);
-            document.removeEventListener("touchend", onTouchUp);
+            //document.removeEventListener("touchmove", onTouchMove);
+            //document.removeEventListener("touchend", onTouchUp);
             //window.removeEventListener("scroll", mobile_disableScrolling);
             EndLockScrollbars(scrollLockID.current);
 
@@ -128,8 +128,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         oldY.current = e.targetTouches[0].pageY;
         xMouseDiff.current = e.targetTouches[0].pageX - areaNodeContext.node.current.offsetLeft;
         yMouseDiff.current = e.targetTouches[0].pageY - areaNodeContext.node.current.offsetTop;
-        document.addEventListener("touchmove", onTouchMove);
-        document.addEventListener("touchend", onTouchUp);
+        //document.addEventListener("touchmove", onTouchMove);
+        //document.addEventListener("touchend", onTouchUp);
         //oldScrollX.current = window.scrollX;
         //oldScrollY.current = window.scrollY;
         //window.addEventListener("scroll", mobile_disableScrolling);
@@ -141,8 +141,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             if (moving.current) {
                 document.removeEventListener("mousemove", onMouseMove);
                 document.removeEventListener("mouseup", onMouseUp);
-                document.removeEventListener("touchmove", onTouchMove);
-                document.removeEventListener("touchend", onTouchUp);
+                //document.removeEventListener("touchmove", onTouchMove);
+                //document.removeEventListener("touchend", onTouchUp);
                 EndLockScrollbars(scrollLockID.current);
             }
         }

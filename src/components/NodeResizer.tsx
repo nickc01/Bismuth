@@ -72,8 +72,8 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         if (moving.current) {
             e.stopPropagation();
             moving.current = false;
-            window.removeEventListener("touchmove", onTouchMove);
-            window.removeEventListener("touchend", onTouchUp);
+            //window.removeEventListener("touchmove", onTouchMove);
+            //window.removeEventListener("touchend", onTouchUp);
             onUpdateSize(clamp(areaNodeContext.width + ((e.targetTouches[0].pageX - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((e.targetTouches[0].pageY - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
             EndLockScrollbars(scrollLockID.current);
         }
@@ -84,8 +84,8 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
-        window.addEventListener("touchmove", onTouchMove);
-        window.addEventListener("touchend", onTouchUp);
+        //window.addEventListener("touchmove", onTouchMove);
+        //window.addEventListener("touchend", onTouchUp);
 
         scrollLockID.current = BeginLockScrollbars();
     }, [onTouchMove, onTouchUp]);
@@ -98,8 +98,8 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
             if (moving.current) {
                 window.removeEventListener("mousemove", onMouseMove);
                 window.removeEventListener("mouseup", onMouseUp);
-                window.removeEventListener("touchmove", onTouchMove);
-                window.removeEventListener("touchend", onTouchUp);
+                //window.removeEventListener("touchmove", onTouchMove);
+                //window.removeEventListener("touchend", onTouchUp);
             }
         }
     }, [onMouseMove, onMouseUp]);
