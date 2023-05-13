@@ -656,7 +656,7 @@ export default function LoadedProjectPage({ params }) {
                 {taskJSX}
                 </WireConnectionContext.Provider>
         </ExpandableArea>
-        <ZoomBasedDiv extraTransforms={"translateX(-50%)"} transformOrigin="50% 0px" mainClass={styles.button_controls}>
+        <ZoomBasedDiv extraTransforms={"translateX(-50%)"} transformOrigin="50% 100%" mainClass={styles.button_controls}>
             {!wireMode && <button onClick={() => createTask()}>Create Task</button>}
             {!wireMode && <button onClick={changeWireMode}>Enable Wire Mode</button>}
             {wireMode && <button onClick={changeWireMode}>Disable Wire Mode</button>}
