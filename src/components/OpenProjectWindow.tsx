@@ -61,5 +61,3 @@ export default function OpenProjectWindow({ project, onCancel, onOpen, onDelete,
         {deleting && <ConfirmationBox onConfirm={onDeleteConfirmed} bodyText="Are you sure you want to delete this project" />}
     </DisplayWindow>
 }
-
-//<h2 className={styles.description}>{project.description}</h2>

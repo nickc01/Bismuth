@@ -1,9 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 
 import styles from "../../styles/EditableText.module.css"
-
-import pencil from "../../public/pencil.svg"
 
 
 
@@ -16,14 +13,9 @@ export interface EditableTextProps {
     sizeLimit?: number
 }
 
-let testCounter = 0;
-
 function splitByNewLines(input: string, textClass: string): JSX.Element[]  {
     return input.split(/\r?\n/).map((s, i) => <p key={i} className={textClass}>{s}</p>);
 }
-
-//return input.split(/\r?\n/).map((s) => <><p className={textClass}>{s}</p><br /></>);
-
 
 
 export default function EditableText({ text, onTextUpdate = null, textClass = "", multiline = false, editable = true, sizeLimit = Infinity }: EditableTextProps) {
@@ -113,4 +105,3 @@ export default function EditableText({ text, onTextUpdate = null, textClass = ""
         return <p>{internalText}</p>
     }
 }
-//internalText.replace(/(?:\r\n|\r|\n)/g, '</br>')

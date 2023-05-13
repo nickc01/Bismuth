@@ -1,4 +1,4 @@
-import { createContext, MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, MutableRefObject, useContext, useEffect, useMemo, useRef } from "react";
 import styles from "../../styles/AreaNode.module.css";
 import { ExpandableAreaContext } from "./ExpandableArea";
 

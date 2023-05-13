@@ -1,6 +1,6 @@
 "use client"
 
-import { GoogleAuthProvider, signInWithCredential, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { auth, googleProvider, onFirebaseInit } from "../../firebase/firebase_init";
 import LoadingIcon from "./LoadingIcon";

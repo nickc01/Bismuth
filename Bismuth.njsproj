@@ -39,7 +39,6 @@
     <Content Include="public\guide\9 - Closing Goals.png" />
     <Content Include="public\guide\Basic Controls Zoom.png" />
     <Content Include="public\pencil.svg" />
-    <Content Include="src\modernizr-custom.js" />
     <Content Include="styles\app.loading.module.css" />
     <Content Include="styles\ConfirmationBox.module.css" />
     <Content Include="styles\EditableText.module.css" />
@@ -121,7 +120,6 @@
     <TypeScriptCompile Include="src\components\WireTerminal.tsx" />
     <TypeScriptCompile Include="src\components\ZoomBasedDiv.tsx" />
     <TypeScriptCompile Include="src\components\ZoomControls.tsx" />
-    <TypeScriptCompile Include="src\detectmobilebrowsers.tsx" />
     <TypeScriptCompile Include="src\WireConnectionContext.tsx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

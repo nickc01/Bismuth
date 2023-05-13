@@ -2,7 +2,6 @@ import { useCallback, useContext, useEffect, useRef } from "react";
 import { AreaNodeContext } from "./AreaNode";
 
 import styles from "../../styles/NodeMover.module.css";
-import grip_dots from "../../public/grip_dots.png"
 import { ExpandableAreaContext } from "./ExpandableArea";
 import { BeginLockScrollbars, EndLockScrollbars } from "../global";
 
@@ -23,8 +22,6 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     const scrollLockID = useRef(null as string);
     const lastTouchX = useRef(0);
     const lastTouchY = useRef(0);
-    //const oldScrollX = useRef(0);
-    //const oldScrollY = useRef(0);
 
     const moving = useRef(false);
 
@@ -77,21 +74,12 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
         document.addEventListener("mouseup", onMouseUp);
     }, [areaNodeContext, onMouseMove, onMouseUp]);
 
-    /*const mobile_disableScrolling = useCallback((e: UIEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        window.scrollTo(oldScrollX.current, oldScrollY.current);
-    },[]);*/
-
     const onTouchMove = useCallback((e: TouchEvent) => {
         if (!moving.current) {
             return;
         }
 
         e.preventDefault();
-        //e.stopPropagation();
-        //e.preventDefault();
         let xDiff = e.targetTouches[0].pageX - oldX.current;
         let yDiff = e.targetTouches[0].pageY - oldY.current;
 
@@ -108,13 +96,8 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     let onTouchUp = null;
     onTouchUp = useCallback((e: TouchEvent) => {
         if (moving.current) {
-            //e.stopPropagation();
-            //e.preventDefault();
             e.preventDefault();
             moving.current = false;
-            //document.removeEventListener("touchmove", onTouchMove);
-            //document.removeEventListener("touchend", onTouchUp);
-            //window.removeEventListener("scroll", mobile_disableScrolling);
             EndLockScrollbars(scrollLockID.current);
 
             let xDiff = lastTouchX.current - oldX.current;
@@ -128,8 +111,6 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
     }, [areaNodeContext, onUpdatePosition, onTouchMove, expandAreaContext.zoom, onTouchMove]);
 
     const onTouchDown = useCallback((e: TouchEvent) => {
-        //e.stopPropagation();
-        //e.preventDefault();
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
@@ -138,11 +119,6 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
 
         lastTouchX.current = e.targetTouches[0].pageX;
         lastTouchY.current = e.targetTouches[0].pageY;
-        //document.addEventListener("touchmove", onTouchMove);
-        //document.addEventListener("touchend", onTouchUp);
-        //oldScrollX.current = window.scrollX;
-        //oldScrollY.current = window.scrollY;
-        //window.addEventListener("scroll", mobile_disableScrolling);
         e.preventDefault();
         scrollLockID.current = BeginLockScrollbars();
     }, [areaNodeContext, onTouchMove, onTouchUp]);
@@ -152,8 +128,6 @@ export default function NodeMover({ children, onUpdatePosition }: NodeMoverProps
             if (moving.current) {
                 document.removeEventListener("mousemove", onMouseMove);
                 document.removeEventListener("mouseup", onMouseUp);
-                //document.removeEventListener("touchmove", onTouchMove);
-                //document.removeEventListener("touchend", onTouchUp);
                 EndLockScrollbars(scrollLockID.current);
             }
         }

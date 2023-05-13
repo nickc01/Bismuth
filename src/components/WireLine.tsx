@@ -25,16 +25,6 @@ export function angleToPoint(x1: number, y1: number, x2: number, y2: number) {
 
 
 export default function WireLine({ startX, startY, endX, endY, startColor = "rgba(255,0,0,1)", endColor = "rgba(0,255,0,1)", onClick, wireID, offset }: WireLineProps) {
-    //distance + (0.025 * distance) + 40
-
-    //const distance_adjust = 32; //REM = 16
-    //const distance_adjust = 64; //REM = 32
-
-    //const distance_adjust =
-
-    //const offset = "1rem";
-    //console.log("offset = " + offset);
-
     const distance = getDistance(startX, startY, endX, endY);
     const angle = angleToPoint(startX, startY, endX, endY);
 
@@ -50,5 +40,3 @@ export default function WireLine({ startX, startY, endX, endY, startColor = "rgb
         
     </>
 }
-
-//<div className={styles.test} style={{ left: `calc(${endX}px + ${offset})`, top: `calc(${endY}px + ${offset})` }}></div>

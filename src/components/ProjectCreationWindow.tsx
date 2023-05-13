@@ -1,8 +1,7 @@
 import React, { FormEvent, MutableRefObject, useCallback, useRef, useState } from "react";
 import styles from "../../styles/ProjectCreationWindow.module.css"
-import CloseButton from "./CloseButton";
 import LoadingIcon from "./LoadingIcon";
-import { addDoc, collection, doc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase_init";
 import { Project } from "../global";
 import { DisplayWindow } from "./DisplayWindow";

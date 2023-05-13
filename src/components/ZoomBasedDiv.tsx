@@ -1,36 +1,15 @@
-import { Dispatch, MutableRefObject, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 
 let globalZoomAmount = 1;
-
 
 interface ZoomCallbacks {
     [key: string]: Dispatch<SetStateAction<number>>
 }
 
-
 let callbacks: ZoomCallbacks = {};
 
 let windowHooked = false;
-
-
-
-//let zoomableElements: MutableRefObject<HTMLElement>[] = [];
-
-/*export function AddZoomBasedElement(element: MutableRefObject<HTMLElement>) {
-    if (zoomableElements.indexOf(element) < 0) {
-        zoomableElements.push(element);
-        if (element.current) {
-            element.current.style.
-        }
-    }
-}
-
-export function RemoveZoomBasedElement(element: MutableRefObject<HTMLElement>) {
-
-}*/
-
-
 
 export interface ZoomBasedAreaProps {
     children: any,
@@ -42,7 +21,7 @@ export interface ZoomBasedAreaProps {
 //This is primarily used for IOS zooming
 export default function ZoomBasedDiv({ children, mainClass, transformOrigin, extraTransforms }: ZoomBasedAreaProps) {
     const [zoom, setZoom] = useState(1);
-    const [zoomID, setZoomID] = useState(crypto.randomUUID());
+    const [zoomID, _] = useState(crypto.randomUUID());
 
     if (zoom !== globalZoomAmount) {
         setZoom(globalZoomAmount);

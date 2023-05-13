@@ -1,14 +1,11 @@
 "use client"
 import styles from "../../../styles/LoadedProjectPage.module.css";
-import gridImage from "../../../public/grid.png";
-import { useEffect, useLayoutEffect, useRef, useState, useMemo, useCallback, DependencyList, use } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import Task, { GoalInfo, TaskInfo } from "../../../src/components/Task";
 import ExpandableArea from "../../../src/components/ExpandableArea";
-import ZoomControls from "../../../src/components/ZoomControls";
 import LoadingIcon from "../../../src/components/LoadingIcon";
-import { FieldValue, QueryDocumentSnapshot, Timestamp, addDoc, arrayRemove, arrayUnion, collection, collectionGroup, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { Timestamp, addDoc, arrayRemove, arrayUnion, collection, collectionGroup, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { auth, db, onFirebaseInit } from "../../../firebase/firebase_init";
-import { Server } from "net";
 import { useRouter } from "next/navigation";
 import WireConnectionContext, { WireConnectionContextData } from "../../../src/WireConnectionContext";
 import GuideArea from "../../../src/components/GuideArea";
@@ -18,27 +15,6 @@ import ZoomBasedDiv from "../../../src/components/ZoomBasedDiv";
 
 const ENABLE_FIREBASE = true;
 
-let counter = 100;
-
-
-/*function useCallback(func, dependencies) {
-    return func;
-}*/
-
-/*const BACKGROUND_PADDING = 750;
-
-
-function onScroll() {
-    console.log("Scroll X = " + document.documentElement.scrollLeft);
-    console.log("Scroll Y = " + document.documentElement.scrollTop);
-}*/
-
-/*function renderTaskInfo(tasks: TaskInfo[]) {
-    for (let i = 0; i < tasks.length; i++) {
-        tasks[i].innerHTML = <Task key={t.id} xOffset={bounds.x - BACKGROUND_PADDING} yOffset={bounds.y - BACKGROUND_PADDING} taskInfo={t}></Task>
-    }
-}*/
-
 function ShallowCopyArray<T>(array: T[]) {
     let newArray: T[] = [];
     for (let i = 0; i < array.length; i++) {
@@ -46,15 +22,6 @@ function ShallowCopyArray<T>(array: T[]) {
     }
     return newArray;
 }
-
-/*function UpdateArrayObject<T>(source: T[], obj: T, updater: (newObj: T) => void) {
-    let index = source.indexOf(obj);
-    if (index >= 0) {
-        const newObj = {...obj};
-        updater(newObj);
-        source[index] = newObj;
-    }
-}*/
 
 function UpdateItemInArrayPred<T>(source: T[], predicate: (obj: T) => boolean, modifier: (newObj: T) => void) {
     let index = source.findIndex(predicate);
@@ -67,18 +34,6 @@ function UpdateItemInArrayPred<T>(source: T[], predicate: (obj: T) => boolean, m
     }
     return source;
 }
-
-/*function UpdateItemInArray<T>(source: T[], obj: T, modifier: (newObj: T) => void) {
-    let index = source.indexOf(obj);
-    if (index >= 0) {
-        let newArray = ShallowCopyArray(source);
-        const newObj = structuredClone(obj);
-        modifier(newObj);
-        newArray[index] = newObj;
-        return newArray;
-    }
-    return source;
-}*/
 
 function RemoveFromArrayPred<T>(source: T[], predicate: (obj: T) => boolean) {
     let newArray: T[] = [];
@@ -158,95 +113,22 @@ function generateDemoTasks(projectID: string): TaskInfo[] {
         },
         {
             width: 300, height: 600, name: "Test3", description: "Test3 Description", project_id: projectID, x: 0, y: 0, task_id: "ID_3", dependsOn: []
-        }/*,
-        {
-            width: 300, height: 600, name: "Test1", description: "Test1 Description", project_id: projectID, x: 400, y: 400, task_id: "ID_4", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test2", description: "Test2 Descriptiond df sd f ", project_id: projectID, x: -400, y: -400, task_id: "ID_5", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test3", description: "Test3 Description", project_id: projectID, x: 0, y: 0, task_id: "ID_6", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test1", description: "Test1 Description", project_id: projectID, x: 400, y: 400, task_id: "ID_7", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test2", description: "Test2 Descriptiond df sd f ", project_id: projectID, x: -400, y: -400, task_id: "ID_8", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test3", description: "Test3 Description", project_id: projectID, x: 0, y: 0, task_id: "ID_9", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test1", description: "Test1 Description", project_id: projectID, x: 400, y: 400, task_id: "ID_10", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test2", description: "Test2 Descriptiond df sd f ", project_id: projectID, x: -400, y: -400, task_id: "ID_11", dependsOn: []
-        },
-        {
-            width: 300, height: 600, name: "Test3", description: "Test3 Description", project_id: projectID, x: 0, y: 0, task_id: "ID_12", dependsOn: []
-        }*/
+        }
     ];
 }
 
 export default function LoadedProjectPage({ params }) {
-    //let [loading, setLoading] = useState(true);
-    //let [tasks, setTasksRaw] = useState(null as TaskInfo[]);
     let [loaded, setLoaded] = useState(false);
     let router = useRouter();
 
-    //const tasks = useRef(null as TaskInfo[]);
-    //const goals = useRef(null as GoalInfo[]);
-    //let [goalCounter, setGoalRerenderCounter] = useState(0);
-    //let [taskCounter, setTaskRerenderCounter] = useState(0);
     const [wireMode, setWireMode] = useState(false);
 
     const [tasks, setTasks] = useState(null as TaskInfo[]);
     const [goals, setGoals] = useState(null as GoalInfo[]);
     const wireContext = useRef(new WireConnectionContextData());
 
-    //console.log(tasks);
-    /*if (tasks && !ENABLE_FIREBASE) {
-        tasks[0].task_id = (++counter).toString();
-    }*/
-
-    /*const setTasks = (newTasks: TaskInfo[]) => {
-        tasks.current = newTasks;
-        setTaskRerenderCounter(prev => ++prev);
-    };
-
-    const setGoals = (newGoals: GoalInfo[]) => {
-        goals.current = newGoals;
-        setGoalRerenderCounter(prev => ++prev);
-    };*/
-
-    //console.log("Tasks = ");
-    //console.log(tasks);
-
-    //console.log("Goals = ");
-    //console.log(goals);
-
-    //let taskDeps: DependencyList = [];
-    //let goalDeps: DependencyList = [];
-
-    /*if (!ENABLE_FIREBASE) {
-        taskDeps = [];
-        goalDeps = [];
-    }*/
-
     const moveTask = useCallback((x: number, y: number, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
-            //setTasks(tasks.current);
-            /*task.x = x;
-            task.y = y;
-            setTasks(tasks => {
-                let copy = ShallowCopyArray(tasks);
-                UpdateArrayObject(copy, task, obj => {
-
-                });
-                return copy;
-            });*/
-
             setTasks(tasks => {
                 return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
                     obj.x = x;
@@ -265,9 +147,6 @@ export default function LoadedProjectPage({ params }) {
 
     const resizeTask = useCallback((width: number, height: number, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
-            /*task.x = width;
-            task.y = height;
-            setTasks(tasks => ShallowCopyArray(tasks));*/
             setTasks(tasks => {
                 return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
                     obj.width = width;
@@ -286,8 +165,6 @@ export default function LoadedProjectPage({ params }) {
 
     const updateTaskName = useCallback((name: string, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
-            /*task.name = name;
-            setTasks(tasks => ShallowCopyArray(tasks));*/
             setTasks(tasks => {
                 return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
                     obj.name = name;
@@ -320,9 +197,6 @@ export default function LoadedProjectPage({ params }) {
 
     const updateGoalName = useCallback((name: string, goal: GoalInfo) => {
         if (!ENABLE_FIREBASE) {
-            /*goal.name = name;
-            setGoals(goals => ShallowCopyArray(goals));*/
-
             setGoals(goals => {
                 return UpdateItemInArrayPred(goals, g => g.goal_id === goal.goal_id, obj => {
                     obj.name = name;
@@ -339,8 +213,6 @@ export default function LoadedProjectPage({ params }) {
 
     const updateGoalChecked = useCallback((checked: boolean, goal: GoalInfo) => {
         if (!ENABLE_FIREBASE) {
-            /*goal.checked = checked;
-            setGoals(goals => ShallowCopyArray(goals));*/
             setGoals(goals => {
                 return UpdateItemInArrayPred(goals, g => g.goal_id === goal.goal_id, obj => {
                     obj.checked = checked;
@@ -358,17 +230,6 @@ export default function LoadedProjectPage({ params }) {
     const deleteTask = useCallback((task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
             setTasks(tasks => RemoveFromArrayPred(tasks, t => t.task_id === task.task_id));
-            /*setTasks(tasks => {
-                let newTasks = ShallowCopyArray(tasks);
-
-                let index = newTasks.findIndex(t => t.task_id == task.task_id)
-                if (index < 0) {
-                    return;
-                }
-                newTasks.splice(index, 1);
-
-                return newTasks;
-            });*/
             return;
         }
         deleteDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id)).catch(error => {
@@ -378,14 +239,6 @@ export default function LoadedProjectPage({ params }) {
 
     const deleteGoal = useCallback((goal: GoalInfo) => {
         if (!ENABLE_FIREBASE) {
-            /*let index = goals.current.indexOf(goal);
-            if (index < 0) {
-                return;
-            }
-            goals.current.splice(index, 1)
-
-            setGoals(goals.current);*/
-
             setGoals(goals => RemoveFromArrayPred(goals, g => g.goal_id === goal.goal_id));
             return;
         }
@@ -396,16 +249,6 @@ export default function LoadedProjectPage({ params }) {
 
     const createGoal = useCallback((name: string, checked: boolean, task: TaskInfo) => {
         if (!ENABLE_FIREBASE) {
-            /*goals.current.push({
-                name: name,
-                checked: checked,
-                goal_id: crypto.randomUUID(),
-                project_id: task.project_id,
-                task_id: task.task_id,
-                timestamp: Timestamp.fromMillis(Date.now())
-            });
-            setGoals(goals.current);*/
-
             setGoals(goals => AddToArray(goals, {
                 name: name,
                 checked: checked,
@@ -427,11 +270,6 @@ export default function LoadedProjectPage({ params }) {
         }).catch(error => {
             console.error(error);
         });
-        /*updateDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id), {
-            checked: checked
-        }).catch(error => {
-            console.error(error);
-        });*/
     }, []);
 
     const changeWireMode = useCallback(() => {
@@ -440,18 +278,6 @@ export default function LoadedProjectPage({ params }) {
 
     const createTask = useCallback((name: string = null, description: string = null, project_id: string = params.projectID, x: number = 0, y: number = 0, width: number = 400, height: number = 600, dependsOn: string[] = []) => {
         if (!ENABLE_FIREBASE) {
-            /*tasks.current.push({
-                name: name,
-                description: description,
-                project_id: project_id,
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                task_id: crypto.randomUUID(),
-                dependsOn: dependsOn
-            });
-            setTasks(tasks.current);*/
             setTasks(tasks => AddToArray(tasks, {
                 name: name ?? "Untitled Task",
                 description: description ?? "Insert Description Here",
@@ -514,8 +340,6 @@ export default function LoadedProjectPage({ params }) {
             console.error(error);
         });
     }, []);
-
-    //let [tasks, setTasks] = useState(generateStartingTasks(params.projectID));
 
     useEffect(() => {
 
@@ -582,24 +406,11 @@ export default function LoadedProjectPage({ params }) {
         if (!tasks || !goals) {
             return;
         }
-
         return tasks.map(task => {
-
-
             return task.dependsOn.map(dependency => completedTasks[tasks.findIndex(t => t.task_id === dependency)]);
-            //return task.dependsOn.every(dependency => completedTasks[tasks.findIndex(t => t.task_id === dependency)]);
         });
 
     }, [tasks, goals, completedTasks]);
-
-    //useEffect(() => {
-        //console.log("AFTER RENDER TASKS = ");
-        //console.log(tasks);
-
-    //}, [tasks]);
-
-    //console.log("TASKS BOTTOM = ");
-    //console.log(tasks);
 
     const taskJSX = useMemo(() => {
         if (!tasks) {
@@ -609,7 +420,7 @@ export default function LoadedProjectPage({ params }) {
             showWires={wireMode}
             dependentTasks={dependenciesAsTasks[i]}
             dependenciesCompleted={dependenciesCompleted[i]}
-            goals={taskGoals[i].sort((a, b) => a.timestamp.seconds - b.timestamp.seconds)}/*goals.filter(g => g.task_id == t.task_id).sort((a, b) => a.timestamp.seconds - b.timestamp.seconds)*/
+            goals={taskGoals[i].sort((a, b) => a.timestamp.seconds - b.timestamp.seconds)}
             onGoalNameUpdate={updateGoalName}
             onGoalCheckUpdate={updateGoalChecked}
             onTaskMove={moveTask}

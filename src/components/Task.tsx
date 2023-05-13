@@ -85,14 +85,11 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 		setDeleting(false);
 	}, [taskInfo, onTaskDelete]);
 
-
-
 	const dependency = useMemo(() => {
 		for (let i = 0; i < dependentTasks.length; i++) {
 			if (!dependenciesCompleted[i]) {
 				return dependentTasks[i];
 			}
-			//return dependentTasks[i];
 		}
 		return null;
 	}, [dependentTasks, dependenciesCompleted]);
@@ -104,16 +101,6 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 		}
 		return false;
 	}, [dependency, onGoalCheckUpdate]);
-
-	/*const onGoalNameChange = useCallback((name: string, goal: GoalInfo) => {
-		goal.goal_name = name;
-		onGoalNameUpdate?.(name, taskInfo, goal);
-	}, [taskInfo, onGoalNameUpdate]);
-
-	const onGoalCheckChange = useCallback((checked: boolean, goal: GoalInfo) => {
-		goal.goal_completed = checked;
-		onGoalCheckUpdate?.(checked, taskInfo, goal);
-	}, [taskInfo, onGoalCheckUpdate]);*/
 
 	let dependencyText = null;
 

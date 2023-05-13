@@ -1,13 +1,12 @@
-import { UserInfo, readUserInfoFromData } from "../global";
+import { UserInfo } from "../global";
 import { DisplayWindow } from "./DisplayWindow"
-import { ChangeEvent, useCallback, useEffect, useState } from "react"
+import { ChangeEvent, useCallback, useState } from "react"
 import LoadingIcon from "./LoadingIcon";
 import Image from "next/image";
 import styles from "../../styles/UserProfileWindow.module.css";
-import { doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase_init";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { buffer } from "stream/consumers";
 import EditableText from "./EditableText";
 import { User } from "firebase/auth";
 
@@ -21,14 +20,8 @@ export interface UserProfileWindowProps {
 
 async function ConvertImage(file: File) {
 	const bufferPromise = file.arrayBuffer();
-	//console.log("File = ");
-	//console.log(file);
 
 	const imageConverter = await import("image-in-browser");
-
-	//const test = await import("fs");
-
-	//const result = test.readFileSync("test.png");
 
 	let fileBuffer = Buffer.from(await bufferPromise);
 
@@ -49,47 +42,11 @@ async function ConvertImage(file: File) {
 	return imageConverter.encodeJpg({
 		image: loadedImage
 	});
-
-	/*if (file.type === "image/jpeg" || file.type === "image/png") {
-		return new Uint8Array(await bufferPromise);
-	}*/
-	/*const Converter = await import("image-in-browser");
-
-	const fs = await import("fs");
-
-	const test = fs.readFileSync("test.png");
-
-	//let image = await Converter..load(await bufferPromise);
-
-	Converter.decodeImage()
-	let resizeOptions: ResizeOptions = {
-		preserveAspectRatio: true
-	}
-
-	if (image.width >= image.height) {
-		resizeOptions.width = 800;
-	}
-	else {
-		resizeOptions.height = 800;
-	}
-
-	image = image.resize(resizeOptions);
-
-	return image.toBuffer({format: "jpeg"});*/
-	//return null;
 }
 
 
 export default function UserProfileWindow({onClose, user, userInfo}: UserProfileWindowProps) {
 	const [uploading, setUploading] = useState(false);
-	/*useEffect(() => {
-		return onSnapshot(doc(db, "users", user.uid), doc => {
-			setUserData(readUserInfoFromData(doc));
-			if (uploading) {
-				setUploading(false);
-			}
-		});
-	},[]);*/
 
 	let contentsJSX: JSX.Element = null;
 

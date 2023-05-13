@@ -1,6 +1,6 @@
 "use client"
 
-import { MutableRefObject, Suspense, useEffect, useRef, useState } from "react"
+import {useEffect, useRef, useState } from "react"
 import styles from "../../styles/UserProfile.module.css"
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase/firebase_init";
@@ -8,7 +8,6 @@ import { auth, db } from "../../firebase/firebase_init";
 import Image from "next/image"
 import { UserInfo, readUserInfoFromData } from "../global";
 import React from "react";
-import dynamic from "next/dynamic";
 import UserProfileWindow, { DefaultProfileImage } from "./UserProfileWindow";
 import { doc, onSnapshot } from "firebase/firestore";
 import ZoomBasedDiv from "./ZoomBasedDiv";
@@ -20,7 +19,6 @@ export default function UserProfile() {
 
     const [userData, setUserData] = useState(null as UserInfo);
     const [user, setUser] = useState(null as User);
-    //const [userPromise, setUserPromise] = useState(null as Promise<void>);
     const [showingWindow, setShowingWindow] = useState(false);
 
     const snapshot_unsub = useRef(null as () => void);
@@ -49,11 +47,6 @@ export default function UserProfile() {
             }
         }
     },[]);
-
-    /*if (userPromise) {
-        throw userPromise;
-    }*/
-
     
     if (userData == null) {
         return <></>
@@ -66,5 +59,3 @@ export default function UserProfile() {
         </>
     }
 }
-
-                //{showingWindow ? <UserProfileWindow onClose={() => setShowingWindow(false)} user={user} userInfo={userData}></UserProfileWindow> : <></>}

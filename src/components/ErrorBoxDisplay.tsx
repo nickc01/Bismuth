@@ -1,6 +1,6 @@
 "use client";
 import styles from "../../styles/ErrorBoxDisplay.module.css";
-import { Context, createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import CloseButton from "./CloseButton";
 
 

@@ -64,7 +64,6 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         if (!moving.current) {
             return;
         }
-        //e.stopPropagation();
         e.preventDefault();
 
         lastTouchX.current = e.targetTouches[0].pageX;
@@ -77,26 +76,20 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
     let onTouchUp = null;
     onTouchUp = useCallback((e: TouchEvent) => {
         if (moving.current) {
-            //e.stopPropagation();
             e.preventDefault();
             moving.current = false;
             EndLockScrollbars(scrollLockID.current);
-            //window.removeEventListener("touchmove", onTouchMove);
-            //window.removeEventListener("touchend", onTouchUp);
             onUpdateSize(clamp(areaNodeContext.width + ((lastTouchX.current - oldX.current) * (1 / expandAreaContext.zoom)), minWidth, maxWidth), clamp(areaNodeContext.height + ((lastTouchY.current - oldY.current) * (1 / expandAreaContext.zoom)), minHeight, maxHeight));
         }
     }, [areaNodeContext, expandAreaContext.zoom, maxHeight, maxWidth, minHeight, minWidth, onTouchMove, onUpdateSize]);
 
     const onTouchDown = useCallback((e: TouchEvent) => {
-        //e.stopPropagation();
         moving.current = true;
         oldX.current = e.targetTouches[0].pageX;
         oldY.current = e.targetTouches[0].pageY;
         lastTouchX.current = e.targetTouches[0].pageX;
         lastTouchY.current = e.targetTouches[0].pageY;
         e.preventDefault();
-        //window.addEventListener("touchmove", onTouchMove);
-        //window.addEventListener("touchend", onTouchUp);
 
         scrollLockID.current = BeginLockScrollbars();
     }, [onTouchMove, onTouchUp]);
@@ -109,8 +102,6 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
             if (moving.current) {
                 window.removeEventListener("mousemove", onMouseMove);
                 window.removeEventListener("mouseup", onMouseUp);
-                //window.removeEventListener("touchmove", onTouchMove);
-                //window.removeEventListener("touchend", onTouchUp);
                 EndLockScrollbars(scrollLockID.current);
             }
         }
@@ -123,11 +114,3 @@ export default function NodeResizer({ children, onUpdateSize, minWidth = 180, mi
         </div>
     </>
 }
-
-
-/*<div className={styles.draggable_area} onMouseDown={onMouseDown as any} onMouseUp={onMouseUp as any}>
- 
-</div>
-<div className={styles.rest}>
-{children}
-</div>*/

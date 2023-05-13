@@ -97,8 +97,6 @@ export function BeginLockScrollbars() {
     requestAnimationFrame(update);
 
     window.addEventListener("scroll", lockOBJ.onScroll);
-    //document.documentElement.style.overflow = "hidden";
-
     return id;
 }
 
@@ -107,7 +105,6 @@ export function EndLockScrollbars(id: string) {
         const lockOBJ = scrollLocks[id];
         lockOBJ.locked = false;
         window.removeEventListener("scroll", lockOBJ.onScroll);
-        //document.documentElement.style.overflow = "auto";
         delete scrollLocks[id];
     }
 }
@@ -139,20 +136,3 @@ export function getOffsetRelativeTo(sourceElement: HTMLElement, relativeParent: 
         offsetTop: offsetTop
     }
 }
-
-/*let zoomAmount = 1;
-
-let zoomableElements: MutableRefObject<HTMLElement>[] = [];
-
-export function AddZoomBasedElement(element: MutableRefObject<HTMLElement>) {
-    if (zoomableElements.indexOf(element) < 0) {
-        zoomableElements.push(element);
-        if (element.current) {
-            element.current.style.
-        }
-    }
-}
-
-export function RemoveZoomBasedElement(element: MutableRefObject<HTMLElement>) {
-
-}*/

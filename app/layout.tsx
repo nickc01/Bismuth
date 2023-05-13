@@ -1,12 +1,9 @@
-import React, { Suspense } from "react";
+import React from "react";
 import "../styles/globals.css"
 import { StrictMode } from "react";
 import LoadingSuspense from "../src/components/LoadingSuspense";
 import UserProfile from "../src/components/UserProfile";
 import ErrorBoxDisplay from "../src/components/ErrorBoxDisplay";
-import Script from "next/script";
-
-//const UserProfile = React.lazy(() => import("../src/components/UserProfile"));
 
 export default function RootLayout({children} : {children: React.ReactNode}) {
     return (
