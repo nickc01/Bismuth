@@ -35,11 +35,12 @@ export function RemoveZoomBasedElement(element: MutableRefObject<HTMLElement>) {
 export interface ZoomBasedAreaProps {
     children: any,
     mainClass?: string,
-    transformOrigin?: string
+    transformOrigin?: string,
+    extraTransforms?: string
 }
 
 //This is primarily used for IOS zooming
-export default function ZoomBasedDiv({ children, mainClass, transformOrigin }: ZoomBasedAreaProps) {
+export default function ZoomBasedDiv({ children, mainClass, transformOrigin, extraTransforms }: ZoomBasedAreaProps) {
     const [zoom, setZoom] = useState(1);
     const [zoomID, setZoomID] = useState(crypto.randomUUID());
 
@@ -72,7 +73,7 @@ export default function ZoomBasedDiv({ children, mainClass, transformOrigin }: Z
 
 
     return <div className={mainClass} style={{
-        backfaceVisibility: "hidden", transformOrigin: transformOrigin, transform: `translateZ(0) scale(${zoom})` }}>
+        backfaceVisibility: "hidden", transformOrigin: transformOrigin, transform: `${extraTransforms ?? ""}translateZ(0) scale(${zoom})` }}>
         {children}
     </div>
 }

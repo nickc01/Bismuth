@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styles from "../../styles/ZoomControls.module.css";
 import { isMobile } from "mobile-device-detect";
+import ZoomBasedDiv from "./ZoomBasedDiv";
 //import { clamp } from "../global";
 
 
@@ -43,8 +44,8 @@ export default function ZoomControls({ onZoom }: ZoomControlsProps) {
     }, [dest_id, disable_scrolling]);*/
 
 
-    return <div className={styles.zoom_controls}>
+    return <ZoomBasedDiv transformOrigin="100% 100%" mainClass={styles.zoom_controls}>
         <button onClick={() => increaseZoom(0.25)} style={{ display: isMobile ? "none" : "block" }}>+</button>
         <button onClick={() => increaseZoom(-0.25)} style={{ display: isMobile ? "none" : "block" }}>-</button>
-    </div>
+    </ZoomBasedDiv>
 }

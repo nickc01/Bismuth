@@ -4,6 +4,7 @@ import styles from "../../styles/ExpandableArea.module.css";
 import { NodeEntry } from "./AreaNode";
 import ZoomControls from "./ZoomControls";
 import { clamp } from "../global";
+import ZoomBasedDiv from "./ZoomBasedDiv";
 
 
 const BACKGROUND_PADDING = 1920 / 2;
