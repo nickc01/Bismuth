@@ -5,6 +5,7 @@ Bismuth is a simple task tracking app where you can keep track of many different
 - NextJS/React
 - Firebase for the backend
 - Vercel for hosting the frontend
+- Typescript for adding typesafety to Javascript and finding errors at compile-time
 - [Image-in-browser](https://www.npmjs.com/package/image-in-browser?activeTab=readme) for converting images
 
 The app allow you to create tasks, give each of them individual goals you can check off, and assign dependencies to other tasks so you can only complete them in a certain order. It also uses a windowing system where you can resize and rearrange the tasks in whichever order you want.
