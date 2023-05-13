@@ -71,7 +71,8 @@ export default function ZoomBasedDiv({ children, mainClass, transformOrigin }: Z
     }, [zoomID]);
 
 
-    return <div className={mainClass} style={{ transformOrigin: transformOrigin, transform: `scale(${zoom})` }}>
+    return <div className={mainClass} style={{
+        backfaceVisibility: "hidden", transformOrigin: transformOrigin, transform: `translateZ(0) scale(${zoom})` }}>
         {children}
     </div>
 }
