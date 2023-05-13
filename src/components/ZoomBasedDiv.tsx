@@ -52,7 +52,7 @@ export default function ZoomBasedDiv({ children, mainClass, transformOrigin, ext
 
 
     return <div className={mainClass} style={{
-        backfaceVisibility: "hidden", transformOrigin: transformOrigin, transform: `${extraTransforms ?? ""}translateZ(0) scale(${zoom})` }}>
+        backfaceVisibility: "hidden", transformOrigin: transformOrigin, transform: `translateZ(0) perspective(1px) ${extraTransforms ?? ""} scale(${zoom})` }}>
         {children}
     </div>
 }

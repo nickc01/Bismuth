@@ -10,7 +10,7 @@
    
     transition: linear 0.05s color, linear 0.1s background-color;
     font-size: min(2vw, 2vh);
-    width: 12vw;
+    width: 14vw;
 }
 
     .guide_area_closed > button {
@@ -64,6 +64,9 @@
     .button_container > button {
         font-size: min(4vw, 2vh);
         padding: min(1.15vw, 1.15vh);
+        width: 20vw;
+        height: 7.5vh;
+        margin: min(0.45vw, 0.45vh);
     }
 
 .image_container {
@@ -75,6 +78,7 @@
 
     .image_container > img {
         border-radius: min(1vw, 1vh);
+        margin: auto;
     }
 
 .image_container > video {

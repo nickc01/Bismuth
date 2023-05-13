@@ -13,7 +13,7 @@ import { getGoalFromDoc, getTaskFromDoc } from "../../../src/global";
 import ZoomBasedDiv from "../../../src/components/ZoomBasedDiv";
 
 
-const ENABLE_FIREBASE = true;
+//const ENABLE_FIREBASE = true;
 
 function ShallowCopyArray<T>(array: T[]) {
     let newArray: T[] = [];
@@ -128,15 +128,6 @@ export default function LoadedProjectPage({ params }) {
     const wireContext = useRef(new WireConnectionContextData());
 
     const moveTask = useCallback((x: number, y: number, task: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setTasks(tasks => {
-                return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
-                    obj.x = x;
-                    obj.y = y;
-                });
-            });
-            return;
-        }
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
             x: x,
             y: y
@@ -146,15 +137,6 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const resizeTask = useCallback((width: number, height: number, task: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setTasks(tasks => {
-                return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
-                    obj.width = width;
-                    obj.height = height;
-                });
-            });
-            return;
-        }
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
             width: width,
             height: height
@@ -164,14 +146,6 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const updateTaskName = useCallback((name: string, task: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setTasks(tasks => {
-                return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
-                    obj.name = name;
-                });
-            });
-            return;
-        }
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
             task_name: name
         }).catch(error => {
@@ -180,14 +154,6 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const updateTaskDesc = useCallback((desc: string, task: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setTasks(tasks => {
-                return UpdateItemInArrayPred(tasks, t => t.task_id === task.task_id, obj => {
-                    obj.description = desc;
-                });
-            });
-            return;
-        }
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
             description: desc
         }).catch(error => {
@@ -196,14 +162,6 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const updateGoalName = useCallback((name: string, goal: GoalInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setGoals(goals => {
-                return UpdateItemInArrayPred(goals, g => g.goal_id === goal.goal_id, obj => {
-                    obj.name = name;
-                });
-            });
-            return;
-        }
         updateDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id), {
             name: name
         }).catch(error => {
@@ -212,14 +170,6 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const updateGoalChecked = useCallback((checked: boolean, goal: GoalInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setGoals(goals => {
-                return UpdateItemInArrayPred(goals, g => g.goal_id === goal.goal_id, obj => {
-                    obj.checked = checked;
-                });
-            });
-            return;
-        }
         updateDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id), {
             checked: checked
         }).catch(error => {
@@ -228,38 +178,18 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const deleteTask = useCallback((task: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setTasks(tasks => RemoveFromArrayPred(tasks, t => t.task_id === task.task_id));
-            return;
-        }
         deleteDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id)).catch(error => {
             console.error(error);
         });
     }, []);
 
     const deleteGoal = useCallback((goal: GoalInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setGoals(goals => RemoveFromArrayPred(goals, g => g.goal_id === goal.goal_id));
-            return;
-        }
         deleteDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id)).catch(error => {
             console.error(error);
         });
     }, []);
 
     const createGoal = useCallback((name: string, checked: boolean, task: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            setGoals(goals => AddToArray(goals, {
-                name: name,
-                checked: checked,
-                goal_id: crypto.randomUUID(),
-                project_id: task.project_id,
-                task_id: task.task_id,
-                timestamp: Timestamp.fromMillis(Date.now()),
-                owner_id: auth.currentUser.uid
-            }));
-            return;
-        }
         addDoc(collection(db, "projects", task.project_id, "project_tasks", task.task_id, "goals"), {
             name: name,
             checked: checked,
@@ -277,20 +207,6 @@ export default function LoadedProjectPage({ params }) {
     }, []);
 
     const createTask = useCallback((name: string = null, description: string = null, project_id: string = params.projectID, x: number = 0, y: number = 0, width: number = 400, height: number = 600, dependsOn: string[] = []) => {
-        if (!ENABLE_FIREBASE) {
-            setTasks(tasks => AddToArray(tasks, {
-                name: name ?? "Untitled Task",
-                description: description ?? "Insert Description Here",
-                project_id: project_id,
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                task_id: crypto.randomUUID(),
-                dependsOn: dependsOn
-            }));
-            return;
-        }
         addDoc(collection(db, "projects", project_id, "project_tasks"), {
             name: name ?? "Untitled Task 123",
             description: description ?? "Insert Description Here",
@@ -306,16 +222,6 @@ export default function LoadedProjectPage({ params }) {
     }, [params.projectID]);
 
     const addTaskDependency = useCallback((source: TaskInfo, dependency: TaskInfo) => {
-        if (!ENABLE_FIREBASE) {
-            if (source.dependsOn.indexOf(dependency.task_id) < 0) {
-                setTasks(tasks => UpdateItemInArrayPred(tasks, t => t.task_id === source.task_id, newTask => {
-                    newTask.dependsOn = newTask.dependsOn.slice();
-                    newTask.dependsOn.push(dependency.task_id);
-                }));
-            }
-            return;
-        }
-
         updateDoc(doc(db, "projects", source.project_id, "project_tasks", source.task_id), {
             dependsOn: arrayUnion(dependency.task_id)
         }).catch(error => {
@@ -325,15 +231,6 @@ export default function LoadedProjectPage({ params }) {
 
 
     const removeTaskDependencies = useCallback((source: TaskInfo, dependencies: string[]) => {
-        if (!ENABLE_FIREBASE) {
-            console.log("REMOVING DEPENDENCIES = ");
-            console.log(dependencies);
-            setTasks(tasks => UpdateItemInArrayPred(tasks, t => t.task_id === source.task_id, newTask => {
-                newTask.dependsOn = newTask.dependsOn.filter(v => dependencies.indexOf(v) === -1);
-            }));
-            return;
-        }
-
         updateDoc(doc(db, "projects", source.project_id, "project_tasks", source.task_id), {
             dependsOn: arrayRemove(...dependencies)
         }).catch(error => {
@@ -343,6 +240,8 @@ export default function LoadedProjectPage({ params }) {
 
     useEffect(() => {
 
+        let taskUnsub = null;
+        let goalUnsub = null;
         onFirebaseInit(user => {
             if (!user?.uid) {
                 router.push("/projects");
@@ -351,34 +250,31 @@ export default function LoadedProjectPage({ params }) {
                 setLoaded(true);
             }
 
-            if (ENABLE_FIREBASE) {
+            taskUnsub = onSnapshot(collection(db, "projects", params.projectID, "project_tasks"), result => {
+                setTasks(result.docs.map(d => getTaskFromDoc(params.projectID, d)));
+            }, error => {
+                console.error("Failed snapshot for projects");
+                console.error(error);
+                router.push("/");
+            });
 
-                const taskUnsub = onSnapshot(collection(db, "projects", params.projectID, "project_tasks"), result => {
-                    setTasks(result.docs.map(d => getTaskFromDoc(params.projectID, d)));
-                }, error => {
-                    console.error("Failed snapshot for projects");
-                    console.error(error);
-                    router.push("/");
-                });
-
-                const goalUnsub = onSnapshot(query(collectionGroup(db, "goals"), where("owner_id", "==", user.uid), where("project_id", "==", params.projectID)), result => {
-                    setGoals(result.docs.map(d => getGoalFromDoc(d)));
-                }, error => {
-                    console.error("Failed snapshot for goals");
-                    console.error(error);
-                });
-
-                return () => {
-                    taskUnsub();
-                    goalUnsub();
-                }
-            }
-            else {
-
-                setTasks(generateDemoTasks(params.projectID));
-                setGoals(generateDemoGoals(params.projectID));
-            }
+            goalUnsub = onSnapshot(query(collectionGroup(db, "goals"), where("owner_id", "==", user.uid), where("project_id", "==", params.projectID)), result => {
+                setGoals(result.docs.map(d => getGoalFromDoc(d)));
+            }, error => {
+                console.error("Failed snapshot for goals");
+                console.error(error);
+            });
         });
+
+        return () => {
+            if (taskUnsub) {
+                taskUnsub();
+            }
+
+            if (goalUnsub) {
+                goalUnsub();
+            }
+        }
     }, [params.projectID, router]);
 
     const taskGoals = useMemo(() => {
