@@ -1,5 +1,5 @@
-![Bismuth Title](https://github.com/nickc01/Bismuth/assets/12601671/f05af792-caac-4297-9ce4-6246057d6b49)
-![Bismuth Screenshot](https://github.com/nickc01/Bismuth/assets/12601671/4b995c7b-28bf-4723-9571-3d1873440f23)
+![Bismuth Title](https://github.com/nickc01/Bismuth/assets/12601671/6d8979d3-9aa7-4152-a277-b2bf96be025d)
+![Bismuth Screenshot](https://github.com/nickc01/Bismuth/assets/12601671/47759754-5696-4a2a-a734-92e9632c45bf)
 
 Bismuth is a simple task tracking app where you can keep track of many different tasks that are associated with a project. The app uses the following:
 - NextJS/React
