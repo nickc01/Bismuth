@@ -59,9 +59,12 @@ export default function UserProfile() {
         return <></>
     }
     else {
-        return <ZoomBasedDiv transformOrigin="100% 0" mainClass={styles.main_icon_area}>
+        return <><ZoomBasedDiv transformOrigin="100% 0" mainClass={styles.main_icon_area}>
             <Image onClick={() => setShowingWindow(true)} alt="Profile Photo" width={100} height={100} src={userData.profile_picture ?? DefaultProfileImage}></Image>
-            {showingWindow ? <UserProfileWindow onClose={() => setShowingWindow(false)} user={user} userInfo={userData}></UserProfileWindow> : <></>}
         </ZoomBasedDiv>
+            {showingWindow ? <UserProfileWindow onClose={() => setShowingWindow(false)} user={user} userInfo={userData}></UserProfileWindow> : <></>}
+        </>
     }
 }
+
+                //{showingWindow ? <UserProfileWindow onClose={() => setShowingWindow(false)} user={user} userInfo={userData}></UserProfileWindow> : <></>}
