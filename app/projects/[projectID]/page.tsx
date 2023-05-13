@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import WireConnectionContext, { WireConnectionContextData } from "../../../src/WireConnectionContext";
 import GuideArea from "../../../src/components/GuideArea";
 import { getGoalFromDoc, getTaskFromDoc } from "../../../src/global";
+import ZoomBasedArea from "../../../src/components/ZoomBasedArea";
 
 
 const ENABLE_FIREBASE = true;
@@ -661,6 +662,6 @@ export default function LoadedProjectPage({ params }) {
             {wireMode && <button onClick={changeWireMode}>Disable Wire Mode</button>}
             <button onClick={exitButton}>Exit</button>
         </div>
-        <GuideArea/>
+        <GuideArea />
     </>
 }

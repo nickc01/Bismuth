@@ -15,6 +15,7 @@ import image11 from "../../public/guide/11 Disable Wire Mode.png";
 import image12 from "../../public/guide/12 - Exit Button.png";
 import basicControls from "../../public/guide/Basic Controls Zoom.png";
 import Image, { StaticImageData } from "next/image";
+import ZoomBasedArea from "./ZoomBasedArea";
 
 enum GuideType {
     Image,
@@ -111,7 +112,7 @@ export default function GuideArea({ }: GuideAreaProps) {
 
 
     if (open) {
-        return <div className={styles.guide_area}>
+        return <ZoomBasedArea mainClass={styles.guide_area}>
             <div className={styles.image_container}>
                 {guides[guideIndex].type !== GuideType.Video && <Image src={guides[guideIndex].resource} alt="Guide Image" height={11 * 16} width={20 * 16} />}
                 {guides[guideIndex].type === GuideType.Video && <video controls autoPlay loop muted src={guides[guideIndex].resource as string}>
@@ -123,13 +124,15 @@ export default function GuideArea({ }: GuideAreaProps) {
                 <button onClick={() => setGuideIndex(prev => guideIndex > 0 ? prev - 1 : prev)}>{"\<"}</button>
                 <button onClick={() => setOpen(false)}>Close</button>
                 <button onClick={() => setGuideIndex(prev => guideIndex < guides.length - 1 ? prev + 1 : prev)}>{"\>"}</button>
-            </div>
-        </div>
+                </div>
+        </ZoomBasedArea>
     }
     else {
-        return <button className={styles.guide_area_closed} onClick={() => setOpen(true)}>
+        return <ZoomBasedArea mainClass={styles.guide_area_closed}>
+            <button onClick={() => setOpen(true)}>
             Quick Start Guide
-        </button>
+            </button>
+        </ZoomBasedArea>
     }
 
 }

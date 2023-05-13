@@ -1,6 +1,7 @@
 import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot } from 'firebase/firestore';
 import localFont from 'next/font/local'
 import { GoalInfo, TaskInfo } from './components/Task';
+import { MutableRefObject } from 'react';
 
 export const coolvetica = localFont({src: "../public/coolvetica.woff2"});
 
@@ -138,3 +139,20 @@ export function getOffsetRelativeTo(sourceElement: HTMLElement, relativeParent: 
         offsetTop: offsetTop
     }
 }
+
+/*let zoomAmount = 1;
+
+let zoomableElements: MutableRefObject<HTMLElement>[] = [];
+
+export function AddZoomBasedElement(element: MutableRefObject<HTMLElement>) {
+    if (zoomableElements.indexOf(element) < 0) {
+        zoomableElements.push(element);
+        if (element.current) {
+            element.current.style.
+        }
+    }
+}
+
+export function RemoveZoomBasedElement(element: MutableRefObject<HTMLElement>) {
+
+}*/
