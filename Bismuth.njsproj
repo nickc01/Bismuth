@@ -119,7 +119,7 @@
     <TypeScriptCompile Include="src\components\NodeMover.tsx" />
     <TypeScriptCompile Include="src\components\WireLine.tsx" />
     <TypeScriptCompile Include="src\components\WireTerminal.tsx" />
-    <TypeScriptCompile Include="src\components\ZoomBasedArea.tsx" />
+    <TypeScriptCompile Include="src\components\ZoomBasedDiv.tsx" />
     <TypeScriptCompile Include="src\components\ZoomControls.tsx" />
     <TypeScriptCompile Include="src\detectmobilebrowsers.tsx" />
     <TypeScriptCompile Include="src\WireConnectionContext.tsx" />

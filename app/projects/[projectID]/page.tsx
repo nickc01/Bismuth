@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import WireConnectionContext, { WireConnectionContextData } from "../../../src/WireConnectionContext";
 import GuideArea from "../../../src/components/GuideArea";
 import { getGoalFromDoc, getTaskFromDoc } from "../../../src/global";
-import ZoomBasedArea from "../../../src/components/ZoomBasedArea";
+import ZoomBasedDiv from "../../../src/components/ZoomBasedDiv";
 
 
 const ENABLE_FIREBASE = true;
