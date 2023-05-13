@@ -1,4 +1,4 @@
-import {useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styles from "../../styles/WireTerminal.module.css"
 import { TaskInfo } from "./Task";
 import { ExpandableAreaContext } from "./ExpandableArea";
@@ -6,21 +6,25 @@ import { getOffsetRelativeTo } from "../global";
 import WireLine from "./WireLine";
 import WireConnectionContext, { TerminalInfo } from "../WireConnectionContext";
 
+// Define the props for the WireTerminal component
 export interface WireTerminalProps {
-    isInput: boolean,
-    taskInfo: TaskInfo,
-    addTaskDependency?: (source: TaskInfo, dependency: TaskInfo) => void,
-    removeTaskDependencies?: (source: TaskInfo, dependencies: string[]) => void
+    isInput: boolean, // Indicates whether the terminal is an input or output
+    taskInfo: TaskInfo, // Information about the task associated with the terminal
+    addTaskDependency?: (source: TaskInfo, dependency: TaskInfo) => void, // Function to add a task dependency
+    removeTaskDependencies?: (source: TaskInfo, dependencies: string[]) => void // Function to remove task dependencies
 }
 
+// Define the WireTerminal component
 export default function WireTerminal({ taskInfo, isInput, addTaskDependency, removeTaskDependencies }: WireTerminalProps) {
-    const mainAreaContext = useContext(ExpandableAreaContext);
-    const wireConnectionContext = useContext(WireConnectionContext);
+    const mainAreaContext = useContext(ExpandableAreaContext); // Access the ExpandableAreaContext
+    const wireConnectionContext = useContext(WireConnectionContext); // Access the WireConnectionContext
 
+    // Throw an error if the Wire Terminal is not within an Expandable Area
     if (!mainAreaContext) {
         throw "This Wire Terminal must be within an Expandable Area";
     }
 
+    // Throw an error if the Wire Terminal is not within a Wire Connection Context
     if (!wireConnectionContext) {
         throw "This Wire Terminal must be within a Wire Connection Context to allow for terminal connections to work";
     }
@@ -41,7 +45,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
     const snapPosX = useRef(0);
     const snapPosY = useRef(0);
 
-
+    // Memoize the terminal info to avoid unnecessary re-rendering
     const terminalInfo: TerminalInfo = useMemo(() => {
         const result = {
             ref: wireRef,
@@ -52,7 +56,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         return result;
     }, [taskInfo, isInput]);
 
-
+    // Generate the connections based on the task info and the terminal list
     const generateConnections = useCallback((taskInfo: TaskInfo, terminalList: TerminalInfo[]) => {
         let newOutputs: TerminalInfo[] = [];
         if (isInput) {
@@ -83,6 +87,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         return newOutputs;
     }, [isInput, removeTaskDependencies]);
 
+    // Get the outputs based on the initialized state and task information
     const outputs = useMemo(() => {
         if (initialized) {
             return generateConnections(taskInfo, wireConnectionContext.terminalList);
@@ -90,6 +95,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         return null;
     }, [initialized, taskInfo, wireConnectionContext, generateConnections]);
 
+    // Callback function for snapping behavior when dragging a wire
     const onSnap = useCallback((info: TerminalInfo, x: number, y: number) => {
         if (info.isInput !== isInput && info.taskInfo.task_id !== taskInfo.task_id) {
             snapPosX.current = x;
@@ -99,11 +105,13 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         }
     }, [taskInfo, isInput]);
 
+    // Callback function for unsnapping behavior
     const onUnSnap = useCallback(() => {
         snappedTerminal.current = null;
         setSnapping(false);
-    },[]);
+    }, []);
 
+    // Callback function for handling mouse dragging event
     const onMouseDrag = useCallback((e: MouseEvent) => {
         e.preventDefault();
 
@@ -111,6 +119,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         setTargetPosY(prev => prev + (e.movementY * (1 / mainAreaContext.zoom)));
     }, [mainAreaContext]);
 
+    // Callback function for handling mouse release event
     let onMouseEnd = null;
     onMouseEnd = useCallback((e: MouseEvent) => {
         e.preventDefault();
@@ -134,6 +143,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         mainAreaContext.enableActions(true);
     }, [wireConnectionContext, addTaskDependency, mainAreaContext, onMouseDrag, onMouseEnd, taskInfo]);
 
+    // Callback function for handling mouse press event
     const onMouseStart = useCallback((e: MouseEvent) => {
         e.preventDefault();
 
@@ -161,6 +171,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
         wireConnectionContext.startSnappingBehavior(wireRef, onSnap, onUnSnap);
     }, [mainAreaContext, wireConnectionContext, onMouseDrag, onMouseEnd, onSnap, onUnSnap]);
 
+    // Callback function for handling mouse over event on the wire itself
     const onMouseOverSelf = useCallback((e: MouseEvent) => {
         e.preventDefault();
 
@@ -179,6 +190,7 @@ export default function WireTerminal({ taskInfo, isInput, addTaskDependency, rem
 
     }, [mainAreaContext, terminalInfo, wireConnectionContext]);
 
+    // Callback function for handling mouse leave event on the wire itself
     const onMouseLeaveSelf = useCallback((e: MouseEvent) => {
         e.preventDefault();
 

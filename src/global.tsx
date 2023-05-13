@@ -1,10 +1,11 @@
 import { DocumentData, DocumentSnapshot, QueryDocumentSnapshot } from 'firebase/firestore';
-import localFont from 'next/font/local'
+import localFont from 'next/font/local';
 import { GoalInfo, TaskInfo } from './components/Task';
-import { MutableRefObject } from 'react';
 
-export const coolvetica = localFont({src: "../public/coolvetica.woff2"});
+// Define a local font called 'coolvetica' using the next/font/local package
+export const coolvetica = localFont({ src: "../public/coolvetica.woff2" });
 
+// Define the interface for a Project object
 export interface Project {
     id?: string;
     name: string;
@@ -13,13 +14,15 @@ export interface Project {
     editor_ids: string[];
 }
 
+// Define the interface for a UserInfo object
 export interface UserInfo {
     id?: string;
     display_name: string;
     profile_picture: string;
 }
 
-export function readProjectFromData(doc: DocumentSnapshot<DocumentData>) : Project {
+// Function to read project data from a DocumentSnapshot
+export function readProjectFromData(doc: DocumentSnapshot<DocumentData>): Project {
     return {
         id: doc.id,
         name: doc.get("name") ?? "Untitled Project",
@@ -29,14 +32,16 @@ export function readProjectFromData(doc: DocumentSnapshot<DocumentData>) : Proje
     };
 }
 
-export function readUserInfoFromData(doc: DocumentSnapshot<DocumentData>) : UserInfo  {
+// Function to read user info data from a DocumentSnapshot
+export function readUserInfoFromData(doc: DocumentSnapshot<DocumentData>): UserInfo {
     return {
         id: doc.id,
         display_name: doc.get("display_name") ?? null,
-        profile_picture: doc.get("profile_picture")?? null
-    }
+        profile_picture: doc.get("profile_picture") ?? null
+    };
 }
 
+// Function to get a TaskInfo object from a QueryDocumentSnapshot
 export function getTaskFromDoc(projectID: string, doc: QueryDocumentSnapshot): TaskInfo {
     return {
         name: doc.get("task_name") ?? "Untitled Task",
@@ -51,6 +56,7 @@ export function getTaskFromDoc(projectID: string, doc: QueryDocumentSnapshot): T
     };
 }
 
+// Function to get a GoalInfo object from a QueryDocumentSnapshot
 export function getGoalFromDoc(doc: QueryDocumentSnapshot): GoalInfo {
     return {
         name: doc.get("name") ?? "Untitled Goal",
@@ -60,16 +66,18 @@ export function getGoalFromDoc(doc: QueryDocumentSnapshot): GoalInfo {
         goal_id: doc.id,
         project_id: doc.get("project_id") ?? null,
         owner_id: doc.get("owner_id") ?? null
-    }
+    };
 }
 
+// Function to clamp a number between a minimum and maximum value
 export const clamp = (num: number, min: number, max: number) => {
     return Math.min(Math.max(num, min), max);
 };
 
+// Object to store scroll lock data
 let scrollLocks = {};
 
-
+// Function to begin locking scrollbars
 export function BeginLockScrollbars() {
     const id = crypto.randomUUID();
 
@@ -100,6 +108,7 @@ export function BeginLockScrollbars() {
     return id;
 }
 
+// Function to stop locking scrollbars
 export function EndLockScrollbars(id: string) {
     if (id && id in scrollLocks) {
         const lockOBJ = scrollLocks[id];
@@ -114,6 +123,7 @@ export interface OffsetResult {
     offsetTop: number
 }
 
+//Function to get an element's offset relative to a parent
 export function getOffsetRelativeTo(sourceElement: HTMLElement, relativeParent: HTMLElement): OffsetResult {
 
     let offsetLeft = 0;

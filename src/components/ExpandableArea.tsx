@@ -72,13 +72,13 @@ export interface ExpandableAreaProps {
 }
 
 export default function ExpandableArea({ children, id, zoomable = true, zoomMin = 0.25, zoomMax = 2 }: ExpandableAreaProps) {
-    const movingBackground = useRef(false);
-    const bgElement = useRef(null as HTMLDivElement);
-    const inputElement = useRef(null as HTMLElement);
-    const zoomElement = useRef(null as HTMLElement);
-    const bounds = useRef(null as Rect);
-    const [zoom, setZoom] = useState(1);
-    const actionsEnabled = useRef(true);
+    const movingBackground = useRef(false); //Is true when the background is being dragged
+    const bgElement = useRef(null as HTMLDivElement); //A reference to the background element that contains all child elements
+    const inputElement = useRef(null as HTMLElement); //A reference to the element that receives input events
+    const zoomElement = useRef(null as HTMLElement); //A reference to the element within the background that zooms in and out
+    const bounds = useRef(null as Rect); //Stores the bounds of all the child elements in the background element
+    const [zoom, setZoom] = useState(1); //The zoom multiplier
+    const actionsEnabled = useRef(true); //If set to true, then background movement will also be enabled
 
     let contextValue = null as ExpandableAreaContextValues;
     contextValue = useMemo(() => {

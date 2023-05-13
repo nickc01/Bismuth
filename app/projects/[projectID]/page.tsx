@@ -11,6 +11,7 @@ import WireConnectionContext, { WireConnectionContextData } from "../../../src/W
 import GuideArea from "../../../src/components/GuideArea";
 import { getGoalFromDoc, getTaskFromDoc } from "../../../src/global";
 import ZoomBasedDiv from "../../../src/components/ZoomBasedDiv";
+import { useError } from "../../../src/components/ErrorBoxDisplay";
 
 
 //const ENABLE_FIREBASE = true;
@@ -122,6 +123,7 @@ export default function LoadedProjectPage({ params }) {
     let router = useRouter();
 
     const [wireMode, setWireMode] = useState(false);
+    const errorDisplay = useError();
 
     const [tasks, setTasks] = useState(null as TaskInfo[]);
     const [goals, setGoals] = useState(null as GoalInfo[]);
@@ -132,6 +134,7 @@ export default function LoadedProjectPage({ params }) {
             x: x,
             y: y
         }).catch(error => {
+            errorDisplay.displayError("Failed to move task", error);
             console.error(error);
         });
     }, []);
@@ -141,6 +144,7 @@ export default function LoadedProjectPage({ params }) {
             width: width,
             height: height
         }).catch(error => {
+            errorDisplay.displayError("Failed to resize task", error);
             console.error(error);
         });
     }, []);
@@ -149,6 +153,7 @@ export default function LoadedProjectPage({ params }) {
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
             task_name: name
         }).catch(error => {
+            errorDisplay.displayError("Failed to update task name", error);
             console.error(error);
         });
     }, []);
@@ -157,6 +162,7 @@ export default function LoadedProjectPage({ params }) {
         updateDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id), {
             description: desc
         }).catch(error => {
+            errorDisplay.displayError("Failed to update task description", error);
             console.error(error);
         });
     }, []);
@@ -165,6 +171,7 @@ export default function LoadedProjectPage({ params }) {
         updateDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id), {
             name: name
         }).catch(error => {
+            errorDisplay.displayError("Failed to update goal name", error);
             console.error(error);
         });
     }, []);
@@ -173,18 +180,21 @@ export default function LoadedProjectPage({ params }) {
         updateDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id), {
             checked: checked
         }).catch(error => {
+            errorDisplay.displayError("Failed to update goal check", error);
             console.error(error);
         });
     }, []);
 
     const deleteTask = useCallback((task: TaskInfo) => {
         deleteDoc(doc(db, "projects", task.project_id, "project_tasks", task.task_id)).catch(error => {
+            errorDisplay.displayError("Failed to delete task", error);
             console.error(error);
         });
     }, []);
 
     const deleteGoal = useCallback((goal: GoalInfo) => {
         deleteDoc(doc(db, "projects", goal.project_id, "project_tasks", goal.task_id, "goals", goal.goal_id)).catch(error => {
+            errorDisplay.displayError("Failed to delete goal", error);
             console.error(error);
         });
     }, []);
@@ -198,6 +208,7 @@ export default function LoadedProjectPage({ params }) {
             timestamp: serverTimestamp(),
             owner_id: auth.currentUser.uid
         }).catch(error => {
+            errorDisplay.displayError("Failed to create goal", error);
             console.error(error);
         });
     }, []);
@@ -217,6 +228,7 @@ export default function LoadedProjectPage({ params }) {
             height: height,
             dependsOn: []
         }).catch(error => {
+            errorDisplay.displayError("Failed to create task", error);
             console.error(error);
         });
     }, [params.projectID]);
@@ -225,6 +237,7 @@ export default function LoadedProjectPage({ params }) {
         updateDoc(doc(db, "projects", source.project_id, "project_tasks", source.task_id), {
             dependsOn: arrayUnion(dependency.task_id)
         }).catch(error => {
+            errorDisplay.displayError("Failed to add task dependency", error);
             console.error(error);
         });
     }, []);
@@ -234,6 +247,7 @@ export default function LoadedProjectPage({ params }) {
         updateDoc(doc(db, "projects", source.project_id, "project_tasks", source.task_id), {
             dependsOn: arrayRemove(...dependencies)
         }).catch(error => {
+            errorDisplay.displayError("Failed to remove task dependencies", error);
             console.error(error);
         });
     }, []);
@@ -253,6 +267,7 @@ export default function LoadedProjectPage({ params }) {
             taskUnsub = onSnapshot(collection(db, "projects", params.projectID, "project_tasks"), result => {
                 setTasks(result.docs.map(d => getTaskFromDoc(params.projectID, d)));
             }, error => {
+                errorDisplay.displayError("Failed to update tasks", error.message);
                 console.error("Failed snapshot for projects");
                 console.error(error);
                 router.push("/");
@@ -262,6 +277,7 @@ export default function LoadedProjectPage({ params }) {
                 setGoals(result.docs.map(d => getGoalFromDoc(d)));
             }, error => {
                 console.error("Failed snapshot for goals");
+                errorDisplay.displayError("Failed to update goals", error.message);
                 console.error(error);
             });
         });

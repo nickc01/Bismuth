@@ -102,37 +102,40 @@ function GenerateGuides(): GuidePage[] {
 
 export default function GuideArea({ }: GuideAreaProps) {
 
+    // State for controlling the open/close state and guide index
     const [open, setOpen] = useState(false);
     const [guideIndex, setGuideIndex] = useState(0);
 
-
+    // Generate guides using useMemo hook
     const guides = useMemo(() => {
         return GenerateGuides();
-    },[]);
-
+    }, []);
 
     if (open) {
-        return <ZoomBasedDiv transformOrigin={"0 100%"} mainClass={styles.guide_area}>
-            <div className={styles.image_container}>
-                {guides[guideIndex].type !== GuideType.Video && <Image src={guides[guideIndex].resource} alt="Guide Image" height={11 * 16} width={20 * 16} />}
-                {guides[guideIndex].type === GuideType.Video && <video controls autoPlay loop muted src={guides[guideIndex].resource as string}>
-                    
-                </video>}
-            </div>
-            <p>{guides[guideIndex].description}</p>
-            <div className={styles.button_container}>
-                <button onClick={() => setGuideIndex(prev => guideIndex > 0 ? prev - 1 : prev)}>{"\<"}</button>
-                <button onClick={() => setOpen(false)}>Close</button>
-                <button onClick={() => setGuideIndex(prev => guideIndex < guides.length - 1 ? prev + 1 : prev)}>{"\>"}</button>
+        // Render the guide area if it is open
+        return (
+            <ZoomBasedDiv transformOrigin={"0 100%"} mainClass={styles.guide_area}>
+                <div className={styles.image_container}>
+                    {guides[guideIndex].type !== GuideType.Video && <Image src={guides[guideIndex].resource} alt="Guide Image" height={11 * 16} width={20 * 16} />}
+                    {guides[guideIndex].type === GuideType.Video && <video controls autoPlay loop muted src={guides[guideIndex].resource as string}></video>}
                 </div>
-        </ZoomBasedDiv>
+                <p>{guides[guideIndex].description}</p>
+                <div className={styles.button_container}>
+                    <button onClick={() => setGuideIndex(prev => guideIndex > 0 ? prev - 1 : prev)}>{"\<"}</button>
+                    <button onClick={() => setOpen(false)}>Close</button>
+                    <button onClick={() => setGuideIndex(prev => guideIndex < guides.length - 1 ? prev + 1 : prev)}>{"\>"}</button>
+                </div>
+            </ZoomBasedDiv>
+        );
     }
     else {
-        return <ZoomBasedDiv transformOrigin={"0 100%"} mainClass={styles.guide_area_closed}>
-            <button onClick={() => setOpen(true)}>
-            Quick Start Guide
-            </button>
-        </ZoomBasedDiv>
+        // Render the closed guide area with a button to open it
+        return (
+            <ZoomBasedDiv transformOrigin={"0 100%"} mainClass={styles.guide_area_closed}>
+                <button onClick={() => setOpen(true)}>
+                    Quick Start Guide
+                </button>
+            </ZoomBasedDiv>
+        );
     }
-
 }

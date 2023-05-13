@@ -12,6 +12,7 @@ import ProjectCreationWindow from "../../src/components/ProjectCreationWindow";
 import OpenProjectWindow from "../../src/components/OpenProjectWindow";
 import { collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import LoadingIcon from "../../src/components/LoadingIcon";
+import { useError } from "../../src/components/ErrorBoxDisplay";
 
 
 
@@ -22,6 +23,8 @@ export default function ProjectsPage() {
     let [selectedProjectID, setSelectedProjectID] = useState(null as string);
     let [loaded, setLoaded] = useState(false);
     let [projects, setProjects] = useState([] as Project[]);
+
+    const errorDisplay = useError();
 
     let router = useRouter();
 
@@ -46,6 +49,7 @@ export default function ProjectsPage() {
             }
         }
         catch (error) {
+            errorDisplay.displayError("Failed to delete project", error);
             console.error(error);
         }
     }, [selectedProjectID]);

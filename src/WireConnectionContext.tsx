@@ -1,7 +1,7 @@
 import { Context, MutableRefObject, createContext } from "react";
 import { TaskInfo } from "./components/Task";
 
-
+// Define the interface for TerminalInfo
 export interface TerminalInfo {
     ref: MutableRefObject<HTMLDivElement>,
     isInput: boolean,
@@ -9,6 +9,7 @@ export interface TerminalInfo {
     origin: MutableRefObject<HTMLDivElement>
 }
 
+// Define the interface for SnapTargets
 export interface SnapTargets {
     [key: string]: {
         terminalInfo: TerminalInfo,
@@ -17,6 +18,7 @@ export interface SnapTargets {
     }
 }
 
+// Define the class for WireConnectionContextData
 export class WireConnectionContextData {
     inputColor: string = "rgb(0,255,0,0.5)";
     outputColor: string = "rgb(255,0,0,0.5)";
@@ -27,6 +29,7 @@ export class WireConnectionContextData {
     onUnsnap: () => void = null;
     snapTargets: SnapTargets = {};
 
+    // Add a snap target to the snapTargets object
     addSnapTarget(info: TerminalInfo, x: number, y: number): string {
         let id = crypto.randomUUID();
         this.snapTargets[id] = {
@@ -51,6 +54,7 @@ export class WireConnectionContextData {
         return id;
     }
 
+    // Remove a snap target from the snapTargets object
     removeSnapTarget(id: string) {
         if (id in this.snapTargets) {
             delete this.snapTargets[id];
@@ -61,6 +65,7 @@ export class WireConnectionContextData {
         }
     }
 
+    // Start the snapping behavior when a wire is dragged
     startSnappingBehavior(sourceWire: MutableRefObject<HTMLDivElement>, snap: (info: TerminalInfo, x: number, y: number) => void, unsnap: () => void) {
         this.onSnap = snap;
         this.onUnsnap = unsnap;
@@ -74,6 +79,7 @@ export class WireConnectionContextData {
         }
     }
 
+    // Stop the snapping behavior when a wire is released
     stopSnappingBehavior() {
         if (this.snappedID !== null) {
             if (this.draggedWire !== null) {
@@ -87,6 +93,7 @@ export class WireConnectionContextData {
         this.snapTargets = {};
     }
 
+    // Add a loaded terminal to the terminalList
     addLoadedTerminal(terminal: TerminalInfo) {
         const index = this.terminalList.findIndex(t => t.ref == terminal.ref);
         if (index < 0) {
@@ -96,6 +103,7 @@ export class WireConnectionContextData {
         return false;
     }
 
+    // Remove a loaded terminal from the terminalList
     removeLoadedTerminal(ref: MutableRefObject<HTMLDivElement>) {
         const index = this.terminalList.findIndex(t => t.ref == ref);
         if (index > -1) {

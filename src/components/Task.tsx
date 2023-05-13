@@ -1,15 +1,16 @@
-import { useRef, useCallback, useState, useContext, useEffect, MutableRefObject, useMemo } from "react";
+import { useCallback, useState, useMemo } from "react";
 import styles from "../../styles/Task.module.css"
-import { ExpandableAreaContext, Rect } from "./ExpandableArea";
+import { Rect } from "./ExpandableArea";
 import AreaNode from "./AreaNode";
 import NodeMover from "./NodeMover";
 import NodeResizer from "./NodeResizer";
 import EditableText from "./EditableText";
 import GoalField from "./GoalField";
 import ConfirmationBox from "./ConfirmationBox";
-import { FieldValue, Timestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import WireTerminal from "./WireTerminal";
 
+// Define the interface for GoalInfo
 export interface GoalInfo {
 	task_id: string,
 	name: string,
@@ -20,6 +21,7 @@ export interface GoalInfo {
 	goal_id: string
 }
 
+// Define the interface for TaskInfo, extends Rect
 export interface TaskInfo extends Rect {
 	name: string,
 	description: string,
@@ -28,6 +30,7 @@ export interface TaskInfo extends Rect {
 	dependsOn: string[]
 }
 
+// Define the interface for TaskProps
 export interface TaskProps {
 	taskInfo: TaskInfo,
 	goals: GoalInfo[],
@@ -47,37 +50,43 @@ export interface TaskProps {
 	dependenciesCompleted: boolean[]
 }
 
-
+// Define the Task component
 export default function Task({ showWires = true, taskInfo, goals, onTaskMove, onTaskResize, onNameUpdate, onDescUpdate, onGoalNameUpdate, onGoalCheckUpdate, onTaskDelete, onCreateGoal, onDeleteGoal, addTaskDependency, removeTaskDependencies, dependentTasks, dependenciesCompleted }: TaskProps) {
-
+	// State for deletion confirmation
 	const [deleting, setDeleting] = useState(false);
 
+	// Callback for updating task position
 	const onUpdatePosition = useCallback((x: number, y: number) => {
 		taskInfo.x = x;
 		taskInfo.y = y;
 		onTaskMove?.(x, y, taskInfo);
 	}, [taskInfo, onTaskMove]);
 
+	// Callback for updating task size
 	const onUpdateSize = useCallback((width: number, height: number) => {
 		taskInfo.width = width;
 		taskInfo.height = height;
 		onTaskResize?.(width, height, taskInfo);
 	}, [taskInfo, onTaskResize]);
 
+	// Callback for name change
 	const onNameChanged = useCallback((name: string) => {
 		taskInfo.name = name;
 		onNameUpdate?.(name, taskInfo);
 	}, [taskInfo, onNameUpdate]);
 
+	// Callback for description change
 	const onDescChanged = useCallback((desc: string) => {
 		taskInfo.description = desc;
 		onDescUpdate?.(desc, taskInfo);
 	}, [taskInfo, onDescUpdate]);
 
+	// Callback for X button press
 	const onXPressed = useCallback(() => {
 		setDeleting(true);
-	},[]);
+	}, []);
 
+	// Callback for delete confirmation
 	const onConfirmDelete = useCallback((confirmed: boolean) => {
 		if (confirmed) {
 			onTaskDelete?.(taskInfo);
@@ -85,6 +94,7 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 		setDeleting(false);
 	}, [taskInfo, onTaskDelete]);
 
+	// Determine the dependency task
 	const dependency = useMemo(() => {
 		for (let i = 0; i < dependentTasks.length; i++) {
 			if (!dependenciesCompleted[i]) {
@@ -94,6 +104,7 @@ export default function Task({ showWires = true, taskInfo, goals, onTaskMove, on
 		return null;
 	}, [dependentTasks, dependenciesCompleted]);
 
+	// Callback for goal check
 	const onGoalCheck = useCallback((checked: boolean, goal: GoalInfo) => {
 		if (!dependency) {
 			onGoalCheckUpdate?.(checked, goal);
